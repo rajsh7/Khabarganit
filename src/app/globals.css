@@ -274,21 +274,26 @@ button,
 
 
 /* ═══════════════════════════════════════════════════════════════════
-   CLEAN GOOGLE TRANSLATE (Hide Google default banner, gadget & iframes)
+   CLEAN GOOGLE TRANSLATE (Hide Google default banner & tooltips)
    ═══════════════════════════════════════════════════════════════════ */
 #google_translate_hidden_element,
-#google_translate_element,
+#google_translate_element {
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 .goog-te-banner-frame,
-.goog-te-banner-frame.skiptranslate,
 iframe.goog-te-banner-frame,
-.goog-te-gadget,
-.goog-te-gadget-simple,
-.skiptranslate > iframe {
+.goog-te-banner-frame.skiptranslate {
   display: none !important;
   visibility: hidden !important;
-  opacity: 0 !important;
   height: 0 !important;
-  width: 0 !important;
 }
 
 body {

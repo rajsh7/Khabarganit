@@ -40,6 +40,16 @@ export default function NewspaperPage() {
   const [turnDirection, setTurnDirection] = useState<"next" | "prev">("next");
   const [selectedArticle, setSelectedArticle] = useState<ArticleModalData | null>(null);
 
+  // Sync isHindi with existing googtrans cookie on mount
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      const match = document.cookie.match(/(?:^|;\s*)googtrans=([^;]+)/);
+      if (match && match[1] && match[1].includes("/hi")) {
+        setIsHindi(true);
+      }
+    }
+  }, []);
+
   // Active broadsheet data: Trending page when activeCategory is null, or category page
   const activePage: SectionPageData = activeCategory
     ? SECTION_PAGES.find((p) => p.sectionKey === activeCategory) || TRENDING_PAGE

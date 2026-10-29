@@ -22,36 +22,39 @@ export default function GoogleTranslate({ onLanguageChange }: GoogleTranslatePro
     const match = document.cookie.match(/(?:^|;\s*)googtrans=([^;]+)/);
     if (match && match[1]) {
       const code = match[1].split("/").pop();
-      if (code) {
+      if (code && code !== "en") {
         setSelectedLang(code);
         if (onLanguageChange) onLanguageChange(code);
+      } else {
+        setSelectedLang("en");
+        if (onLanguageChange) onLanguageChange("en");
       }
     }
 
-    window.googleTranslateElementInit = () => {
-      if (window.google && window.google.translate) {
-        new window.google.translate.TranslateElement(
-          {
-            pageLanguage: "en",
-            includedLanguages:
-              "hi,en,bn,te,ta,mr,gu,kn,ml,pa,ur,es,fr,de,ar,ja,zh-CN,ru",
-            autoDisplay: false,
-          },
-          "google_translate_hidden_element"
-        );
-      }
-    };
+    // Ensure googleTranslateElementInit is attached
+    if (typeof window !== "undefined") {
+      window.googleTranslateElementInit = () => {
+        if (window.google && window.google.translate) {
+          try {
+            new window.google.translate.TranslateElement(
+              {
+                pageLanguage: "en",
+                includedLanguages:
+                  "hi,en,bn,te,ta,mr,gu,kn,ml,pa,ur,es,fr,de,ar,ru,ja,zh-CN",
+                autoDisplay: false,
+              },
+              "google_translate_hidden_element"
+            );
+          } catch (e) {
+            console.error("Google Translate element init error:", e);
+          }
+        }
+      };
 
-    if (!document.getElementById("google-translate-script")) {
-      const script = document.createElement("script");
-      script.id = "google-translate-script";
-      script.type = "text/javascript";
-      script.src =
-        "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-      script.async = true;
-      document.body.appendChild(script);
-    } else if (window.google && window.google.translate) {
-      window.googleTranslateElementInit();
+      // Check if already loaded
+      if (window.google && window.google.translate) {
+        window.googleTranslateElementInit();
+      }
     }
   }, [onLanguageChange]);
 
@@ -61,35 +64,59 @@ export default function GoogleTranslate({ onLanguageChange }: GoogleTranslatePro
       onLanguageChange(langCode);
     }
 
-    // Set cookie for Google Translate (both root and domain)
-    const hostname = window.location.hostname;
-    document.cookie = `googtrans=/en/${langCode}; path=/;`;
-    document.cookie = `googtrans=/en/${langCode}; path=/; domain=${hostname};`;
-    document.cookie = `googtrans=/auto/${langCode}; path=/;`;
-    document.cookie = `googtrans=/auto/${langCode}; path=/; domain=${hostname};`;
+    if (typeof window === "undefined") return;
 
-    // Trigger Google Translate internal combo
+    const domain = window.location.hostname;
+    const rootDomain = domain.replace(/^www\./, "");
+
+    if (langCode === "en") {
+      // Clear cookies to restore original English text
+      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`;
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${rootDomain};`;
+      document.cookie = "googtrans=/en/en; path=/;";
+      document.cookie = `googtrans=/en/en; path=/; domain=${domain};`;
+      document.cookie = `googtrans=/en/en; path=/; domain=.${rootDomain};`;
+    } else {
+      // Set translation cookie (/en/targetLang)
+      document.cookie = `googtrans=/en/${langCode}; path=/;`;
+      document.cookie = `googtrans=/en/${langCode}; path=/; domain=${domain};`;
+      document.cookie = `googtrans=/en/${langCode}; path=/; domain=.${rootDomain};`;
+    }
+
+    // Try triggering the Google Translate combo directly if present
     const select = document.querySelector<HTMLSelectElement>(
       "#google_translate_hidden_element select.goog-te-combo, select.goog-te-combo"
     );
     if (select) {
       select.value = langCode;
-      select.dispatchEvent(new Event("change"));
-    } else {
-      window.location.reload();
+      select.dispatchEvent(new Event("change", { bubbles: true }));
     }
+
+    // Smooth reload to guarantee 100% translation of all broadsheet headlines and articles
+    setTimeout(() => {
+      window.location.reload();
+    }, 120);
   };
 
   return (
-    <div className="flex items-center gap-1.5 select-none text-[10px] sm:text-[11px] font-serif font-bold uppercase tracking-wider text-stone-900 whitespace-nowrap">
+    <div className="notranslate flex items-center gap-1.5 select-none text-[10px] sm:text-[11px] font-serif font-bold uppercase tracking-wider text-stone-900 whitespace-nowrap">
       <Globe size={13} className="text-[#C13A08] shrink-0" />
       <span className="hidden sm:inline text-stone-700">TRANSLATE:</span>
 
-      {/* Strictly hidden container for Google Translate internal engine - never visible */}
+      {/* Hidden container where Google mounts its combo off-screen without display:none breaking */}
       <div
         id="google_translate_hidden_element"
-        style={{ display: "none", width: 0, height: 0, overflow: "hidden" }}
-        className="hidden"
+        style={{
+          position: "absolute",
+          top: "-9999px",
+          left: "-9999px",
+          width: "1px",
+          height: "1px",
+          overflow: "hidden",
+          opacity: 0,
+          pointerEvents: "none",
+        }}
       />
 
       {/* Exactly ONE clean broadsheet dropdown */}

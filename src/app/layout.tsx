@@ -118,13 +118,32 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="hi" dir="ltr">
+    <html lang="en" dir="ltr">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png" />
         <link rel="icon" type="image/png" sizes="192x192" href="/icon.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+                {/* Google Translate Engine Initializer */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `function googleTranslateElementInit() {
+  if (window.google && window.google.translate) {
+    new window.google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'hi,en,bn,te,ta,mr,gu,kn,ml,pa,ur,es,fr,de,ar,ru,ja,zh-CN',
+      autoDisplay: false
+    }, 'google_translate_hidden_element');
+  }
+}`,
+          }}
+        />
+        <script
+          type="text/javascript"
+          src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+          async
+        />
         {/* Structured Data for Google Search Indexing */}
         <script
           type="application/ld+json"

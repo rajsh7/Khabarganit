@@ -1,175 +1,239 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: "Jost";
-  src: url("/fonts/Jost-VariableFont_wght.ttf") format("truetype");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Jost";
-  src: url("/fonts/Jost-Italic-VariableFont_wght.ttf") format("truetype");
-  font-weight: 100 900;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Sarala";
-  src: url("/fonts/Sarala-Regular.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Sarala";
-  src: url("/fonts/Sarala-Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-:root {
-  --brand-orange: #E84A0C;
-  --brand-orange-deep: #C13A08;
-  --brand-dark: #1C1208;
-  --brand-blue: #5B9BD5;
-  --brand-teal: #6BBF8E;
-  --brand-amber: #F5A623;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
+@layer base {
+  :root {
+    --background: #FFFFFF;
+    --foreground: #000000;
+  }
 }
 
 body {
-  font-family: "Sarala", "Noto Sans Devanagari", sans-serif;
-  color: #1A1A1A;
-  background-color: #FFFFFF;
-  line-height: 1.6;
+  background-color: #FFFFFF !important;
+  color: #000000;
+  font-family: var(--font-body), Georgia, "Times New Roman", serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
-/* Google Translate Broadside Header Styles */
-#google_translate_element {
-  display: inline-block;
-  vertical-align: middle;
-}
-.goog-te-gadget {
-  font-family: inherit !important;
-  font-size: 10px !important;
-  color: transparent !important;
-  line-height: 1 !important;
-}
-.goog-te-gadget .goog-te-combo {
-  font-family: inherit !important;
-  font-size: 10px !important;
-  font-weight: 700 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.05em !important;
-  color: #000000 !important;
-  background-color: #ffffff !important;
-  border: 1px solid #000000 !important;
-  padding: 1px 4px !important;
-  border-radius: 2px !important;
-  cursor: pointer !important;
-  outline: none !important;
-  margin: 0 !important;
-}
-.goog-te-gadget span,
-.goog-logo-link {
-  display: none !important;
-}
-.goog-te-banner-frame.skiptranslate,
-.goog-te-banner-frame {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-}
-body {
-  top: 0px !important;
-}
-.skiptranslate iframe {
-  display: none !important;
-}
+/* ═══════════════════════════════════════════════════════════════════
+   DEVANAGARI / HINDI BROADSHEET TYPOGRAPHY OVERRIDES
+   Prevents crowded matras, overlapping vowels and squashed text
+   ═══════════════════════════════════════════════════════════════════ */
 
-.font-playfair {
-  font-family: "Playfair Display", "Martel", "Noto Serif Devanagari", Georgia, Cambria, "Times New Roman", Times, serif;
-}
-
-/* ── Multilingual & Hindi Devanagari Congestion Fix ── */
-/* Prevents cramped/overlapping letters and matras when page is in Hindi or translated via Google Translate */
 :lang(hi),
 [lang="hi"],
 .translated-ltr,
 .translated-rtl {
-  font-family: "Martel", "Noto Serif Devanagari", "Sarala", sans-serif !important;
+  font-family: "Martel", "Noto Serif Devanagari", Georgia, serif !important;
+  text-transform: none !important;
+  letter-spacing: 0.015em !important;
 }
 
-:lang(hi) .font-playfair,
-[lang="hi"] .font-playfair,
-.translated-ltr .font-playfair,
-.translated-rtl .font-playfair {
+:lang(hi) h1,
+:lang(hi) h2,
+:lang(hi) h3,
+:lang(hi) h4,
+:lang(hi) h5,
+:lang(hi) h6,
+.translated-ltr h1,
+.translated-ltr h2,
+.translated-ltr h3,
+.translated-ltr h4,
+.translated-ltr h5,
+.translated-ltr h6 {
   font-family: "Martel", "Noto Serif Devanagari", serif !important;
-}
-
-/* Ensure comfortable vertical clearance for all Hindi headings so upper/lower matras never collide */
-:lang(hi) h1, :lang(hi) h2, :lang(hi) h3, :lang(hi) h4, :lang(hi) h5, :lang(hi) h6,
-[lang="hi"] h1, [lang="hi"] h2, [lang="hi"] h3, [lang="hi"] h4, [lang="hi"] h5, [lang="hi"] h6,
-.translated-ltr h1, .translated-ltr h2, .translated-ltr h3, .translated-ltr h4, .translated-ltr h5, .translated-ltr h6,
-.translated-rtl h1, .translated-rtl h2, .translated-rtl h3, .translated-rtl h4, .translated-rtl h5, .translated-rtl h6 {
   line-height: 1.38 !important;
   letter-spacing: 0.01em !important;
+  word-spacing: 0.05em !important;
   text-transform: none !important;
-  word-spacing: 0.04em !important;
-  padding-top: 3px !important;
-  padding-bottom: 3px !important;
 }
 
-/* Ensure comfortable line-height for body paragraphs in Hindi */
 :lang(hi) p,
-[lang="hi"] p,
 .translated-ltr p,
-.translated-rtl p {
+:lang(hi) article,
+.translated-ltr article,
+:lang(hi) span,
+.translated-ltr span {
+  line-height: 1.75 !important;
+  letter-spacing: 0.01em !important;
+  word-spacing: 0.03em !important;
+}
+
+:lang(hi) nav button,
+.translated-ltr nav button,
+:lang(hi) nav a,
+.translated-ltr nav a {
+  line-height: 1.4 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: none !important;
+}
+
+:lang(hi) .article-reading-content p,
+.translated-ltr .article-reading-content p {
   line-height: 1.8 !important;
   letter-spacing: 0.01em !important;
 }
 
-/* Crisp & Elegant Broadsheet Sheet Transition (Fast, Natural, Responsive) */
-@keyframes paperFadeSlideForward {
+/* ═══════════════════════════════════════════════════════════════════
+   AUTHENTIC 3D PAGE FLIP ANIMATIONS (FlippingBook & turn.js Style)
+   ═══════════════════════════════════════════════════════════════════ */
+.broadsheet-flipbook-stage {
+  perspective: 2500px;
+  perspective-origin: center center;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+@keyframes turnPageFlipForward {
   0% {
-    opacity: 0.25;
-    transform: translateY(8px) scale(0.996);
+    transform: rotateY(0deg) skewY(0deg) scale(1) translateZ(0);
+    transform-origin: left center;
+    box-shadow: 0 4px 35px rgba(0, 0, 0, 0.08);
+    filter: brightness(1);
+  }
+  18% {
+    transform: rotateY(-20deg) skewY(-1.2deg) scale(0.99) translateZ(30px);
+    transform-origin: left center;
+    box-shadow: -15px 15px 40px rgba(0, 0, 0, 0.22);
+    filter: brightness(0.97);
+  }
+  48% {
+    transform: rotateY(-68deg) skewY(-2.6deg) scale(0.965) translateZ(75px);
+    transform-origin: left center;
+    box-shadow: -45px 30px 75px rgba(0, 0, 0, 0.36);
+    filter: brightness(0.91);
+  }
+  75% {
+    transform: rotateY(-35deg) skewY(-1.2deg) scale(0.985) translateZ(35px);
+    transform-origin: left center;
+    box-shadow: -22px 18px 45px rgba(0, 0, 0, 0.20);
+    filter: brightness(0.96);
+  }
+  92% {
+    transform: rotateY(-6deg) skewY(-0.3deg) scale(0.998) translateZ(10px);
+    transform-origin: left center;
+    box-shadow: -8px 6px 20px rgba(0, 0, 0, 0.12);
+    filter: brightness(0.99);
   }
   100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: rotateY(0deg) skewY(0deg) scale(1) translateZ(0);
+    transform-origin: left center;
+    box-shadow: 0 4px 35px rgba(0, 0, 0, 0.08);
+    filter: brightness(1);
   }
 }
 
-@keyframes paperFadeSlideBackward {
+@keyframes turnPageFlipBackward {
   0% {
-    opacity: 0.25;
-    transform: translateY(-8px) scale(0.996);
+    transform: rotateY(0deg) skewY(0deg) scale(1) translateZ(0);
+    transform-origin: right center;
+    box-shadow: 0 4px 35px rgba(0, 0, 0, 0.08);
+    filter: brightness(1);
+  }
+  18% {
+    transform: rotateY(20deg) skewY(1.2deg) scale(0.99) translateZ(30px);
+    transform-origin: right center;
+    box-shadow: 15px 15px 40px rgba(0, 0, 0, 0.22);
+    filter: brightness(0.97);
+  }
+  48% {
+    transform: rotateY(68deg) skewY(2.6deg) scale(0.965) translateZ(75px);
+    transform-origin: right center;
+    box-shadow: 45px 30px 75px rgba(0, 0, 0, 0.36);
+    filter: brightness(0.91);
+  }
+  75% {
+    transform: rotateY(35deg) skewY(1.2deg) scale(0.985) translateZ(35px);
+    transform-origin: right center;
+    box-shadow: 22px 18px 45px rgba(0, 0, 0, 0.20);
+    filter: brightness(0.96);
+  }
+  92% {
+    transform: rotateY(6deg) skewY(0.3deg) scale(0.998) translateZ(10px);
+    transform-origin: right center;
+    box-shadow: 8px 6px 20px rgba(0, 0, 0, 0.12);
+    filter: brightness(0.99);
   }
   100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: rotateY(0deg) skewY(0deg) scale(1) translateZ(0);
+    transform-origin: right center;
+    box-shadow: 0 4px 35px rgba(0, 0, 0, 0.08);
+    filter: brightness(1);
   }
 }
 
 .animate-turn-forward {
-  animation: paperFadeSlideForward 0.30s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: turnPageFlipForward 0.72s cubic-bezier(0.38, 0.04, 0.2, 0.98) forwards;
+  will-change: transform, box-shadow, filter;
 }
 
 .animate-turn-backward {
-  animation: paperFadeSlideBackward 0.30s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: turnPageFlipBackward 0.72s cubic-bezier(0.38, 0.04, 0.2, 0.98) forwards;
+  will-change: transform, box-shadow, filter;
+}
+
+/* Moving Light/Spine Shadow Sweep Overlay (turn.js / FlippingBook realistic lighting) */
+@keyframes pageCurlSweepForward {
+  0% {
+    opacity: 0;
+    transform: translateX(0);
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+  25% {
+    opacity: 0.85;
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.16) 0%,
+      rgba(0, 0, 0, 0.06) 20%,
+      rgba(255, 255, 255, 0.8) 45%,
+      rgba(0, 0, 0, 0.22) 60%,
+      rgba(0, 0, 0, 0) 100%
+    );
+  }
+  50% {
+    opacity: 0.95;
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.25) 0%,
+      rgba(0, 0, 0, 0.1) 30%,
+      rgba(255, 255, 255, 0.85) 50%,
+      rgba(0, 0, 0, 0.28) 70%,
+      rgba(0, 0, 0, 0) 100%
+    );
+  }
+  75% {
+    opacity: 0.75;
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.18) 40%,
+      rgba(255, 255, 255, 0.8) 60%,
+      rgba(0, 0, 0, 0.08) 80%,
+      rgba(0, 0, 0, 0.16) 100%
+    );
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(0);
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+}
+
+.page-curl-sweep-forward {
+  animation: pageCurlSweepForward 0.72s cubic-bezier(0.38, 0.04, 0.2, 0.98) forwards;
+}
+
+.page-curl-sweep-backward {
+  animation: pageCurlSweepForward 0.72s cubic-bezier(0.38, 0.04, 0.2, 0.98) reverse forwards;
 }
 
 h1, h2, h3, h4, h5, h6, 
@@ -178,123 +242,4 @@ nav,
 button, 
 .btn {
   font-family: "Jost", "Sarala", sans-serif;
-}
-
-/* Breaking news ticker */
-.ticker-wrap {
-  width: 100%;
-  overflow: hidden;
-}
-
-.ticker-content {
-  display: inline-block;
-  white-space: nowrap;
-  animation: ticker 40s linear infinite;
-}
-
-.ticker-content:hover {
-  animation-play-state: paused;
-}
-
-@keyframes ticker {
-  0%   { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-}
-
-/* Article card hover */
-.article-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.article-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-}
-
-/* Category badge */
-.category-badge {
-  font-family: "Jost", sans-serif;
-  font-weight: 600;
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: 2px;
-}
-
-/* Section title underline */
-.section-title {
-  position: relative;
-  display: inline-block;
-}
-
-.section-title::after {
-  content: "";
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: var(--brand-orange);
-}
-
-/* Ad placeholder */
-.ad-placeholder {
-  background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
-  border: 2px dashed #ccc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #999;
-  font-family: "Jost", sans-serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #f1f1f1; }
-::-webkit-scrollbar-thumb { background: #E84A0C; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #C13A08; }
-
-/* Admin sidebar */
-.admin-sidebar-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  border-radius: 8px;
-  color: #cbd5e1;
-  transition: background 0.2s, color 0.2s;
-  font-family: "Jost", sans-serif;
-  font-weight: 500;
-}
-
-.admin-sidebar-link:hover,
-.admin-sidebar-link.active {
-  background: rgba(232, 74, 12, 0.15);
-  color: #E84A0C;
-}
-
-/* Table */
-.data-table th {
-  font-family: "Jost", sans-serif;
-  font-weight: 600;
-  font-size: 0.75rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #64748b;
-  padding: 12px 16px;
-  border-bottom: 2px solid #e2e8f0;
-}
-
-.data-table td {
-  padding: 14px 16px;
-  border-bottom: 1px solid #f1f5f9;
-  vertical-align: middle;
-}
-
-.data-table tr:hover td {
-  background: #fafafa;
 }

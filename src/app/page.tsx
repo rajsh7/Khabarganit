@@ -52,15 +52,16 @@ export default function NewspaperPage() {
     const dir = direction || (targetIndex > currentViewIndex ? "next" : "prev");
     setTurnDirection(dir);
     setTurning(true);
+    // Authentic 3D page flip: swap contents at mid-flip (360ms) while page is arched in 3D perspective
     setTimeout(() => {
       setActiveCategory(target);
-      window.scrollTo({ top: 0, behavior: "instant" });
-    }, 100);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 360);
+    // Settle flat at 720ms
     setTimeout(() => {
       setTurning(false);
-    }, 300);
+    }, 720);
   };
-
   const handleNext = () => {
     if (currentViewIndex < VIEW_SEQUENCE.length - 1) {
       transitionTo(VIEW_SEQUENCE[currentViewIndex + 1], "next");
@@ -263,12 +264,12 @@ export default function NewspaperPage() {
         </button>
       </div>
 
-      {/* ── Broadsheet Newspaper Container ── */}
-      <div className="w-full max-w-[960px] transition-all duration-300">
+      {/* ── Broadsheet Flipbook Stage (FlippingBook & turn.js 3D Perspective) ── */}
+      <div className="broadsheet-flipbook-stage w-full max-w-[960px] transition-all duration-300">
         
-        {/* ── Pure White Broadsheet Newspaper Page ── */}
+        {/* ── Pure White Broadsheet Newspaper Page with Realistic Page Flip ── */}
         <div
-          className={`w-full bg-white text-black shadow-[0_4px_35px_rgba(0,0,0,0.08)] border-2 border-black px-5 sm:px-8 md:px-12 pt-6 sm:pt-8 pb-10 transition-all duration-300 ${
+          className={`w-full bg-white text-black shadow-[0_4px_35px_rgba(0,0,0,0.08)] border-2 border-black px-5 sm:px-8 md:px-12 pt-6 sm:pt-8 pb-10 relative overflow-hidden transition-all duration-300 ${
             turning
               ? turnDirection === "next"
                 ? "animate-turn-forward"
@@ -276,7 +277,16 @@ export default function NewspaperPage() {
               : ""
           }`}
         >
-
+          {/* Dynamic Paper Curl & Spine Shadow Lighting Sweep (turn.js / FlippingBook realistic lighting) */}
+          {turning && (
+            <div
+              className={`absolute inset-0 pointer-events-none z-40 ${
+                turnDirection === "next"
+                  ? "page-curl-sweep-forward"
+                  : "page-curl-sweep-backward"
+              }`}
+            />
+          )}
           {/* ── Top Strip: Date pinned to far left, Social Icons in Center, Google Translate pinned to far right. NOTHING ELSE. ── */}
           <div className="flex items-center justify-between w-full text-[10px] sm:text-xs font-serif font-bold uppercase tracking-[0.16em] text-stone-900 pb-2 select-none">
             <span className="font-bold tracking-[0.16em] shrink-0 whitespace-nowrap">

@@ -2,23 +2,23 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "खबरगणित — हर ख़बर की कहानी, आँकड़ों की ज़ुबानी",
-  description: "खबरगणित — भारत का प्रमुख डेटा-संचालित समाचार पोर्टल। हर ख़बर की कहानी, आँकड़ों की ज़ुबानी।",
-  keywords: "खबर, समाचार, न्यूज़, हिंदी न्यूज़, भारत, राजनीति, खेल, व्यापार, खबरगणित",
+  title: "ख़बरगणित | हर ख़बर की कहानी, आँकड़ों की जुबानी",
+  description: "ख़बरगणित — भारत का प्रमुख डेटा-संचालित समाचार पोर्टल। हर ख़बर की कहानी, आँकड़ों की जुबानी।",
+  keywords: "ख़बरगणित, खबरगणित, समाचार, न्यूज़, हिंदी न्यूज़, भारत, राजनीति, खेल, व्यापार, KhabarGanit",
   icons: {
     icon: [
-      { url: "/favicon.png?v=6", type: "image/png" },
-      { url: "/icon.png?v=6", type: "image/png" },
-      { url: "/favicon.ico?v=6", sizes: "any" },
+      { url: "/favicon.png?v=7", type: "image/png" },
+      { url: "/icon.png?v=7", type: "image/png" },
+      { url: "/favicon.ico?v=7", sizes: "any" },
     ],
-    shortcut: "/favicon.ico?v=6",
+    shortcut: "/favicon.ico?v=7",
     apple: [
-      { url: "/apple-touch-icon.png?v=6", sizes: "180x180", type: "image/png" },
-      { url: "/apple-icon.png?v=6", sizes: "180x180", type: "image/png" },
+      { url: "/apple-touch-icon.png?v=7", sizes: "180x180", type: "image/png" },
+      { url: "/apple-icon.png?v=7", sizes: "180x180", type: "image/png" },
     ],
   },
   openGraph: {
-    siteName: "खबरगणित",
+    siteName: "ख़बरगणित",
     type: "website",
     locale: "hi_IN",
   },
@@ -32,10 +32,10 @@ export default function RootLayout({
   return (
     <html lang="hi" dir="ltr">
       <head>
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=6" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png?v=6" />
-        <link rel="icon" href="/favicon.ico?v=6" sizes="any" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=6" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=7" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png?v=7" />
+        <link rel="icon" href="/favicon.ico?v=7" sizes="any" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=7" />
         {/* Flaticon UIcons CDN for interface icons */}
         <link
           rel="stylesheet"

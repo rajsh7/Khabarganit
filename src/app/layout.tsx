@@ -4,15 +4,17 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.khabarganit.com"),
   title: {
-    default: "ख़बरगणित | हर ख़बर की कहानी, आँकड़ों की जुबानी",
-    template: "%s | ख़बरगणित",
+    default: "KhabarGanit.com | हर ख़बर की कहानी, आँकड़ों की जुबानी",
+    template: "%s | KhabarGanit.com",
   },
   description:
-    "ख़बरगणित (KhabarGanit) — भारत का प्रमुख डेटा-संचालित राष्ट्रीय और अंतर्राष्ट्रीय समाचार पोर्टल। हर ख़बर की कहानी, आँकड़ों की जुबानी। ब्रेकिंग न्यूज़, राजनीति, व्यापार, तकनीक और खेल।",
+    "KhabarGanit.com (ख़बरगणित) — भारत का प्रमुख डेटा-संचालित राष्ट्रीय और अंतर्राष्ट्रीय समाचार पोर्टल। हर ख़बर की कहानी, आँकड़ों की जुबानी। ताज़ा राष्ट्रीय एवं अंतर्राष्ट्रीय समाचार, राजनीति, खेल, व्यापार और तकनीक।",
   keywords: [
+    "KhabarGanit.com",
+    "KhabarGanit",
+    "Khabar Ganit",
     "ख़बरगणित",
     "खबरगणित",
-    "KhabarGanit",
     "khabarganit.com",
     "समाचार",
     "हिंदी समाचार",
@@ -26,10 +28,10 @@ export const metadata: Metadata = {
     "खेल",
     "Breaking News Hindi",
   ],
-  authors: [{ name: "KhabarGanit Editorial Board", url: "https://www.khabarganit.com" }],
-  creator: "KhabarGanit",
-  publisher: "ख़बरगणित",
-  applicationName: "ख़बरगणित",
+  authors: [{ name: "KhabarGanit.com Editorial Board", url: "https://www.khabarganit.com" }],
+  creator: "KhabarGanit.com",
+  publisher: "KhabarGanit.com",
+  applicationName: "KhabarGanit.com",
   alternates: {
     canonical: "https://www.khabarganit.com",
   },
@@ -59,11 +61,11 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: "ख़बरगणित | हर ख़बर की कहानी, आँकड़ों की जुबानी",
+    title: "KhabarGanit.com | हर ख़बर की कहानी, आँकड़ों की जुबानी",
     description:
-      "ख़बरगणित (KhabarGanit) — भारत का प्रमुख डेटा-संचालित समाचार पोर्टल। हर ख़बर की कहानी, आँकड़ों की जुबानी।",
+      "KhabarGanit.com (ख़बरगणित) — भारत का प्रमुख डेटा-संचालित समाचार पोर्टल। हर ख़बर की कहानी, आँकड़ों की जुबानी।",
     url: "https://www.khabarganit.com",
-    siteName: "ख़बरगणित",
+    siteName: "KhabarGanit.com",
     locale: "hi_IN",
     type: "website",
     images: [
@@ -71,15 +73,15 @@ export const metadata: Metadata = {
         url: "https://www.khabarganit.com/logo.png",
         width: 1200,
         height: 630,
-        alt: "ख़बरगणित - हर ख़बर की कहानी, आँकड़ों की जुबानी",
+        alt: "KhabarGanit.com - हर ख़बर की कहानी, आँकड़ों की जुबानी",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ख़बरगणित | हर ख़बर की कहानी, आँकड़ों की जुबानी",
+    title: "KhabarGanit.com | हर ख़बर की कहानी, आँकड़ों की जुबानी",
     description:
-      "ख़बरगणित (KhabarGanit) — भारत का प्रमुख डेटा-संचालित समाचार पोर्टल। हर ख़बर की कहानी, आँकड़ों की जुबानी।",
+      "KhabarGanit.com (ख़बरगणित) — भारत का प्रमुख डेटा-संचालित समाचार पोर्टल। हर ख़बर की कहानी, आँकड़ों की जुबानी।",
     site: "@khabarGanit",
     creator: "@khabarGanit",
     images: ["https://www.khabarganit.com/logo.png"],
@@ -92,13 +94,13 @@ const jsonLd = {
     {
       "@type": "NewsMediaOrganization",
       "@id": "https://www.khabarganit.com/#organization",
-      "name": "ख़बरगणित",
-      "alternateName": ["KhabarGanit", "Khabar Ganit", "KhabarGanit.com", "खबरगणित"],
+      "name": "KhabarGanit.com",
+      "alternateName": ["KhabarGanit", "Khabar Ganit", "ख़बरगणित", "खबरगणित"],
       "url": "https://www.khabarganit.com",
       "logo": {
         "@type": "ImageObject",
         "url": "https://www.khabarganit.com/logo.png",
-        "caption": "ख़बरगणित — हर ख़बर की कहानी, आँकड़ों की जुबानी",
+        "caption": "KhabarGanit.com — हर ख़बर की कहानी, आँकड़ों की जुबानी",
         "width": 1200,
         "height": 630
       },
@@ -115,8 +117,8 @@ const jsonLd = {
       "@type": "WebSite",
       "@id": "https://www.khabarganit.com/#website",
       "url": "https://www.khabarganit.com",
-      "name": "ख़बरगणित",
-      "alternateName": "KhabarGanit",
+      "name": "KhabarGanit.com",
+      "alternateName": ["KhabarGanit", "ख़बरगणित", "खबरगणित"],
       "description": "भारत का प्रमुख डेटा-संचालित राष्ट्रीय और अंतर्राष्ट्रीय समाचार पोर्टल। हर ख़बर की कहानी, आँकड़ों की जुबानी।",
       "publisher": { "@id": "https://www.khabarganit.com/#organization" },
       "inLanguage": "hi-IN"

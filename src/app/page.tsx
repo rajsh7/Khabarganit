@@ -5,44 +5,74 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Bookmark, ArrowUpRight } from "lucide-react";
 import GoogleTranslate from "@/components/GoogleTranslate";
 import ArticleModal, { ArticleModalData } from "@/components/ArticleModal";
-import { SECTION_PAGES, SectionPageData } from "@/data/newspaperData";
+import { TRENDING_PAGE, SECTION_PAGES, SectionPageData } from "@/data/newspaperData";
+
+type CategoryKey = "WORLD" | "INDIA" | "BUSINESS" | "TECH" | "SPORTS" | "POLITICS" | "ENTERTAINMENT";
+
+const CATEGORIES: Array<{ key: CategoryKey; label: string }> = [
+  { key: "WORLD", label: "WORLD" },
+  { key: "INDIA", label: "INDIA" },
+  { key: "BUSINESS", label: "BUSINESS" },
+  { key: "TECH", label: "TECH" },
+  { key: "SPORTS", label: "SPORTS" },
+  { key: "POLITICS", label: "POLITICS" },
+  { key: "ENTERTAINMENT", label: "ENTERTAINMENT" },
+];
+
+// Ordered list of views: null = Trending Front Page, followed by the 7 categories
+const VIEW_SEQUENCE: Array<CategoryKey | null> = [
+  null,
+  "WORLD",
+  "INDIA",
+  "BUSINESS",
+  "TECH",
+  "SPORTS",
+  "POLITICS",
+  "ENTERTAINMENT",
+];
 
 export default function NewspaperPage() {
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  // activeCategory is null by default: user sees "Trending News all over the world" first
+  const [activeCategory, setActiveCategory] = useState<CategoryKey | null>(null);
   const [turning, setTurning] = useState(false);
   const [turnDirection, setTurnDirection] = useState<"next" | "prev">("next");
   const [selectedArticle, setSelectedArticle] = useState<ArticleModalData | null>(null);
 
-  const activePage: SectionPageData =
-    SECTION_PAGES.find((p) => p.pageNumber === currentPage) || SECTION_PAGES[0];
+  // Active broadsheet data: Trending page when activeCategory is null, or category page
+  const activePage: SectionPageData = activeCategory
+    ? SECTION_PAGES.find((p) => p.sectionKey === activeCategory) || TRENDING_PAGE
+    : TRENDING_PAGE;
 
-  const goToPage = (page: number, direction?: "next" | "prev") => {
-    if (page === currentPage || turning || page < 1 || page > SECTION_PAGES.length) return;
-    const dir = direction || (page > currentPage ? "next" : "prev");
+  const currentViewIndex = VIEW_SEQUENCE.indexOf(activeCategory);
+
+  const transitionTo = (target: CategoryKey | null, direction?: "next" | "prev") => {
+    if (turning || target === activeCategory) return;
+    const targetIndex = VIEW_SEQUENCE.indexOf(target);
+    const dir = direction || (targetIndex > currentViewIndex ? "next" : "prev");
     setTurnDirection(dir);
     setTurning(true);
     setTimeout(() => {
-      setCurrentPage(page);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }, 1100);
+      setActiveCategory(target);
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }, 100);
     setTimeout(() => {
       setTurning(false);
-    }, 2200);
+    }, 300);
   };
 
   const handleNext = () => {
-    if (currentPage < SECTION_PAGES.length) {
-      goToPage(currentPage + 1, "next");
+    if (currentViewIndex < VIEW_SEQUENCE.length - 1) {
+      transitionTo(VIEW_SEQUENCE[currentViewIndex + 1], "next");
     }
   };
 
   const handlePrev = () => {
-    if (currentPage > 1) {
-      goToPage(currentPage - 1, "prev");
+    if (currentViewIndex > 0) {
+      transitionTo(VIEW_SEQUENCE[currentViewIndex - 1], "prev");
     }
   };
 
-  // Keyboard navigation for page flip
+  // Keyboard arrow navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (selectedArticle) return; // Ignore page turns if modal is open
@@ -51,40 +81,30 @@ export default function NewspaperPage() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentPage, turning, selectedArticle]);
-
-  // Section Navigation Order: World, India, Business, Tech, Sports, Politics, Entertainment
-  const navItems = [
-    { label: "WORLD", targetPage: 2 },
-    { label: "INDIA", targetPage: 1 },
-    { label: "BUSINESS", targetPage: 3 },
-    { label: "TECH", targetPage: 4 },
-    { label: "SPORTS", targetPage: 5 },
-    { label: "POLITICS", targetPage: 6 },
-    { label: "ENTERTAINMENT", targetPage: 7 },
-  ];
+  }, [currentViewIndex, turning, selectedArticle]);
 
   // Helper to open full article in modal
   const openArticle = (data: ArticleModalData) => {
     setSelectedArticle(data);
   };
 
-  // Reusable Section Navigation (Identical for each page, no forced highlight on India)
+  // Reusable Section Navigation (WORLD · INDIA · BUSINESS · TECH · SPORTS · POLITICS · ENTERTAINMENT)
+  // No "TRENDING" category button: Trending is the default landing view.
   const renderNavbar = () => (
     <>
       <div className="w-full h-[2.5px] bg-black my-2" />
       <nav className="w-full py-2.5 flex items-center justify-center select-none">
         <ul className="flex items-center justify-center flex-wrap gap-3.5 sm:gap-5 md:gap-8 text-[11px] sm:text-xs font-sans font-bold uppercase tracking-[0.2em] text-stone-900 leading-none">
-          {navItems.map((item) => {
-            const isCurrent = currentPage === item.targetPage;
+          {CATEGORIES.map((item) => {
+            const isCurrent = activeCategory === item.key;
             return (
-              <li key={item.label}>
+              <li key={item.key}>
                 <button
-                  onClick={() => goToPage(item.targetPage)}
+                  onClick={() => transitionTo(item.key)}
                   className={`hover:text-[#C13A08] transition-colors tracking-[0.2em] cursor-pointer py-1 ${
-                    isCurrent ? "border-b-2 border-black" : ""
+                    isCurrent ? "border-b-2 border-black text-[#C13A08]" : ""
                   }`}
-                  title={`Go to ${item.label} Edition (Page ${item.targetPage})`}
+                  title={`View ${item.label} News`}
                 >
                   {item.label}
                 </button>
@@ -156,21 +176,23 @@ export default function NewspaperPage() {
       {/* ── Article Reading Modal (Click any news to read full article) ── */}
       <ArticleModal article={selectedArticle} onClose={() => setSelectedArticle(null)} />
 
-      {/* ── Fixed Navigation Controls: Previous on Left Side, Next on Right Side ── */}
+      {/* ── Navigation Controls: Previous on Left Side, Next on Right Side ── */}
       {/* Left Side: Previous Button */}
       <div className="fixed left-4 sm:left-8 bottom-6 sm:bottom-8 z-50">
         <button
           onClick={handlePrev}
-          disabled={currentPage === 1 || turning}
+          disabled={currentViewIndex === 0 || turning}
           className={`flex items-center gap-2 bg-white text-stone-900 px-4 sm:px-5 py-2.5 rounded-full shadow-[0_6px_25px_rgba(0,0,0,0.15)] border-2 border-black font-serif font-bold text-xs uppercase tracking-wider transition-all duration-300 ${
-            currentPage === 1
+            currentViewIndex === 0
               ? "opacity-30 cursor-not-allowed"
               : "hover:bg-black hover:text-white hover:scale-105 active:scale-95 cursor-pointer"
           }`}
-          title="Previous Page (Left Arrow)"
+          title="Previous Section (Left Arrow)"
         >
           <ChevronLeft size={16} />
-          <span className="hidden sm:inline">Previous Page</span>
+          <span className="hidden sm:inline">
+            {currentViewIndex === 1 ? "Trending" : "Previous"}
+          </span>
           <span className="sm:hidden">Prev</span>
         </button>
       </div>
@@ -179,22 +201,22 @@ export default function NewspaperPage() {
       <div className="fixed right-4 sm:right-8 bottom-6 sm:bottom-8 z-50">
         <button
           onClick={handleNext}
-          disabled={currentPage === SECTION_PAGES.length || turning}
+          disabled={currentViewIndex === VIEW_SEQUENCE.length - 1 || turning}
           className={`flex items-center gap-2 bg-white text-stone-900 px-4 sm:px-5 py-2.5 rounded-full shadow-[0_6px_25px_rgba(0,0,0,0.15)] border-2 border-black font-serif font-bold text-xs uppercase tracking-wider transition-all duration-300 ${
-            currentPage === SECTION_PAGES.length
+            currentViewIndex === VIEW_SEQUENCE.length - 1
               ? "opacity-30 cursor-not-allowed"
               : "hover:bg-black hover:text-white hover:scale-105 active:scale-95 cursor-pointer"
           }`}
-          title="Next Page (Right Arrow)"
+          title="Next Section (Right Arrow)"
         >
-          <span className="hidden sm:inline">Next Page</span>
+          <span className="hidden sm:inline">Next Section</span>
           <span className="sm:hidden">Next</span>
           <ChevronRight size={16} />
         </button>
       </div>
 
-      {/* ── Perspective 3D Newspaper Container ── */}
-      <div className="perspective-container w-full max-w-[960px] transition-all duration-500">
+      {/* ── Broadsheet Newspaper Container ── */}
+      <div className="w-full max-w-[960px] transition-all duration-300">
         
         {/* ── Pure White Broadsheet Newspaper Page ── */}
         <div
@@ -207,10 +229,10 @@ export default function NewspaperPage() {
           }`}
         >
 
-          {/* ── Top Strip: Date/Edition pinned to far left, Social Icons in Center, Google Translate pinned to far right ── */}
+          {/* ── Top Strip: Date pinned to far left, Social Icons in Center, Google Translate pinned to far right. NOTHING ELSE. ── */}
           <div className="flex items-center justify-between w-full text-[10px] sm:text-xs font-serif font-bold uppercase tracking-[0.16em] text-stone-900 pb-2 select-none">
             <span className="font-bold tracking-[0.16em] shrink-0 whitespace-nowrap">
-              {activePage.topStripLabel}
+              THURSDAY, 29 OCTOBER 2026
             </span>
 
             {/* Social Media Header Icons */}
@@ -261,9 +283,13 @@ export default function NewspaperPage() {
           {/* Thick Rule below top strip */}
           <div className="w-full h-[2.5px] bg-black mb-1.5 sm:mb-2" />
 
-          {/* ── Masthead: KhabarGanit in large Playfair Display serif ── */}
+          {/* ── Masthead: KhabarGanit in large Playfair Display serif (Click to go to Trending) ── */}
           <header className="text-center py-1 sm:py-2 select-none">
-            <h1 className="font-playfair font-black text-6xl sm:text-7xl md:text-8xl tracking-tight text-black leading-none">
+            <h1
+              onClick={() => transitionTo(null, "prev")}
+              className="font-playfair font-black text-6xl sm:text-7xl md:text-8xl tracking-tight text-black leading-none cursor-pointer hover:opacity-90 transition-opacity"
+              title="Click to return to Trending News all over the world"
+            >
               KhabarGanit
             </h1>
             <p className="font-serif italic text-xs sm:text-sm text-stone-600 tracking-wide mt-1">
@@ -271,7 +297,7 @@ export default function NewspaperPage() {
             </p>
           </header>
 
-          {/* Navbar (Same for each page) */}
+          {/* Navbar (WORLD · INDIA · BUSINESS · TECH · SPORTS · POLITICS · ENTERTAINMENT) */}
           {renderNavbar()}
 
           {/* ════════════════════════════════════════════════════════════════

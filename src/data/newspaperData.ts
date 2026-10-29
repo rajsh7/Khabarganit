@@ -39,7 +39,7 @@ export interface EditorialArticle {
 
 export interface SectionPageData {
   pageNumber: number;
-  sectionKey: "WORLD" | "INDIA" | "BUSINESS" | "TECH" | "SPORTS" | "POLITICS" | "ENTERTAINMENT";
+  sectionKey: "TRENDING" | "WORLD" | "INDIA" | "BUSINESS" | "TECH" | "SPORTS" | "POLITICS" | "ENTERTAINMENT";
   sectionTitle: string;
   editionSubtitle: string;
   topStripLabel: string;
@@ -59,6 +59,181 @@ export interface SectionPageData {
     sideArticles: [EditorialArticle, EditorialArticle, EditorialArticle];
   };
 }
+
+// ═══════════════════════════════════════════════════════════════════
+// DEFAULT / LANDING: TRENDING NEWS ALL OVER THE WORLD
+// (Shown first when user arrives at KhabarGanit; no category tab)
+// ═══════════════════════════════════════════════════════════════════
+export const TRENDING_PAGE: SectionPageData = {
+  pageNumber: 0,
+  sectionKey: "TRENDING",
+  sectionTitle: "TRENDING NEWS ALL OVER THE WORLD",
+  editionSubtitle: "GLOBAL & NATIONAL BROADSHEET · TRENDING HEADLINES",
+  topStripLabel: "THURSDAY, 29 OCTOBER 2026",
+  leadStory: {
+    kicker: "GLOBAL & NATIONAL BREAKING BULLETIN",
+    headline: "PM MODI CONCLUDES ESTIC 2026; CYCLONE ARNAB BATTERS EASTERN COAST AS SPAIN RAIL CRASH CLAIMS 64",
+    subhead: "High-level deep-tech mandates delivered in New Delhi, while severe cyclonic storm triggers massive evacuations across Andhra Pradesh and Odisha, and international rescue teams probe Andalusia rail catastrophe.",
+    image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80",
+    imageAlt: "Global diplomatic and scientific deliberations in New Delhi alongside international breaking developments",
+    caption: "Prime Minister Narendra Modi, Union Ministers, and distinguished scientific delegates during the concluding sessions of ESTIC 2026 at Bharat Mandapam, New Delhi, as emergency response and diplomatic operations unfold internationally on Thursday. (Photo: PIB / International Wire Services)",
+    col1: [
+      "NEW DELHI & GLOBAL BUREAUS — In a day marked by monumental scientific mandates and urgent humanitarian operations across continents, Prime Minister Narendra Modi concluded the Emerging Science, Technology and Innovation Conclave (ESTIC 2026) at Bharat Mandapam, instructing research institutions and global deep-tech partners to deliver measurable 'lab to land' breakthroughs within a strict three-year timeline.",
+      "Simultaneously on the eastern seaboard of India, Severe Cyclonic Storm 'Cyclone Arnab' completed landfall along the northern Andhra Pradesh and southern Odisha coastline, driving ferocious 110 km/h wind gusts and unprecedented torrential rainfall.",
+      "Disaster management authorities mobilized 45 NDRF and ODRAF columns across 17 sensitive coastal districts, executing the pre-emptive evacuation of more than 1.2 lakh residents into concrete cyclone shelters."
+    ],
+    col2: [
+      "GLOBAL DISPATCHES — Internationally, European transport authorities declared an indefinite state of national mourning following a horrific collision between two high-speed trains in Andalusia, Spain, which has claimed between 39 and 64 lives. Preliminary telemetric inquiries point toward signaling failure and human error.",
+      "In the Middle East, the Knesset political race reached boiling point as Prime Minister Benjamin Netanyahu and rival Gadi Eisenkot locked into a virtual tie, with coalition negotiations deadlocked amid fresh Pentagon disclosures revealing over $47 billion in regional conflict spending.",
+      "Meanwhile, diplomatic corridors in New Delhi confirmed an official protocol invitation to Pakistan for the Shanghai Cooperation Organisation (SCO) summit, signaling crucial geopolitical movements."
+    ]
+  },
+  sideStories: [
+    {
+      kicker: "SPAIN RAILWAY DISASTER",
+      headline: "AT LEAST 64 REPORTED KILLED IN TWO HIGH-SPEED TRAINS COLLISION",
+      summary: "Preliminary technical investigations indicate signaling malfunction and human protocol breakdown during morning peak operations in southern Spain."
+    },
+    {
+      kicker: "MIDDLE EAST & WASHINGTON",
+      headline: "PENTAGON REPORT REVEALS $47 BILLION IN REGIONAL WAR SPENDING",
+      summary: "Declassified fiscal disclosures outline massive maritime defensive operations as Israeli election deadlocks intensify between Netanyahu and Eisenkot."
+    },
+    {
+      kicker: "CYCLONE ARNAB RELIEF",
+      headline: "MASSIVE 17-DISTRICT EVACUATIONS AS CYCLONE ARNAB MAKES LANDFALL",
+      summary: "Disaster response battalions deployed across Andhra Pradesh and Odisha coastline; schools shut and 85 train services suspended to protect civilian life."
+    }
+  ],
+  topStories: [
+    {
+      kicker: "DIPLOMACY · SCO SUMMIT",
+      headline: "INDIA OFFICIALLY INVITES PAKISTAN TO SHANGHAI COOPERATION CONCLAVE",
+      summary: "External Affairs Ministry transmits formal protocol invitation to Islamabad for New Delhi summit.",
+      author: "Diplomatic Bureau",
+      location: "New Delhi"
+    },
+    {
+      kicker: "CENTRAL GOVT · 3% DA HIKE",
+      headline: "UNION CABINET FORMALIZES 3% DEARNESS ALLOWANCE HIKE AHEAD OF DIWALI",
+      summary: "Over 1.15 crore central government employees and pensioners set to receive revised pay allowances retrospective from July 1.",
+      author: "Economic Bureau",
+      location: "New Delhi"
+    },
+    {
+      kicker: "MARKETS & TECH",
+      headline: "SENSEX AT RECORD PEAK AS GLOBAL AI CAPEX EXCEEDS $200 BILLION",
+      summary: "Indian benchmarks surge led by institutional technology inflows, tracking unprecedented frontier AI infrastructure spending worldwide.",
+      author: "Markets Desk",
+      location: "Mumbai"
+    },
+    {
+      kicker: "CRICKET & SPORTS",
+      headline: "ICC CHAMPIONS TROPHY HYBRID MODEL SECURES BROADCAST ACCORD",
+      summary: "Dubai and Lahore host-sharing arrangements finalized after marathon deliberations by international cricket administration.",
+      author: "Sports Desk",
+      location: "Dubai"
+    }
+  ],
+  digestTitle: "TOP 10 TRENDING NEWS ALL OVER THE WORLD",
+  digestItems: [
+    {
+      number: 1,
+      category: "DISASTER RELIEF",
+      headline: "Cyclone Arnab Hits Eastern India; Andhra & Odisha Coast Flooded",
+      summary: "Severe cyclonic storm Arnab made landfall on Andhra coast, causing at least 5 deaths, extensive flooding, and triggering mass evacuations across 17 districts."
+    },
+    {
+      number: 2,
+      category: "EUROPE RAILWAY",
+      headline: "Two High-Speed Trains Collide in Spain; 64 Fatalities Reported",
+      summary: "Devastating collision in southern Spain leads to international inquiries as preliminary technical logs indicate signaling failure and human error."
+    },
+    {
+      number: 3,
+      category: "MIDDLE EAST ELECTIONS",
+      headline: "Netanyahu and Eisenkot Tied in Tightly Contested Israeli Polls",
+      summary: "Neck-and-neck parliamentary election race triggers political deadlock with coalition partners and Arab parties holding pivotal leverage."
+    },
+    {
+      number: 4,
+      category: "PENTAGON REPORT",
+      headline: "U.S. Conflict Spending on Iran Operations Tops $47 Billion",
+      summary: "Declassified Pentagon accounting figures reveal extensive maritime deployments and regional interceptor expenditure over twelve months."
+    },
+    {
+      number: 5,
+      category: "UNION CABINET",
+      headline: "Centre Approves 3% Dearness Allowance Hike Ahead of Festive Season",
+      summary: "Union Cabinet approves 3% DA/DR hike benefiting 1.15 crore central government employees and pensioners, effective retrospective to July 1."
+    },
+    {
+      number: 6,
+      category: "REGIONAL DIPLOMACY",
+      headline: "India Formally Invites Pakistan to SCO Leaders Meeting in New Delhi",
+      summary: "Ministry of External Affairs transmits official protocol invitation to Islamabad for the upcoming Shanghai Cooperation Organisation conclave."
+    },
+    {
+      number: 7,
+      category: "SUPREME COURT",
+      headline: "Apex Court Rules Election Commission Cannot Alter Forms 6, 7 & 8",
+      summary: "Bench affirms statutory sanctity of voter registration and deletion procedures following scrutiny over mass roll revisions."
+    },
+    {
+      number: 8,
+      category: "GLOBAL MARKETS",
+      headline: "Sensex Crosses Historic High Driven by Deep-Tech & Foreign Inflows",
+      summary: "Indian equity benchmarks maintain bullish trajectory as international tech earnings and semiconductor investments boost sentiment."
+    },
+    {
+      number: 9,
+      category: "NATIONAL SCIENCE",
+      headline: "PM Modi Closes ESTIC 2026; Sets 3-Year Deep-Tech Delivery Window",
+      summary: "Prime Minister directs 5,000 scientists and Nobel laureates to transition patents into industrial products across 12 strategic sectors."
+    },
+    {
+      number: 10,
+      category: "GLOBAL CRICKET",
+      headline: "Champions Trophy Hybrid Model Approved with Dubai as Co-Host",
+      summary: "International Cricket Council finalizes venue-sharing framework between Pakistan and UAE for 2025 marquee tournament."
+    }
+  ],
+  editorial: {
+    kicker: "GLOBAL PERSPECTIVES & DATA ESSAY",
+    headline: "THE GLOBAL CROSSROADS: MULTILATERAL DIPLOMACY, CLIMATE FRONTIERS, AND ECONOMIC REALISM",
+    subhead: "As geopolitical flashpoints test multilateral alliances and extreme atmospheric phenomena challenge regional infrastructure, sovereign nations must balance domestic economic security with strategic international cooperation.",
+    col1: [
+      "The confluence of events commanding global attention on Thursday underscores the precarious equilibrium of contemporary international relations. From the disaster command centers in Odisha managing the fallout of Cyclone Arnab to the railway investigations underway in Spain, modern statecraft is increasingly defined by its capacity to absorb catastrophic shocks while maintaining institutional cohesion.",
+      "In New Delhi, the culmination of ESTIC 2026 provides a contrasting yet complementary template. Prime Minister Modi’s insistence on a three-year 'lab to land' delivery cycle reflects a broader global pivot: scientific research can no longer afford to remain an insular academic pursuit. In an era where technological supremacy in quantum computing, semiconductors, and bio-manufacturing determines geopolitical leverage, speed of execution is the definitive sovereign currency."
+    ],
+    col2: [
+      "Simultaneously, the diplomatic overture extending an SCO summit invitation to Pakistan illustrates the pragmatic endurance of multilateral forums even amidst protracted bilateral friction. When regional security, supply-chain corridors, and counter-terrorism protocols are at stake, structured engagement remains the only viable mechanism for conflict mitigation.",
+      "As citizens and policymakers navigate these interconnected tides, the data points to an inescapable conclusion: neither technological isolationism nor defensive complacency offers enduring security. The nations that navigate the coming decade will be those that anchor their domestic economies with disciplined fiscal foresight while engaging the global order with confidence and measured resolve."
+    ],
+    author: "Editorial Board",
+    bureau: "New Delhi & Global Bureaus",
+    sideArticles: [
+      {
+        kicker: "CLIMATE RESILIENCE",
+        headline: "WHY EARLY WARNING SHIELDS SAVED LIVES DURING CYCLONE ARNAB",
+        summary: "Doppler radar networks and automated evacuation protocols prevented catastrophic mortality along the Bay of Bengal coastline.",
+        byline: "Special Correspondent · Bhubaneswar"
+      },
+      {
+        kicker: "INFRASTRUCTURE AUDIT",
+        headline: "HIGH-SPEED RAILWAY SAFETY PROTOCOLS UNDER GLOBAL SCRUTINY",
+        summary: "The Andalusia collision prompts transport ministries worldwide to re-examine automated train protection (ATP) redundancies.",
+        byline: "European Transport Desk · Madrid"
+      },
+      {
+        kicker: "FISCAL STATECRAFT",
+        headline: "CALCULATING THE DEFICIT COST OF ESCALATING REGIONAL WARS",
+        summary: "With Pentagon spending exceeding $47 billion, sovereign bond markets begin pricing in long-term structural inflation risks.",
+        byline: "Global Economics Editor · Washington"
+      }
+    ]
+  }
+};
 
 export const SECTION_PAGES: SectionPageData[] = [
   // ═══════════════════════════════════════════════════════════════════
@@ -193,7 +368,7 @@ export const SECTION_PAGES: SectionPageData[] = [
     sectionKey: "WORLD",
     sectionTitle: "WORLD DISPATCHES",
     editionSubtitle: "INTERNATIONAL WIRE & GEOPOLITICS · GLOBAL BUREAU",
-    topStripLabel: "PAGE 2 · WORLD DISPATCHES · THURSDAY, 29 OCTOBER 2026",
+    topStripLabel: "THURSDAY, 29 OCTOBER 2026",
     leadStory: {
       kicker: "DISASTER & INVESTIGATION · EUROPEAN RAILWAYS",
       headline: "AT LEAST 39 KILLED AFTER HIGH-SPEED PASSENGER TRAINS COLLIDE IN SPAIN",
@@ -317,7 +492,7 @@ export const SECTION_PAGES: SectionPageData[] = [
     sectionKey: "BUSINESS",
     sectionTitle: "BUSINESS & MARKETS",
     editionSubtitle: "DALAL STREET FINANCIAL CHRONICLE · CORPORATE INDIA",
-    topStripLabel: "PAGE 3 · BUSINESS & FINANCE · THURSDAY, 29 OCTOBER 2026",
+    topStripLabel: "THURSDAY, 29 OCTOBER 2026",
     leadStory: {
       kicker: "BLOCKBUSTER DEBUT · DALAL STREET HISTORY",
       headline: "JIO PLATFORMS LISTS AT 27% PREMIUM; BECOMES INDIA’S 2ND MOST VALUED FIRM AT ₹13 LAKH CR",
@@ -441,7 +616,7 @@ export const SECTION_PAGES: SectionPageData[] = [
     sectionKey: "TECH",
     sectionTitle: "TECH & INNOVATION",
     editionSubtitle: "FRONTIER COMPUTING, ARTIFICIAL INTELLIGENCE & SILICON",
-    topStripLabel: "PAGE 4 · TECH & INNOVATION · THURSDAY, 29 OCTOBER 2026",
+    topStripLabel: "THURSDAY, 29 OCTOBER 2026",
     leadStory: {
       kicker: "HARDWARE REVOLUTION · CUPERTINO DEBUT",
       headline: "APPLE UNVEILS FIRST-EVER TOUCHSCREEN MACBOOK PRO POWERED BY M6 CHIPS",
@@ -565,7 +740,7 @@ export const SECTION_PAGES: SectionPageData[] = [
     sectionKey: "SPORTS",
     sectionTitle: "SPORTS ARENA",
     editionSubtitle: "NATIONAL & INTERNATIONAL CHAMPIONSHIPS · STADIUM DISPATCH",
-    topStripLabel: "PAGE 5 · SPORTS ARENA · THURSDAY, 29 OCTOBER 2026",
+    topStripLabel: "THURSDAY, 29 OCTOBER 2026",
     leadStory: {
       kicker: "IN MEMORIAM · INDIAN PARA-ATHLETICS",
       headline: "THREE-TIME ASIAN PARA GAMES GOLD MEDALIST NEERAJ YADAV PASSES AWAY AT 42",
@@ -689,7 +864,7 @@ export const SECTION_PAGES: SectionPageData[] = [
     sectionKey: "POLITICS",
     sectionTitle: "POLITICS & GOVERNANCE",
     editionSubtitle: "NATIONAL POLITICAL CHRONICLE · ELECTIONS, PARLIAMENT & STATE POLITY",
-    topStripLabel: "PAGE 6 · POLITICS & GOVERNANCE · THURSDAY, 29 OCTOBER 2026",
+    topStripLabel: "THURSDAY, 29 OCTOBER 2026",
     leadStory: {
       kicker: "CONSTITUTIONAL LAW & ELECTORAL INTEGRITY",
       headline: "SUPREME COURT REBUKES ELECTION COMMISSION ON VOTER FORMS; 64.5 LAKH MISSING VOTERS SPARKS POLITICAL STORM",
@@ -813,7 +988,7 @@ export const SECTION_PAGES: SectionPageData[] = [
     sectionKey: "ENTERTAINMENT",
     sectionTitle: "ENTERTAINMENT & ARTS",
     editionSubtitle: "CINEMA, CULTURE, BOX OFFICE & CELEBRITY CHRONICLE",
-    topStripLabel: "PAGE 7 · ENTERTAINMENT & ARTS · THURSDAY, 29 OCTOBER 2026",
+    topStripLabel: "THURSDAY, 29 OCTOBER 2026",
     leadStory: {
       kicker: "DIWALI BLOCKBUSTER TEASER · MARVEL CINEMATIC UNIVERSE",
       headline: "AVENGERS: DOOMSDAY REVEALS SPECIAL DIWALI SURPRISE FOR INDIAN MARVEL FANS",

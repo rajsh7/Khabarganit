@@ -34,6 +34,7 @@ const VIEW_SEQUENCE: Array<CategoryKey | null> = [
 export default function NewspaperPage() {
   // activeCategory is null by default: user sees "Trending News all over the world" first
   const [activeCategory, setActiveCategory] = useState<CategoryKey | null>(null);
+  const [isHindi, setIsHindi] = useState<boolean>(false);
   const [turning, setTurning] = useState(false);
   const [turnDirection, setTurnDirection] = useState<"next" | "prev">("next");
   const [selectedArticle, setSelectedArticle] = useState<ArticleModalData | null>(null);
@@ -82,6 +83,35 @@ export default function NewspaperPage() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [currentViewIndex, turning, selectedArticle]);
+
+
+  // Auto-detect when Google Translate switches language to Hindi
+  useEffect(() => {
+    const detectLang = () => {
+      const htmlLang = document.documentElement.getAttribute("lang");
+      const hasTranslatedHi =
+        document.documentElement.classList.contains("translated-ltr") &&
+        (htmlLang === "hi" || document.cookie.includes("googtrans=/en/hi") || document.cookie.includes("googtrans=/auto/hi"));
+      const combo = document.querySelector(".goog-te-combo") as HTMLSelectElement | null;
+      if (combo && combo.value === "hi") {
+        setIsHindi(true);
+      } else if (hasTranslatedHi) {
+        setIsHindi(true);
+      }
+    };
+
+    const interval = setInterval(detectLang, 800);
+    const observer = new MutationObserver(detectLang);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class", "lang"],
+    });
+
+    return () => {
+      clearInterval(interval);
+      observer.disconnect();
+    };
+  }, []);
 
   // Helper to open full article in modal
   const openArticle = (data: ArticleModalData) => {
@@ -293,7 +323,30 @@ export default function NewspaperPage() {
               </a>
             </div>
 
-            <div className="shrink-0 ml-auto flex items-center justify-end">
+            <div className="shrink-0 ml-auto flex items-center gap-2 sm:gap-2.5 justify-end">
+              <div className="flex items-center gap-1 bg-stone-100 rounded border border-stone-300 px-1.5 py-0.5 text-[10px] font-sans font-bold">
+                <button
+                  type="button"
+                  onClick={() => setIsHindi(false)}
+                  className={`px-1.5 py-0.5 rounded transition-colors cursor-pointer ${
+                    !isHindi ? "bg-black text-white" : "text-stone-600 hover:text-black"
+                  }`}
+                  title="Switch to English Logo"
+                >
+                  EN
+                </button>
+                <span className="text-stone-300">|</span>
+                <button
+                  type="button"
+                  onClick={() => setIsHindi(true)}
+                  className={`px-1.5 py-0.5 rounded transition-colors cursor-pointer ${
+                    isHindi ? "bg-black text-white" : "text-stone-600 hover:text-black"
+                  }`}
+                  title="हिंदी लोगो देखें"
+                >
+                  हि
+                </button>
+              </div>
               <GoogleTranslate />
             </div>
           </div>
@@ -301,18 +354,26 @@ export default function NewspaperPage() {
           {/* Thick Rule below top strip */}
           <div className="w-full h-[2.5px] bg-black mb-1.5 sm:mb-2" />
 
-          {/* ── Masthead: KhabarGanit in large Playfair Display serif (Click to go to Trending) ── */}
-          <header className="text-center py-1 sm:py-2 select-none">
-            <h1
+          {/* ── Masthead: Official KhabarGanit Brand Logo (Supports both English and Hindi) ── */}
+          <header className="text-center py-2 sm:py-3.5 select-none flex flex-col items-center justify-center">
+            <div
               onClick={() => transitionTo(null, "prev")}
-              className="font-playfair font-black text-6xl sm:text-7xl md:text-8xl tracking-tight text-black leading-none cursor-pointer hover:opacity-90 transition-opacity"
-              title="Click to return to Trending News all over the world"
+              className="cursor-pointer group flex items-center justify-center"
+              title="Click to return to Trending News (Home)"
             >
-              KhabarGanit
-            </h1>
-            <p className="font-serif italic text-xs sm:text-sm text-stone-600 tracking-wide mt-1">
-              हर ख़बर की कहानी, आँकड़ों की ज़ुबानी
-            </p>
+              <Image
+                src={isHindi ? "/logo-hindi.png" : "/logo-english.png"}
+                alt={
+                  isHindi
+                    ? "ख़बरगणित — हर ख़बर की कहानी, आँकड़ों की ज़ुबानी"
+                    : "KhabarGanit — Every news story, told through numbers"
+                }
+                width={700}
+                height={229}
+                priority
+                className="w-full max-w-[340px] sm:max-w-[460px] md:max-w-[560px] h-auto object-contain transition-transform duration-300 group-hover:scale-[1.01]"
+              />
+            </div>
           </header>
 
           {/* Navbar (WORLD · INDIA · BUSINESS · TECH · SPORTS · POLITICS · ENTERTAINMENT) */}

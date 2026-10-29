@@ -7,6 +7,34 @@
   }
 }
 
+
+/* ═══════════════════════════════════════════════════════════════════
+   COMPLETELY SUPPRESS ALL GOOGLE TRANSLATE UGLY WIDGETS & BANNERS
+   ═══════════════════════════════════════════════════════════════════ */
+#google_translate_element,
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.skiptranslate,
+.goog-logo-link,
+.goog-te-gadget,
+.goog-te-menu-frame,
+.goog-te-combo {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+}
+
+body {
+  top: 0px !important;
+}
+
 body {
   background-color: #FFFFFF !important;
   color: #000000;
@@ -242,4 +270,38 @@ nav,
 button, 
 .btn {
   font-family: "Jost", "Sarala", sans-serif;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   CLEAN GOOGLE TRANSLATE (Hide Google default banner, gadget & iframes)
+   ═══════════════════════════════════════════════════════════════════ */
+#google_translate_hidden_element,
+#google_translate_element,
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+iframe.goog-te-banner-frame,
+.goog-te-gadget,
+.goog-te-gadget-simple,
+.skiptranslate > iframe {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+}
+
+body {
+  top: 0px !important;
+  position: static !important;
+}
+
+.goog-tooltip,
+.goog-tooltip:hover {
+  display: none !important;
+}
+
+.goog-text-highlight {
+  background-color: transparent !important;
+  box-shadow: none !important;
 }

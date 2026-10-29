@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Bookmark, ArrowUpRight } from "lucide-react";
+
 import GoogleTranslate from "@/components/GoogleTranslate";
 import ArticleModal, { ArticleModalData } from "@/components/ArticleModal";
 import { TRENDING_PAGE, SECTION_PAGES, SectionPageData } from "@/data/newspaperData";
@@ -44,6 +45,7 @@ export default function NewspaperPage() {
     ? SECTION_PAGES.find((p) => p.sectionKey === activeCategory) || TRENDING_PAGE
     : TRENDING_PAGE;
 
+
   const currentViewIndex = VIEW_SEQUENCE.indexOf(activeCategory);
 
   const transitionTo = (target: CategoryKey | null, direction?: "next" | "prev") => {
@@ -84,6 +86,7 @@ export default function NewspaperPage() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [currentViewIndex, turning, selectedArticle]);
+
 
 
   // Auto-detect when Google Translate switches language to Hindi
@@ -332,34 +335,12 @@ export default function NewspaperPage() {
                 <Image src="/social/google.png" alt="Google" width={16} height={16} className="object-contain" />
               </a>
             </div>
-
-            <div className="shrink-0 ml-auto flex items-center gap-2 sm:gap-2.5 justify-end">
-              <div className="flex items-center gap-1 bg-stone-100 rounded border border-stone-300 px-1.5 py-0.5 text-[10px] font-sans font-bold">
-                <button
-                  type="button"
-                  onClick={() => setIsHindi(false)}
-                  className={`px-1.5 py-0.5 rounded transition-colors cursor-pointer ${
-                    !isHindi ? "bg-black text-white" : "text-stone-600 hover:text-black"
-                  }`}
-                  title="Switch to English Logo"
-                >
-                  EN
-                </button>
-                <span className="text-stone-300">|</span>
-                <button
-                  type="button"
-                  onClick={() => setIsHindi(true)}
-                  className={`px-1.5 py-0.5 rounded transition-colors cursor-pointer ${
-                    isHindi ? "bg-black text-white" : "text-stone-600 hover:text-black"
-                  }`}
-                  title="हिंदी लोगो देखें"
-                >
-                  हि
-                </button>
-              </div>
-              <GoogleTranslate />
+            {/* ── Single Clean Google Translate Broadsheet Dropdown ── */}
+            <div className="shrink-0 ml-auto flex items-center justify-end select-none">
+              <GoogleTranslate onLanguageChange={(lang) => setIsHindi(lang === "hi")} />
             </div>
           </div>
+
 
           {/* Thick Rule below top strip */}
           <div className="w-full h-[2.5px] bg-black mb-1.5 sm:mb-2" />

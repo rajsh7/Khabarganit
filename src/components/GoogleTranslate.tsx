@@ -10,12 +10,23 @@ declare global {
   }
 }
 
-export default function GoogleTranslate() {
+interface GoogleTranslateProps {
+  onLanguageChange?: (lang: string) => void;
+}
+
+export default function GoogleTranslate({ onLanguageChange }: GoogleTranslateProps) {
   const [selectedLang, setSelectedLang] = useState<string>("en");
 
   useEffect(() => {
-    // Check if script is already present
-    const existingScript = document.getElementById("google-translate-script");
+    // Read existing cookie if present
+    const match = document.cookie.match(/(?:^|;\s*)googtrans=([^;]+)/);
+    if (match && match[1]) {
+      const code = match[1].split("/").pop();
+      if (code) {
+        setSelectedLang(code);
+        if (onLanguageChange) onLanguageChange(code);
+      }
+    }
 
     window.googleTranslateElementInit = () => {
       if (window.google && window.google.translate) {
@@ -24,15 +35,14 @@ export default function GoogleTranslate() {
             pageLanguage: "en",
             includedLanguages:
               "hi,en,bn,te,ta,mr,gu,kn,ml,pa,ur,es,fr,de,ar,ja,zh-CN,ru",
-            layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
             autoDisplay: false,
           },
-          "google_translate_element"
+          "google_translate_hidden_element"
         );
       }
     };
 
-    if (!existingScript) {
+    if (!document.getElementById("google-translate-script")) {
       const script = document.createElement("script");
       script.id = "google-translate-script";
       script.type = "text/javascript";
@@ -43,32 +53,29 @@ export default function GoogleTranslate() {
     } else if (window.google && window.google.translate) {
       window.googleTranslateElementInit();
     }
-
-    // Read existing googtrans cookie if present
-    const match = document.cookie.match(/(?:^|;\s*)googtrans=([^;]+)/);
-    if (match && match[1]) {
-      const code = match[1].split("/").pop();
-      if (code) setSelectedLang(code);
-    }
-  }, []);
+  }, [onLanguageChange]);
 
   const changeLanguage = (langCode: string) => {
     setSelectedLang(langCode);
+    if (onLanguageChange) {
+      onLanguageChange(langCode);
+    }
 
-    // Set cookie for Google Translate
-    const domain = window.location.hostname;
+    // Set cookie for Google Translate (both root and domain)
+    const hostname = window.location.hostname;
     document.cookie = `googtrans=/en/${langCode}; path=/;`;
-    document.cookie = `googtrans=/en/${langCode}; path=/; domain=${domain};`;
+    document.cookie = `googtrans=/en/${langCode}; path=/; domain=${hostname};`;
+    document.cookie = `googtrans=/auto/${langCode}; path=/;`;
+    document.cookie = `googtrans=/auto/${langCode}; path=/; domain=${hostname};`;
 
-    // Also try to select the hidden/inline google combo if available
+    // Trigger Google Translate internal combo
     const select = document.querySelector<HTMLSelectElement>(
-      "#google_translate_element select.goog-te-combo"
+      "#google_translate_hidden_element select.goog-te-combo, select.goog-te-combo"
     );
     if (select) {
       select.value = langCode;
       select.dispatchEvent(new Event("change"));
     } else {
-      // Reload page to apply cookie translation
       window.location.reload();
     }
   };
@@ -76,16 +83,20 @@ export default function GoogleTranslate() {
   return (
     <div className="flex items-center gap-1.5 select-none text-[10px] sm:text-[11px] font-serif font-bold uppercase tracking-wider text-stone-900 whitespace-nowrap">
       <Globe size={13} className="text-[#C13A08] shrink-0" />
-      <span className="hidden sm:inline text-stone-600">TRANSLATE:</span>
+      <span className="hidden sm:inline text-stone-700">TRANSLATE:</span>
 
-      {/* Google Translate Inline Container */}
-      <div id="google_translate_element" className="inline-block" />
+      {/* Strictly hidden container for Google Translate internal engine - never visible */}
+      <div
+        id="google_translate_hidden_element"
+        style={{ display: "none", width: 0, height: 0, overflow: "hidden" }}
+        className="hidden"
+      />
 
-      {/* Broad Language Fallback Selector */}
+      {/* Exactly ONE clean broadsheet dropdown */}
       <select
         value={selectedLang}
         onChange={(e) => changeLanguage(e.target.value)}
-        className="bg-white text-black border border-black px-1.5 py-0.5 rounded text-[10px] sm:text-[11px] font-serif font-bold tracking-wider cursor-pointer hover:bg-stone-50 transition-colors uppercase outline-none focus:ring-1 focus:ring-black"
+        className="bg-white text-black border border-black px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-serif font-bold tracking-wider cursor-pointer hover:bg-stone-50 transition-colors uppercase outline-none focus:ring-1 focus:ring-black"
         title="Select Language / भाषा चुनें"
       >
         <option value="en">English</option>

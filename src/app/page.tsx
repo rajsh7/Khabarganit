@@ -95,6 +95,24 @@ export default function NewspaperPage() {
       <div className="w-full h-[2.5px] bg-black my-2" />
       <nav className="w-full py-2.5 flex items-center justify-center select-none">
         <ul className="flex items-center justify-center flex-wrap gap-3.5 sm:gap-5 md:gap-8 text-[11px] sm:text-xs font-sans font-bold uppercase tracking-[0.2em] text-stone-900 leading-none">
+                    {/* First: Home button (Logo only, no text) */}
+          <li>
+            <button
+              onClick={() => transitionTo(null)}
+              className={`hover:opacity-70 transition-all cursor-pointer py-1 flex items-center justify-center ${
+                activeCategory === null ? "border-b-2 border-black" : ""
+              }`}
+              title="Home (Trending Headlines)"
+            >
+              <Image
+                src="/home.png"
+                alt="Home"
+                width={17}
+                height={17}
+                className="object-contain"
+              />
+            </button>
+          </li>
           {CATEGORIES.map((item) => {
             const isCurrent = activeCategory === item.key;
             return (
@@ -455,9 +473,7 @@ export default function NewspaperPage() {
               <h3 className="font-playfair font-black text-xl sm:text-2xl uppercase tracking-wider text-black">
                 TOP STORIES
               </h3>
-              <span className="text-[11px] font-serif uppercase tracking-[0.18em] text-stone-600 font-semibold">
-                DISPATCHES FOR {activePage.sectionTitle}
-              </span>
+              
             </div>
 
             {/* 4-Column Broadsheet Grid */}
@@ -517,9 +533,7 @@ export default function NewspaperPage() {
                   {activePage.digestTitle}
                 </h3>
               </div>
-              <span className="text-[11px] font-serif uppercase tracking-[0.18em] text-stone-600 font-semibold">
-                FULL 10-POINT MONITOR · CLICK ANY ITEM TO READ
-              </span>
+              
             </div>
 
             {/* 2-Column High-Density Digest Grid */}
@@ -572,9 +586,7 @@ export default function NewspaperPage() {
               <h3 className="font-playfair font-black text-xl sm:text-2xl uppercase tracking-wider text-black">
                 ARTICLES & ANALYSIS
               </h3>
-              <span className="text-[11px] font-serif uppercase tracking-[0.18em] text-stone-600 font-semibold">
-                EDITORIALS, ESSAYS & DEEP DATA
-              </span>
+              
             </div>
 
             {/* Lead Essay + 3 Sidebar Articles */}

@@ -50,10 +50,30 @@ export default function NewspaperPage() {
     }
   }, []);
 
-  // Active broadsheet data: Trending page when activeCategory is null, or category page
+  // Real-time news pipeline state
+  const [pipelineData, setPipelineData] = useState<{
+    trending: SectionPageData;
+    sections: SectionPageData[];
+  } | null>(null);
+
+  // Background fetch to sync any real-time stories published via Telegram Bot or Web Pipeline
+  useEffect(() => {
+    fetch("/api/news")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.trending && data.sections) {
+          setPipelineData({ trending: data.trending, sections: data.sections });
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Active broadsheet data: merges static broadsheet fallback with live pipeline updates
   const activePage: SectionPageData = activeCategory
-    ? SECTION_PAGES.find((p) => p.sectionKey === activeCategory) || TRENDING_PAGE
-    : TRENDING_PAGE;
+    ? (pipelineData?.sections || SECTION_PAGES).find((p) => p.sectionKey === activeCategory) ||
+      pipelineData?.trending ||
+      TRENDING_PAGE
+    : pipelineData?.trending || TRENDING_PAGE;
 
 
   const currentViewIndex = VIEW_SEQUENCE.indexOf(activeCategory);

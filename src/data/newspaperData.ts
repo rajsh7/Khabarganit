@@ -71,38 +71,38 @@ export const TRENDING_PAGE: SectionPageData = {
   editionSubtitle: "GLOBAL & NATIONAL BROADSHEET · TRENDING HEADLINES",
   topStripLabel: "THURSDAY, 29 OCTOBER 2026",
   leadStory: {
-    kicker: "GLOBAL & NATIONAL BREAKING BULLETIN",
-    headline: "PM MODI CONCLUDES ESTIC 2026; CYCLONE ARNAB BATTERS EASTERN COAST AS SPAIN RAIL CRASH CLAIMS 64",
-    subhead: "High-level deep-tech mandates delivered in New Delhi, while severe cyclonic storm triggers massive evacuations across Andhra Pradesh and Odisha, and international rescue teams probe Andalusia rail catastrophe.",
+    kicker: "PRIME MINISTER'S ENGAGEMENTS · BHARAT MANDAPAM",
+    headline: "PM MODI CONCLUDES ESTIC 2026; MANDATES 3-YEAR ‘LAB TO LAND’ DELIVERY IN DEEP-TECH",
+    subhead: "Addressing 5,000 scientists, global innovators, and Nobel laureates at Bharat Mandapam, Prime Minister directs research institutions to transition patents into scalable industrial solutions across 12 strategic frontiers.",
     image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80",
-    imageAlt: "Global diplomatic and scientific deliberations in New Delhi alongside international breaking developments",
-    caption: "Prime Minister Narendra Modi, Union Ministers, and distinguished scientific delegates during the concluding sessions of ESTIC 2026 at Bharat Mandapam, New Delhi, as emergency response and diplomatic operations unfold internationally on Thursday. (Photo: PIB / International Wire Services)",
+    imageAlt: "Prime Minister Narendra Modi, Union Ministers, and scientific delegates at ESTIC 2026 conclave at Bharat Mandapam",
+    caption: "Prime Minister Narendra Modi, Union Ministers, and distinguished scientific delegates during the concluding high-level deliberations of ESTIC 2026 at Bharat Mandapam, New Delhi on Thursday. (Photo: PIB / Prime Minister's Office)",
     col1: [
-      "NEW DELHI & GLOBAL BUREAUS — In a day marked by monumental scientific mandates and urgent humanitarian operations across continents, Prime Minister Narendra Modi concluded the Emerging Science, Technology and Innovation Conclave (ESTIC 2026) at Bharat Mandapam, instructing research institutions and global deep-tech partners to deliver measurable 'lab to land' breakthroughs within a strict three-year timeline.",
-      "Simultaneously on the eastern seaboard of India, Severe Cyclonic Storm 'Cyclone Arnab' completed landfall along the northern Andhra Pradesh and southern Odisha coastline, driving ferocious 110 km/h wind gusts and unprecedented torrential rainfall.",
-      "Disaster management authorities mobilized 45 NDRF and ODRAF columns across 17 sensitive coastal districts, executing the pre-emptive evacuation of more than 1.2 lakh residents into concrete cyclone shelters."
+      "NEW DELHI — Concluding the three-day Emerging Science, Technology and Innovation Conclave (ESTIC 2026) at Bharat Mandapam, Prime Minister Narendra Modi issued a decisive mandate to India's premier scientific institutions, industry leaders, and research laboratories to transition patented innovations into commercially viable, scalable solutions within a strict three-year window.",
+      "Addressing a gathering of over 5,000 researchers, startups, and Nobel laureates, the Prime Minister underscored that the era of research remaining confined to academic journals has concluded. 'The metric of true scientific leadership is its capacity to transform human lives at the grassroots. From quantum computing to advanced biomanufacturing, India's deep-tech revolution must move rapidly from lab to land,' Mr. Modi emphasized.",
+      "The conclave, organised jointly by the Council of Scientific and Industrial Research (CSIR) and the Department of Science and Technology under the theme 'Creative Minds, Catalysing Science, Empowering Technologies', deliberated across twelve priority frontiers including semiconductor packaging, next-generation clean fuels, artificial intelligence alignment, and indigenous defense aerospace."
     ],
     col2: [
-      "GLOBAL DISPATCHES — Internationally, European transport authorities declared an indefinite state of national mourning following a horrific collision between two high-speed trains in Andalusia, Spain, which has claimed between 39 and 64 lives. Preliminary telemetric inquiries point toward signaling failure and human error.",
-      "In the Middle East, the Knesset political race reached boiling point as Prime Minister Benjamin Netanyahu and rival Gadi Eisenkot locked into a virtual tie, with coalition negotiations deadlocked amid fresh Pentagon disclosures revealing over $47 billion in regional conflict spending.",
-      "Meanwhile, diplomatic corridors in New Delhi confirmed an official protocol invitation to Pakistan for the Shanghai Cooperation Organisation (SCO) summit, signaling crucial geopolitical movements."
+      "Union Science and Technology Minister Dr. Jitendra Singh, who accompanied the Prime Minister during an extensive walkthrough of the 150-stall deep-tech expo, highlighted that the Anusandhan National Research Foundation (ANRF) has operationalized a dedicated ₹10,000-crore translation corpus to support early-stage translational prototypes.",
+      "Distinguished foreign delegations from Germany, Japan, the United Kingdom, and the United States participated in bilateral science diplomacy roundtables, cementing joint research pacts in 2nm chip fabrication architectures and scalable green hydrogen electrolyzers.",
+      "Nobel laureates Joachim Frank and Sir Richard Roberts praised the strategic clarity of the Indian roadmap, noting that coupling academic research directly with industrial execution capabilities establishes a sustainable blueprint for global technological parity over the coming decade."
     ]
   },
   sideStories: [
     {
-      kicker: "SPAIN RAILWAY DISASTER",
-      headline: "AT LEAST 64 REPORTED KILLED IN TWO HIGH-SPEED TRAINS COLLISION",
-      summary: "Preliminary technical investigations indicate signaling malfunction and human protocol breakdown during morning peak operations in southern Spain."
+      kicker: "CYCLONE ARNAB · EASTERN SEABOARD",
+      headline: "CYCLONE ARNAB BATTERS EASTERN COAST; MASSIVE EVACUATIONS IN ODISHA & ANDHRA",
+      summary: "Severe cyclonic storm makes landfall with 110 km/h winds, triggering heavy rainfall and prompting the pre-emptive evacuation of over 1.2 lakh residents across 17 sensitive coastal districts."
+    },
+    {
+      kicker: "EUROPE RAILWAY DISASTER",
+      headline: "AT LEAST 64 REPORTED KILLED AS TWO HIGH-SPEED TRAINS COLLIDE IN SPAIN",
+      summary: "Emergency rescue operations continue in southern Spain after high-speed passenger trains collide; preliminary investigations point toward automated signaling failure and operational protocol breakdown."
     },
     {
       kicker: "MIDDLE EAST & WASHINGTON",
       headline: "PENTAGON REPORT REVEALS $47 BILLION IN REGIONAL WAR SPENDING",
-      summary: "Declassified fiscal disclosures outline massive maritime defensive operations as Israeli election deadlocks intensify between Netanyahu and Eisenkot."
-    },
-    {
-      kicker: "CYCLONE ARNAB RELIEF",
-      headline: "MASSIVE 17-DISTRICT EVACUATIONS AS CYCLONE ARNAB MAKES LANDFALL",
-      summary: "Disaster response battalions deployed across Andhra Pradesh and Odisha coastline; schools shut and 85 train services suspended to protect civilian life."
+      summary: "Declassified fiscal disclosures outline massive maritime defensive operations as Israeli election deadlocks intensify between Prime Minister Benjamin Netanyahu and rival Gadi Eisenkot."
     }
   ],
   topStories: [

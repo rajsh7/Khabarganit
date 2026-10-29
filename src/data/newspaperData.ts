@@ -13,6 +13,11 @@ export interface SideStory {
   kicker: string;
   headline: string;
   summary: string;
+  image?: string;
+  imageCaption?: string;
+  paragraphs?: string[];
+  author?: string;
+  location?: string;
 }
 
 export interface TopStory {
@@ -21,6 +26,9 @@ export interface TopStory {
   summary: string;
   author: string;
   location: string;
+  image?: string;
+  imageCaption?: string;
+  paragraphs?: string[];
 }
 
 export interface DigestItem {
@@ -90,6 +98,22 @@ export const TRENDING_PAGE: SectionPageData = {
   },
   sideStories: [
     {
+      kicker: "DIWALI BONANZA · CORPORATE REWARDS",
+      headline: "MITS HEALTHCARE FOUNDER GIFTS BRAND-NEW KIA SONET SUVS TO 4 EMPLOYEES AHEAD OF DIWALI",
+      summary: "Panchkula-based pharma entrepreneur MK Bhatia felicitates dedicated staff members with brand-new compact SUVs in Haryana, continuing his viral tradition of rewarding employee loyalty.",
+      image: "/images/mits-diwali-cars.png",
+      imageCaption: "MITS Healthcare founder and chairman MK Bhatia unveiling brand-new Kia Sonet SUVs alongside felicitated employees in Panchkula ahead of Diwali. (Photo: MITS Healthcare / Instagram)",
+      author: "Staff Reporter",
+      location: "Panchkula, Haryana",
+      paragraphs: [
+        "PANCHKULA (HARYANA) — In an extraordinary gesture of corporate appreciation and festive celebration, MITS Healthcare founder and chairman MK Bhatia has gifted brand-new Kia Sonet compact SUVs to four of his loyal employees ahead of Diwali in Panchkula, Haryana.",
+        "The celebratory vehicle handover took place outside a car dealership decorated with festive banners and colorful balloons. The keys to the brand-new compact SUVs were presented following a traditional cake-cutting ceremony surrounded by cheering colleagues and proud family members.",
+        "Speaking to reporters, Mr. Bhatia emphasized that the employees are the true driving force behind MITS Healthcare: 'These vehicles are a token of deep appreciation for their relentless hard work, commitment, and loyalty during our most demanding growth phases. A company grows when its team feels genuinely valued and celebrated as family.'",
+        "This is not the first time the Haryana-based pharma entrepreneur has made headlines for lavish employee rewards. In previous years, Bhatia gifted cars and motorbikes to stellar performers, reinforcing an unconventional workplace culture that has consistently gone viral across social media platforms across India.",
+        "Heartfelt videos and photos showing the delighted employees and their emotional family members unveiling their brand-new SUVs quickly went viral, with netizens and business leaders praising the leadership for setting an inspiring benchmark in corporate appreciation and festival generosity."
+      ]
+    },
+    {
       kicker: "CYCLONE ARNAB · EASTERN SEABOARD",
       headline: "CYCLONE ARNAB BATTERS EASTERN COAST; MASSIVE EVACUATIONS IN ODISHA & ANDHRA",
       summary: "Severe cyclonic storm makes landfall with 110 km/h winds, triggering heavy rainfall and prompting the pre-emptive evacuation of over 1.2 lakh residents across 17 sensitive coastal districts."
@@ -98,11 +122,6 @@ export const TRENDING_PAGE: SectionPageData = {
       kicker: "EUROPE RAILWAY DISASTER",
       headline: "AT LEAST 64 REPORTED KILLED AS TWO HIGH-SPEED TRAINS COLLIDE IN SPAIN",
       summary: "Emergency rescue operations continue in southern Spain after high-speed passenger trains collide; preliminary investigations point toward automated signaling failure and operational protocol breakdown."
-    },
-    {
-      kicker: "MIDDLE EAST & WASHINGTON",
-      headline: "PENTAGON REPORT REVEALS $47 BILLION IN REGIONAL WAR SPENDING",
-      summary: "Declassified fiscal disclosures outline massive maritime defensive operations as Israeli election deadlocks intensify between Prime Minister Benjamin Netanyahu and rival Gadi Eisenkot."
     }
   ],
   topStories: [
@@ -181,9 +200,9 @@ export const TRENDING_PAGE: SectionPageData = {
     },
     {
       number: 8,
-      category: "GLOBAL MARKETS",
-      headline: "Sensex Crosses Historic High Driven by Deep-Tech & Foreign Inflows",
-      summary: "Indian equity benchmarks maintain bullish trajectory as international tech earnings and semiconductor investments boost sentiment."
+      category: "CORPORATE REWARDS",
+      headline: "Haryana Pharma Boss Gifts Kia Sonet SUVs to 4 Staff Members Ahead of Diwali",
+      summary: "MITS Healthcare founder MK Bhatia surprises loyal employees with brand-new compact SUVs in Panchkula, continuing his viral festive bonus tradition."
     },
     {
       number: 9,

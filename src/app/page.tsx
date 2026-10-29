@@ -484,14 +484,16 @@ export default function NewspaperPage() {
                         title: story.headline,
                         kicker: story.kicker,
                         subhead: story.summary,
-                        paragraphs: [
+                        image: story.image,
+                        imageCaption: story.imageCaption,
+                        paragraphs: story.paragraphs || [
                           story.summary,
                           "Senior administrative officials and technical panels reviewed the operational roadmap on Thursday, finalizing execution protocols across participating departments.",
                           "The initiative comes at a critical juncture, balancing public welfare commitments with structural discipline as stakeholders prepare for the upcoming legislative sessions.",
                           "Further administrative notifications and detailed regulatory guidelines are expected to be gazetted by the end of the current fiscal quarter."
                         ],
-                        author: "Senior Policy Correspondent",
-                        location: "National Bureau"
+                        author: story.author || "Senior Policy Correspondent",
+                        location: story.location || "National Bureau"
                       })
                     }
                     className="pb-5 cursor-pointer group"
@@ -504,6 +506,17 @@ export default function NewspaperPage() {
                       {story.headline}
                       <ArrowUpRight size={14} className="inline-block ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-[#C13A08]" />
                     </h3>
+                    {story.image && (
+                      <div className="relative w-full aspect-[16/10] overflow-hidden bg-stone-100 border border-stone-300 mb-2.5 shadow-sm">
+                        <Image
+                          src={story.image}
+                          alt={story.headline}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          className="object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                        />
+                      </div>
+                    )}
                     <p className="text-xs font-serif leading-relaxed text-stone-700">
                       {story.summary}
                     </p>
@@ -541,9 +554,11 @@ export default function NewspaperPage() {
                       title: story.headline,
                       kicker: story.kicker,
                       subhead: story.summary,
+                      image: story.image,
+                      imageCaption: story.imageCaption,
                       author: story.author,
                       location: story.location,
-                      paragraphs: [
+                      paragraphs: story.paragraphs || [
                         story.summary,
                         `Reporting from ${story.location}, local authorities and sector observers highlighted the ground-level impact of the announcement, noting active stakeholder coordination.`,
                         "Auditing panels, physical verifications, and transparent record-keeping mechanisms have been mandated to ensure full public accountability.",

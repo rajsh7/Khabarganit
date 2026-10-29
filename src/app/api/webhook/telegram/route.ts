@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { newsPipeline, PublishPayload } from "@/lib/newsPipeline";
 
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const TELEGRAM_BOT_TOKEN =
+  process.env.TELEGRAM_BOT_TOKEN || "8769156198:AAGU6N8r8NhCqILVqCQacMxmvUoJHlo0Zi0";
 const TELEGRAM_ALLOWED_USER_ID = process.env.TELEGRAM_ALLOWED_USER_ID;
 
 // Helper: send reply to Telegram chat

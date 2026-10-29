@@ -1,4 +1,9 @@
+import fs from "fs";
+import path from "path";
+import os from "os";
 import { TRENDING_PAGE, SECTION_PAGES, SectionPageData, LeadStory, SideStory, TopStory, DigestItem } from "@/data/newspaperData";
+
+const CACHE_FILE = path.join(os.tmpdir(), "khabarganit_pipeline_v1.json");
 
 export interface PublishPayload {
   sectionKey?: "TRENDING" | "WORLD" | "INDIA" | "BUSINESS" | "TECH" | "SPORTS" | "POLITICS" | "ENTERTAINMENT";
@@ -14,14 +19,49 @@ export interface PublishPayload {
   paragraphs?: string[];
 }
 
-// In-memory runtime cache for dynamic news updates
+// In-memory + /tmp file cache for dynamic news updates
 // Preserves static fallback while allowing instant Telegram/API publishing
 class NewsPipelineStore {
   private trendingPage: SectionPageData = JSON.parse(JSON.stringify(TRENDING_PAGE));
   private sectionPages: SectionPageData[] = JSON.parse(JSON.stringify(SECTION_PAGES));
   private recentUpdates: Array<{ timestamp: string; headline: string; section: string }> = [];
 
+  constructor() {
+    this.loadFromDisk();
+  }
+
+  private loadFromDisk() {
+    try {
+      if (fs.existsSync(CACHE_FILE)) {
+        const raw = fs.readFileSync(CACHE_FILE, "utf-8");
+        const data = JSON.parse(raw);
+        if (data.trending) this.trendingPage = data.trending;
+        if (data.sections) this.sectionPages = data.sections;
+        if (data.updates) this.recentUpdates = data.updates;
+      }
+    } catch {
+      // Fallback gracefully
+    }
+  }
+
+  private saveToDisk() {
+    try {
+      fs.writeFileSync(
+        CACHE_FILE,
+        JSON.stringify({
+          trending: this.trendingPage,
+          sections: this.sectionPages,
+          updates: this.recentUpdates,
+        }),
+        "utf-8"
+      );
+    } catch {
+      // Ignore disk write errors
+    }
+  }
+
   public getAllPages(): { trending: SectionPageData; sections: SectionPageData[]; updates: any[] } {
+    this.loadFromDisk();
     return {
       trending: this.trendingPage,
       sections: this.sectionPages,
@@ -30,6 +70,7 @@ class NewsPipelineStore {
   }
 
   public getSection(sectionKey: string | null): SectionPageData {
+    this.loadFromDisk();
     if (!sectionKey || sectionKey.toUpperCase() === "TRENDING") {
       return this.trendingPage;
     }
@@ -40,6 +81,7 @@ class NewsPipelineStore {
   }
 
   public publish(payload: PublishPayload): { success: boolean; message: string; page: SectionPageData } {
+    this.loadFromDisk();
     const section = (payload.sectionKey || "TRENDING").toUpperCase() as SectionPageData["sectionKey"];
     const placement = (payload.placement || "LEAD").toUpperCase() as "LEAD" | "SIDE" | "TOP" | "DIGEST";
 
@@ -132,6 +174,8 @@ class NewsPipelineStore {
     if (this.recentUpdates.length > 20) {
       this.recentUpdates.pop();
     }
+
+    this.saveToDisk();
 
     return {
       success: true,

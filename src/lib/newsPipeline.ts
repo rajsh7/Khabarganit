@@ -105,7 +105,7 @@ class NewsPipelineStore {
       const col1 = paragraphs.slice(0, mid);
       const col2 = paragraphs.slice(mid);
 
-      targetPage.leadStory = {
+      const leadData: LeadStory = {
         kicker: payload.kicker || `${section} BREAKING BULLETIN`,
         headline: payload.headline.toUpperCase(),
         subhead: payload.subhead || paragraphs[0] || "Breaking dispatches from the KhabarGanit newsroom.",
@@ -115,6 +115,10 @@ class NewsPipelineStore {
         col1: col1.length > 0 ? col1 : targetPage.leadStory.col1,
         col2: col2.length > 0 ? col2 : targetPage.leadStory.col2,
       };
+
+      targetPage.leadStory = leadData;
+      // Front Page Mirror: Always mirror LEAD stories to Front Page (TRENDING)
+      this.trendingPage.leadStory = leadData;
     }
     // 2. SIDE STORY (Right-side 33% column)
     else if (placement === "SIDE") {
@@ -131,6 +135,9 @@ class NewsPipelineStore {
 
       // Prepend to sideStories (keeps 3)
       targetPage.sideStories = [newSideStory, targetPage.sideStories[0], targetPage.sideStories[1]] as [SideStory, SideStory, SideStory];
+      if (targetPage !== this.trendingPage) {
+        this.trendingPage.sideStories = [newSideStory, this.trendingPage.sideStories[0], this.trendingPage.sideStories[1]] as [SideStory, SideStory, SideStory];
+      }
     }
     // 3. TOP STORY (4-column domain dispatch)
     else if (placement === "TOP") {

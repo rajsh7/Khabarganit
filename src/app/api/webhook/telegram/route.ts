@@ -44,6 +44,7 @@ function parseNewsMessage(rawText: string, imageUrl?: string): PublishPayload | 
   if (lines.length === 0) return null;
 
   let headline = "";
+  let hasExplicitHeadline = false;
   let sectionKey: PublishPayload["sectionKey"] = "TRENDING";
   let placement: PublishPayload["placement"] = "LEAD";
   let kicker = "";
@@ -57,6 +58,7 @@ function parseNewsMessage(rawText: string, imageUrl?: string): PublishPayload | 
 
     if (lower.startsWith("headline:") || lower.startsWith("title:") || lower.startsWith("शीर्षक:")) {
       headline = line.replace(/^(headline|title|शीर्षक):\s*/i, "").trim();
+      hasExplicitHeadline = true;
       inStoryBlock = false;
     } else if (lower.startsWith("section:") || lower.startsWith("category:") || lower.startsWith("वर्ग:")) {
       const sec = line.replace(/^(section|category|वर्ग):\s*/i, "").trim().toUpperCase();
@@ -84,9 +86,11 @@ function parseNewsMessage(rawText: string, imageUrl?: string): PublishPayload | 
     } else {
       if (inStoryBlock) {
         paragraphs.push(line);
-      } else if (!headline) {
+      } else if (!hasExplicitHeadline && imageUrl) {
+        // Quick photo publish: First line of photo caption is headline
         headline = line;
-      } else if (!subhead) {
+        hasExplicitHeadline = true;
+      } else if (hasExplicitHeadline && !subhead) {
         subhead = line;
       } else {
         paragraphs.push(line);
@@ -94,7 +98,10 @@ function parseNewsMessage(rawText: string, imageUrl?: string): PublishPayload | 
     }
   }
 
-  if (!headline) return null;
+  // Prevent random text or continuation chunks without "Headline:" or photo from overwriting lead news
+  if (!headline || (!hasExplicitHeadline && !imageUrl)) {
+    return null;
+  }
 
   return {
     headline,
@@ -160,7 +167,7 @@ export async function POST(request: Request) {
       await sendTelegramMessage(
         chatId,
         `📊 *KhabarGanit Pipeline Status*\n\n` +
-        `🔴 *Current Trending Lead*: ${lead}\n` +
+        `🔴 *Current Front-Page Lead*: ${lead}\n` +
         `📈 *Dynamic Updates Processed*: ${count}\n` +
         `🌐 *Site Status*: Live (200 OK)\n` +
         `🔗 https://www.khabarganit.com`
@@ -181,10 +188,12 @@ export async function POST(request: Request) {
     if (!payload || !payload.headline) {
       await sendTelegramMessage(
         chatId,
-        `⚠️ *Could not detect headline!*\n\nPlease provide at least a headline. Example:\n\n` +
-        `*Headline:* ISRO Launches New Satellite Mission\n` +
-        `*Section:* TECH\n` +
-        `*Story:* ISRO successfully placed the satellite in orbit today...`
+        `⚠️ *Headline not detected!*\n\nPlease start your news with *Headline:* so I can publish it accurately. Example:\n\n` +
+        `*Headline:* Election Results Announced\n` +
+        `*Section:* POLITICS\n` +
+        `*Placement:* LEAD\n` +
+        `*Subhead:* Official vote counts finalized\n` +
+        `*Story:* Full story details here...`
       );
       return NextResponse.json({ ok: true });
     }
@@ -197,12 +206,13 @@ export async function POST(request: Request) {
       ? "https://www.khabarganit.com" 
       : `https://www.khabarganit.com/${targetSection}`;
 
-    const confirmationMsg = `✅ *NEWS PUBLISHED SUCCESSFULLY!* 🚀\n\n` +
+    const confirmationMsg = `✅ *NEWS PUBLISHED TO KHABARGANIT!* 🚀\n\n` +
       `📰 *Headline:* ${payload.headline}\n` +
       `📁 *Section:* ${payload.sectionKey} (${payload.placement})\n` +
-      `📸 *Photo:* ${imageUrl ? "Attached ✅" : "Default Broadsheet Image"}\n` +
+      `📸 *Photo:* ${imageUrl ? "Attached ✅" : "Broadsheet Visual"}\n` +
       `⏰ *Published at:* ${new Date().toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata" })} IST\n\n` +
-      `🌐 *View on Website:*\n${liveUrl}`;
+      `🌐 *Front Page & Broadsheet:*\nhttps://www.khabarganit.com\n\n` +
+      `📂 *Section View:*\n${liveUrl}`;
 
     await sendTelegramMessage(chatId, confirmationMsg);
 

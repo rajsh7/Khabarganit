@@ -290,57 +290,60 @@ export default function NewspaperPage() {
               }`}
             />
           )}
-          {/* ── Top Strip: Date pinned to far left, Social Icons in Center, Google Translate pinned to far right. NOTHING ELSE. ── */}
-          <div className="flex items-center justify-between w-full text-[10px] sm:text-xs font-serif font-bold uppercase tracking-[0.16em] text-stone-900 pb-2 select-none">
-            <span className="font-bold tracking-[0.16em] shrink-0 whitespace-nowrap">
-              THURSDAY, 29 OCTOBER 2026
-            </span>
+          {/* ── Top Strip: Date (Left), Social Links (Mathematically Centered), Google Translate (Right) ── */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 items-center w-full text-[10px] sm:text-xs font-serif font-bold uppercase tracking-[0.16em] text-stone-900 pb-2.5 gap-2 sm:gap-0 select-none">
+            {/* Far Left: Date */}
+            <div className="flex items-center justify-center sm:justify-start">
+              <span className="font-bold tracking-[0.16em] shrink-0 whitespace-nowrap">
+                THURSDAY, 29 OCTOBER 2026
+              </span>
+            </div>
 
-            {/* Social Media Header Icons */}
-            <div className="flex items-center gap-2.5 sm:gap-3.5 mx-2 shrink-0">
+            {/* Top Center: Official Social Media Links */}
+            <div className="flex items-center justify-center gap-3 sm:gap-4 shrink-0">
               <a
                 href="https://www.youtube.com/@KhabarGanit"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:scale-115 transition-transform"
+                className="hover:scale-115 transition-transform opacity-90 hover:opacity-100"
                 title="YouTube: @KhabarGanit"
               >
-                <Image src="/social/youtube.png" alt="YouTube" width={16} height={16} className="object-contain" />
+                <Image src="/social/youtube.png" alt="YouTube" width={17} height={17} className="object-contain" />
               </a>
               <a
                 href="https://x.com/khabarGanit"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:scale-115 transition-transform"
+                className="hover:scale-115 transition-transform opacity-90 hover:opacity-100"
                 title="X: @khabarGanit"
               >
-                <Image src="/social/x.png" alt="X" width={15} height={15} className="object-contain" />
+                <Image src="/social/x.png" alt="X" width={16} height={16} className="object-contain" />
               </a>
               <a
                 href="https://www.instagram.com/khabarganit?exln=MXhjMW04dWV5OG0zcg%3D%3D"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:scale-115 transition-transform"
+                className="hover:scale-115 transition-transform opacity-90 hover:opacity-100"
                 title="Instagram: @khabarganit"
               >
-                <Image src="/social/instagram.png" alt="Instagram" width={16} height={16} className="object-contain" />
+                <Image src="/social/instagram.png" alt="Instagram" width={17} height={17} className="object-contain" />
               </a>
               <a
                 href="https://khabarganit.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:scale-115 transition-transform"
+                className="hover:scale-115 transition-transform opacity-90 hover:opacity-100"
                 title="Website: khabarganit.com"
               >
-                <Image src="/social/google.png" alt="Google" width={16} height={16} className="object-contain" />
+                <Image src="/social/google.png" alt="Google" width={17} height={17} className="object-contain" />
               </a>
             </div>
-            {/* ── Single Clean Google Translate Broadsheet Dropdown ── */}
-            <div className="shrink-0 ml-auto flex items-center justify-end select-none">
+
+            {/* Far Right: Single Clean Google Translate Dropdown */}
+            <div className="flex items-center justify-center sm:justify-end select-none">
               <GoogleTranslate onLanguageChange={(lang) => setIsHindi(lang === "hi")} />
             </div>
           </div>
-
 
           {/* Thick Rule below top strip */}
           <div className="w-full h-[2.5px] bg-black mb-1.5 sm:mb-2" />

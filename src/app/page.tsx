@@ -50,14 +50,14 @@ export default function NewspaperPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [currentPage, turning]);
 
-  // Section Navigation Order: World, India, Business, Tech, Sports, Opinion, Entertainment
+  // Section Navigation Order: World, India, Business, Tech, Sports, Politics, Entertainment
   const navItems = [
     { label: "WORLD", targetPage: 2 },
     { label: "INDIA", targetPage: 1 },
     { label: "BUSINESS", targetPage: 3 },
     { label: "TECH", targetPage: 4 },
     { label: "SPORTS", targetPage: 5 },
-    { label: "OPINION", targetPage: 6 },
+    { label: "POLITICS", targetPage: 6 },
     { label: "ENTERTAINMENT", targetPage: 7 },
   ];
 
@@ -193,8 +193,8 @@ export default function NewspaperPage() {
                 </span>
               </div>
 
-              {/* Lead Headline */}
-              <h2 className="font-playfair font-black text-2xl sm:text-3xl md:text-[38px] leading-[1.06] tracking-tight text-black uppercase mb-2">
+              {/* Lead Headline - Generous Line-Height prevents Hindi/Devanagari matra collisions */}
+              <h2 className="font-playfair font-black text-2xl sm:text-3xl md:text-[36px] leading-[1.26] sm:leading-[1.2] tracking-normal sm:tracking-tight text-black uppercase mb-2.5">
                 {activePage.leadStory.headline}
               </h2>
 
@@ -247,7 +247,7 @@ export default function NewspaperPage() {
                     <span className="text-[10px] font-serif font-bold uppercase tracking-[0.16em] text-[#C13A08] block mb-1">
                       {story.kicker}
                     </span>
-                    <h3 className="font-playfair font-black text-base sm:text-lg leading-tight tracking-tight text-black uppercase mb-1.5 hover:text-[#C13A08] transition-colors">
+                    <h3 className="font-playfair font-black text-base sm:text-lg leading-snug tracking-normal sm:tracking-tight text-black uppercase mb-1.5 hover:text-[#C13A08] transition-colors">
                       {story.headline}
                     </h3>
                     <p className="text-xs font-serif leading-relaxed text-stone-700">
@@ -289,7 +289,7 @@ export default function NewspaperPage() {
                     <span className="text-[10px] font-serif font-bold uppercase tracking-widest text-[#C13A08] block mb-1">
                       {story.kicker}
                     </span>
-                    <h4 className="font-playfair font-bold text-sm sm:text-base leading-snug text-black uppercase mb-2">
+                    <h4 className="font-playfair font-bold text-sm sm:text-base leading-normal text-black uppercase mb-2">
                       {story.headline}
                     </h4>
                     <p className="text-xs font-serif text-stone-700 leading-relaxed">
@@ -368,7 +368,7 @@ export default function NewspaperPage() {
                 <span className="text-xs font-serif font-bold uppercase tracking-widest text-[#C13A08] block mb-1">
                   {activePage.editorial.kicker}
                 </span>
-                <h4 className="font-playfair font-black text-2xl sm:text-3xl leading-tight tracking-tight text-black uppercase mb-3">
+                <h4 className="font-playfair font-black text-2xl sm:text-3xl leading-[1.25] tracking-normal text-black uppercase mb-3">
                   {activePage.editorial.headline}
                 </h4>
                 <p className="font-serif italic text-sm sm:text-base text-stone-700 mb-4 leading-snug">

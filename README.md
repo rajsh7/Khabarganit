@@ -32,10 +32,10 @@ KhabarGanit is a modern digital broadsheet newspaper web application engineered 
    - **Cricket & Football:** WPL 2027 Auction (Sophie Molineux ₹1.10 Cr); Liverpool Defeats Chelsea on Penalties
    - **Global Standings:** Abhishek Sharma Reclaims ICC T20I No. 1; Kajal Dhochak World Wrestling Silver
 
-6. **OPINION (Editorials & Strategic Perspectives Edition)**
-   - **Lead:** Supreme Court Ruling: Election Commission Cannot Unilaterally Alter Statutory Voter Forms
-   - **Policy Debates:** Inviting Pakistan to SCO; DA Hike vs Fiscal Prudence; European High-Speed Rail Lessons
-   - **Legal Precedents:** MCOCA Invocation in High-Profile Criminal Conspiracies
+6. **POLITICS (National Political & Governance Edition)**
+   - **Lead:** Supreme Court Ruling on Statutory Voter Forms (Forms 6, 7, 8) & Karnataka 64.5L Missing Voters
+   - **Key Developments:** TN DVAC Raids on Ex-Minister K.N. Nehru; Hardeep Singh Puri RS Nomination from MP
+   - **Elections & Bench:** Maharashtra MLC Counts (Pune/Amravati); Religious Landmarks Hearings & SCO Invite
 
 7. **ENTERTAINMENT (Cinema & Cultural Arts Edition)**
    - **Lead:** 'Avengers: Doomsday' Exclusive Diwali Teaser & Early India Release Schedules

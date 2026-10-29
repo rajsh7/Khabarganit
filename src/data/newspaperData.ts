@@ -39,7 +39,7 @@ export interface EditorialArticle {
 
 export interface SectionPageData {
   pageNumber: number;
-  sectionKey: "WORLD" | "INDIA" | "BUSINESS" | "TECH" | "SPORTS" | "OPINION" | "ENTERTAINMENT";
+  sectionKey: "WORLD" | "INDIA" | "BUSINESS" | "TECH" | "SPORTS" | "POLITICS" | "ENTERTAINMENT";
   sectionTitle: string;
   editionSubtitle: string;
   topStripLabel: string;
@@ -682,91 +682,91 @@ export const SECTION_PAGES: SectionPageData[] = [
   },
 
   // ═══════════════════════════════════════════════════════════════════
-  // PAGE 6: OPINION (Editorials & Strategic Perspectives Edition)
+  // PAGE 6: POLITICS (National Political Chronicle & Governance Edition)
   // ═══════════════════════════════════════════════════════════════════
   {
     pageNumber: 6,
-    sectionKey: "OPINION",
-    sectionTitle: "OPINION & ESSAYS",
-    editionSubtitle: "EDITORIAL COMMENTARY, CONSTITUTIONAL LAW & STATE POLICY",
-    topStripLabel: "PAGE 6 · OPINION & ESSAYS · THURSDAY, 29 OCTOBER 2026",
+    sectionKey: "POLITICS",
+    sectionTitle: "POLITICS & GOVERNANCE",
+    editionSubtitle: "NATIONAL POLITICAL CHRONICLE · ELECTIONS, PARLIAMENT & STATE POLITY",
+    topStripLabel: "PAGE 6 · POLITICS & GOVERNANCE · THURSDAY, 29 OCTOBER 2026",
     leadStory: {
-      kicker: "🔴 CONSTITUTIONAL LAW & DEMOCRATIC SAFEGUARDS",
-      headline: "THE SUPREME COURT DRAWS THE LINE: WHY ELECTION COMMISSIONS CANNOT UNILATERALLY MODIFY VOTER FORMS",
-      subhead: "Apex court's timely intervention in the Special Intensive Revision (SIR) hearing protects statutory franchise rights from arbitrary bureaucratic modification.",
+      kicker: "🔴 CONSTITUTIONAL LAW & ELECTORAL INTEGRITY",
+      headline: "SUPREME COURT REBUKES ELECTION COMMISSION ON VOTER FORMS; 64.5 LAKH MISSING VOTERS SPARKS POLITICAL STORM",
+      subhead: "Apex court firmly observes Election Commission cannot modify statutory registration Forms 6, 7, and 8, as Karnataka electoral roll discrepancies and mass voter deletions trigger nationwide political outcry.",
       image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200&q=80",
       imageAlt: "Supreme Court bronze scales of justice representing constitutional integrity",
-      caption: "The Supreme Court of India deliberates on electoral roll transparency and statutory registration safeguards on Thursday. (Photo: Legal Correspondent / KhabarGanit)",
+      caption: "The Supreme Court of India deliberates on electoral roll transparency, statutory registration safeguards, and procedural voter rights on Thursday. (Photo: Legal Correspondent / KhabarGanit)",
       col1: [
-        "NEW DELHI — In a profound reaffirmation of constitutional safeguards, the Supreme Court of India on Thursday delivered a sharp observation during hearings on the Special Intensive Revision (SIR) of electoral rolls, affirming that the Election Commission cannot unilaterally alter statutory registration forms without legislative mandate.",
-        "A bench headed by senior justices noted that Forms 6, 7, and 8—which govern voter enrollment, deletion objections, and constituency corrections—are statutory instruments framed under the Representation of the People Act, 1950, and cannot be curtailed through executive notifications.",
-        "The hearing assumed acute political urgency following reports from Karnataka, where opposition parties alleged that procedural anomalies during the revision drive resulted in approximately 64.5 lakh eligible citizens missing from the finalized electoral rolls."
+        "NEW DELHI — In a profound reaffirmation of constitutional safeguards, the Supreme Court of India on Thursday delivered a sharp observation during hearings on the Special Intensive Revision (SIR) of electoral rolls, asserting that the Election Commission cannot modify statutory voter forms without legislative authority.",
+        "A bench headed by senior justices noted that Forms 6, 7, and 8—which govern voter enrollment, deletion objections, and constituency modifications—are statutory instruments framed under the Representation of the People Act, 1950, and cannot be altered through executive guidelines.",
+        "The hearing assumed acute political urgency following reports from Karnataka, where data revealed that approximately 64.5 lakh eligible citizens—a majority of them young voters—are potentially missing from the finalized electoral rolls, sparking widespread opposition protests across Bengaluru."
       ],
       col2: [
-        "STATUTORY RIGOR VS EXECUTIVE EASE — The court underlined that in a constitutional democracy of 1.4 billion citizens, the right to vote is an indispensable civil entitlement that cannot be subjected to opaque bureaucratic software algorithms or sudden evidentiary hurdles.",
+        "STATUTORY RIGOR VS EXECUTIVE TWEAKS — The court underlined that in a constitutional democracy of 1.4 billion citizens, the fundamental franchise right cannot be subjected to opaque bureaucratic software algorithms or sudden evidentiary hurdles.",
         "The bench directed the Commission to place on record the complete data-verification trail and ensure that no legitimate voter is purged without documented physical verification and reasoned written notice.",
-        "Legal scholars hailed the ruling as an essential bulwark preventing institutional overreach, reminding administrative bodies that electoral legitimacy rests entirely upon verifiable public trust."
+        "Political observers note that the judicial intervention arrives alongside intense political focus on DVAC searches against DMK leadership in Tamil Nadu and high-stakes MLC counting in Maharashtra."
       ]
     },
     sideStories: [
       {
-        kicker: "DIPLOMATIC CALCULUS · MEA",
-        headline: "INVITING PAKISTAN TO SCO: THE LOGIC OF MULTILATERAL ENGAGEMENT",
-        summary: "Why hosting the regional summit in New Delhi reinforces India's Eurasian leadership without diluting its unwavering stance on cross-border terror."
+        kicker: "VIGILANCE CRACKDOWN · TAMIL NADU",
+        headline: "DVAC RAIDS TARGET PREMISES LINKED TO EX-MINISTER K.N. NEHRU",
+        summary: "Statewide vigilance searches launched across Chennai, Tiruchirappalli, and Coimbatore in connection with multi-crore cash-for-jobs recruitment scam investigation."
       },
       {
-        kicker: "FISCAL BALANCE · INFLATION",
-        headline: "BALANCING THE 3% DA HIKE WITH MACRO-ECONOMIC PRUDENCE",
-        summary: "Injecting ₹9,448 crore into festive consumer liquidity while keeping central fiscal deficit targets anchored within 4.5% of GDP."
+        kicker: "PARLIAMENT · RAJYA SABHA BYPOLL",
+        headline: "HARDEEP SINGH PURI NAMED BJP CANDIDATE FROM MADHYA PRADESH",
+        summary: "Union Minister officially nominated for the upcoming Rajya Sabha by-election from Madhya Pradesh; party high command finalizes filing roadmap."
       },
       {
-        kicker: "STATE COUNCIL VERDICTS",
-        headline: "MLC RESULTS REVEAL DEEP BIPOLAR SHIFTS IN REGIONAL POLITY",
-        summary: "How disciplined cadre mobilization by the NDA and Samajwadi Party squeezed smaller centrist factions out of state upper chambers."
+        kicker: "COUNCIL POLLS · MAHARASHTRA",
+        headline: "MAHARASHTRA MLC COUNTS: INTENSE RIVALRY IN PUNE & AMRAVATI",
+        summary: "Regional political battles peak as ruling coalition and opposition lock horns over legislative council tallies in key agricultural and urban belts."
       }
     ],
     topStories: [
       {
-        kicker: "TRANSPORT SAFETY",
-        headline: "High-Speed Rail Safety in Spain: Why Automated Systems Require Failsafes",
-        summary: "Examining why European train collision protocols failed under maintenance overrides, offering urgent lessons for global railway networks.",
-        author: "DR. ARUN PRASAD",
+        kicker: "CABINET DECISION",
+        headline: "Union Cabinet Clears 3% DA Hike for Central Government Staff",
+        summary: "Central government employees and pensioners receive timely financial cushion ahead of Diwali with retrospective July 1 implementation.",
+        author: "POLICY BUREAU",
         location: "NEW DELHI"
       },
       {
-        kicker: "MIDDLE EAST CRISIS",
-        headline: "The Israel Coalition Impasse: Democracy Under the Shadow of Prolonged Conflict",
-        summary: "A fractured Knesset and neck-and-neck polls between Netanyahu and Eisenkot threaten prolonged legislative paralysis.",
-        author: "ZAHRA RAHMANI",
-        location: "BEIRUT"
+        kicker: "DIPLOMATIC ENGAGEMENT",
+        headline: "India Transmits Diplomatic SCO Invitation to Pakistan for Delhi Conclave",
+        summary: "New Delhi formally extends official diplomatic invitation to Islamabad for the upcoming Shanghai Cooperation Organisation regional summit.",
+        author: "DIPLOMATIC DESK",
+        location: "NEW DELHI"
       },
       {
-        kicker: "CENTRAL BANKING",
-        headline: "The Fed Rate Pause: Why Global Debt Markets Must Brace for Higher for Longer",
-        summary: "Persistent US services inflation restricts rapid monetary easing, keeping emerging market bond yields elevated.",
-        author: "PRIYA VERMA",
-        location: "GENEVA"
+        kicker: "JUDICIAL HEARINGS",
+        headline: "Apex & High Courts Hear Bhojshala & Race Course Mosque Matters",
+        summary: "Supreme Court hears Bhojshala namaz petitions while Delhi High Court addresses Race Course mosque matters and reprimands Delhi Police on procedural delays.",
+        author: "LEGAL CORRESPONDENT",
+        location: "NEW DELHI"
       },
       {
-        kicker: "CRIMINAL JURISPRUDENCE",
-        headline: "Invoking MCOCA in Extortion Attacks: Deterrence vs Judicial Scrutiny",
-        summary: "Special court's permission to re-arrest accused in the Tiger Shroff firing case reflects aggressive prosecution against organized syndicates.",
-        author: "ADV. MANISH KAPOOR",
-        location: "MUMBAI"
+        kicker: "GLOBAL POLITICS",
+        headline: "Trump Denies Directing Vance on Iran Peace Talks; Cites Medical Aid",
+        summary: "Donald Trump publicly clarifies communications with Gulf intermediaries centered strictly on humanitarian medical supplies for Iran, not peace talks.",
+        author: "WASHINGTON BUREAU",
+        location: "WASHINGTON D.C."
       }
     ],
-    digestTitle: "OPINION TOP 10 STRATEGIC & EDITORIAL PERSPECTIVES",
+    digestTitle: "POLITICS TOP 10 NATIONAL & REGIONAL DEVELOPMENTS",
     digestItems: [
-      { number: 1, headline: "Cyclone Arnab Landfall Disaster", summary: "Disaster management models tested as climate volatility pounds eastern coast.", category: "CLIMATE POLICY" },
-      { number: 2, headline: "SCO Invitation to Islamabad", summary: "Strategic nuance of extending diplomatic protocols while upholding national security.", category: "FOREIGN POLICY" },
-      { number: 3, headline: "Union Cabinet DA & DR Clearance", summary: "Economic multiplier effects of festive liquidity injections for 1.15 crore households.", category: "FISCAL ECONOMICS" },
-      { number: 4, headline: "Multi-State MLC Bypolls", summary: "Regional legislative dominance consolidated by organized party machines.", category: "POLITICAL LANDSCAPE" },
-      { number: 5, headline: "Supreme Court Voter Roll Ruling", summary: "Apex court mandates strict statutory protection for electoral registration forms.", category: "CONSTITUTIONAL LAW" },
-      { number: 6, headline: "Spain High-Speed Train Tragedy", summary: "Technical audit demands systemic re-evaluation of automated railway protocols.", category: "INFRASTRUCTURE SAFETY" },
-      { number: 7, headline: "Federal Reserve Interest Pause", summary: "Status-quo stance reinforces higher-for-longer borrowing environment worldwide.", category: "GLOBAL FINANCE" },
-      { number: 8, headline: "Israel Election Tight Race", summary: "Compromised coalition arithmetic strains political stability in Tel Aviv.", category: "INTERNATIONAL POLITICS" },
-      { number: 9, headline: "MCOCA in High-Profile Crime", summary: "Mumbai Crime Branch's tough invocation of organized crime statutes examined.", category: "CRIMINAL LAW" },
-      { number: 10, headline: "Karwa Chauth Societal Fabric", summary: "Cultural continuity, regional public holidays, and the modern consumer economy.", category: "SOCIETY & CULTURE" }
+      { number: 1, headline: "TN Vigilance Raids on K.N. Nehru", summary: "DVAC launches statewide searches against former Tamil Nadu minister over cash-for-jobs recruitment scam.", category: "VIGILANCE & GRAFT" },
+      { number: 2, headline: "Supreme Court Hearing on Voter Forms", summary: "Apex court rules Election Commission cannot modify statutory registration Forms 6, 7, and 8.", category: "CONSTITUTIONAL LAW" },
+      { number: 3, headline: "Karnataka 64.5 Lakh Missing Voters", summary: "Electoral rolls discrepancy triggers major political pushback; majority of missing are young voters.", category: "ELECTORAL ROLLS" },
+      { number: 4, headline: "Union Cabinet 3% DA Hike", summary: "Central government approves Dearness Allowance revision for employees and pensioners effective July 1.", category: "CABINET POLICY" },
+      { number: 5, headline: "Cyclone Arnab Political Response", summary: "Heavy rains pound eastern coast, prompting massive evacuation drives across 17 Odisha districts.", category: "DISASTER GOVERNANCE" },
+      { number: 6, headline: "SCO Invitation to Pakistan", summary: "India formally transmits diplomatic invitation to Pakistan for New Delhi regional conference.", category: "SOUTH ASIAN DIPLOMACY" },
+      { number: 7, headline: "Hardeep Puri Rajya Sabha Nomination", summary: "Union Minister named as BJP candidate for Madhya Pradesh upper house by-election.", category: "PARLIAMENTARY AFFAIRS" },
+      { number: 8, headline: "Courts on Religious Landmarks", summary: "SC hears Bhojshala petitions; Delhi HC hears Race Course mosque matter and reprimands Delhi Police.", category: "JUDICIAL BENCH" },
+      { number: 9, headline: "Maharashtra MLC Election Counts", summary: "Local political focus intensifies around legislative council counts in Pune and Amravati.", category: "STATE POLITY" },
+      { number: 10, headline: "Trump Clarifies Iran Diplomacy", summary: "Donald Trump denies directing JD Vance on peace talks, clarifying talks centered on medical aid.", category: "GLOBAL GEOPOLITICS" }
     ],
     editorial: {
       kicker: "CONSTITUTIONAL EDITORIAL · THE BALLOT BOX",
@@ -784,22 +784,22 @@ export const SECTION_PAGES: SectionPageData[] = [
       bureau: "New Delhi Bureau",
       sideArticles: [
         {
+          kicker: "VIGILANCE & RECKONING",
+          headline: "Cash for Jobs: The High-Stakes DVAC Probe in Tamil Nadu",
+          summary: "Statewide raids on political leadership highlight the escalating scrutiny over recruitment integrity.",
+          byline: "BY K. SENGUPTA · SOUTHERN BUREAU"
+        },
+        {
+          kicker: "PARLIAMENTARY MATH",
+          headline: "Upper House Strategies: Why Madhya Pradesh Was Chosen for Hardeep Puri",
+          summary: "BJP balances ministerial tenure requirements with regional caste and coalition considerations.",
+          byline: "BY PRADEEP SHARMA · PARLIAMENT CORRESPONDENT"
+        },
+        {
           kicker: "DIPLOMACY ESSAY",
           headline: "Eurasian Realpolitik: India's Diplomatic Masterclass in SCO Stewardship",
           summary: "Engaging difficult neighbors within multilateral umbrellas showcases New Delhi's growing diplomatic maturity.",
           byline: "BY AMBASSADOR S. K. VERMA · STRATEGIC AFFAIRS"
-        },
-        {
-          kicker: "CLIMATE RESILIENCE",
-          headline: "Beyond Sandbags: Building Cyclone-Proof Grids Along the Bay of Bengal",
-          summary: "Underground cabling and automated sluice networks are the only lasting antidote to intensifying tropical storms.",
-          byline: "BY DR. SUNITA MEHTA · DISASTER MANAGEMENT"
-        },
-        {
-          kicker: "ECONOMIC PERSPECTIVE",
-          headline: "The Festive Liquidity Dividend: Why Wage Subsidies Power Real GDP",
-          summary: "Direct wage enhancements circulate three times faster through retail supply chains than corporate tax cuts.",
-          byline: "BY RAJESH KUMAR · MACRO-ANALYST"
         }
       ]
     }

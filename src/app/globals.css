@@ -100,7 +100,45 @@ body {
 }
 
 .font-playfair {
-  font-family: "Playfair Display", Georgia, Cambria, "Times New Roman", Times, serif;
+  font-family: "Playfair Display", "Martel", "Noto Serif Devanagari", Georgia, Cambria, "Times New Roman", Times, serif;
+}
+
+/* ── Multilingual & Hindi Devanagari Congestion Fix ── */
+/* Prevents cramped/overlapping letters and matras when page is in Hindi or translated via Google Translate */
+:lang(hi),
+[lang="hi"],
+.translated-ltr,
+.translated-rtl {
+  font-family: "Martel", "Noto Serif Devanagari", "Sarala", sans-serif !important;
+}
+
+:lang(hi) .font-playfair,
+[lang="hi"] .font-playfair,
+.translated-ltr .font-playfair,
+.translated-rtl .font-playfair {
+  font-family: "Martel", "Noto Serif Devanagari", serif !important;
+}
+
+/* Ensure comfortable vertical clearance for all Hindi headings so upper/lower matras never collide */
+:lang(hi) h1, :lang(hi) h2, :lang(hi) h3, :lang(hi) h4, :lang(hi) h5, :lang(hi) h6,
+[lang="hi"] h1, [lang="hi"] h2, [lang="hi"] h3, [lang="hi"] h4, [lang="hi"] h5, [lang="hi"] h6,
+.translated-ltr h1, .translated-ltr h2, .translated-ltr h3, .translated-ltr h4, .translated-ltr h5, .translated-ltr h6,
+.translated-rtl h1, .translated-rtl h2, .translated-rtl h3, .translated-rtl h4, .translated-rtl h5, .translated-rtl h6 {
+  line-height: 1.38 !important;
+  letter-spacing: 0.01em !important;
+  text-transform: none !important;
+  word-spacing: 0.04em !important;
+  padding-top: 3px !important;
+  padding-bottom: 3px !important;
+}
+
+/* Ensure comfortable line-height for body paragraphs in Hindi */
+:lang(hi) p,
+[lang="hi"] p,
+.translated-ltr p,
+.translated-rtl p {
+  line-height: 1.8 !important;
+  letter-spacing: 0.01em !important;
 }
 
 /* 3D Newspaper Page Turning Animations (2.2s Majestic Turn) */

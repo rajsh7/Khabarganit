@@ -71,7 +71,7 @@ export const SECTION_PAGES: SectionPageData[] = [
     editionSubtitle: "THE NATIONAL BROADSHEET · NEW DELHI",
     topStripLabel: "THURSDAY, 29 OCTOBER 2026",
     leadStory: {
-      kicker: "🔴 PRIME MINISTER'S ENGAGEMENTS · BHARAT MANDAPAM",
+      kicker: "PRIME MINISTER'S ENGAGEMENTS · BHARAT MANDAPAM",
       headline: "PM MODI INAUGURATES ESTIC 2026; MANDATES 3-YEAR ‘LAB TO LAND’ DELIVERY IN DEEP-TECH",
       subhead: "Addressing 5,000 scientists, global innovators, and Nobel laureates at Bharat Mandapam, Prime Minister calls for measurable translational breakthroughs in quantum communications, synthetic biology, and indigenous semiconductors for Viksit Bharat 2047.",
       image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80",
@@ -195,7 +195,7 @@ export const SECTION_PAGES: SectionPageData[] = [
     editionSubtitle: "INTERNATIONAL WIRE & GEOPOLITICS · GLOBAL BUREAU",
     topStripLabel: "PAGE 2 · WORLD DISPATCHES · THURSDAY, 29 OCTOBER 2026",
     leadStory: {
-      kicker: "🔴 DISASTER & INVESTIGATION · EUROPEAN RAILWAYS",
+      kicker: "DISASTER & INVESTIGATION · EUROPEAN RAILWAYS",
       headline: "AT LEAST 39 KILLED AFTER HIGH-SPEED PASSENGER TRAINS COLLIDE IN SPAIN",
       subhead: "Catastrophic collision on Madrid-Barcelona trunk corridor triggers national mourning; preliminary investigations cite automated signalling override and human error during line maintenance.",
       image: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1200&q=80",
@@ -319,7 +319,7 @@ export const SECTION_PAGES: SectionPageData[] = [
     editionSubtitle: "DALAL STREET FINANCIAL CHRONICLE · CORPORATE INDIA",
     topStripLabel: "PAGE 3 · BUSINESS & FINANCE · THURSDAY, 29 OCTOBER 2026",
     leadStory: {
-      kicker: "🔴 BLOCKBUSTER DEBUT · DALAL STREET HISTORY",
+      kicker: "BLOCKBUSTER DEBUT · DALAL STREET HISTORY",
       headline: "JIO PLATFORMS LISTS AT 27% PREMIUM; BECOMES INDIA’S 2ND MOST VALUED FIRM AT ₹13 LAKH CR",
       subhead: "Massive retail and institutional bidding propels Reliance telecom & digital arm past major conglomerates on debut; tech stocks rally as market cap tops ₹13,00,000 crore.",
       image: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=1200&q=80",
@@ -443,7 +443,7 @@ export const SECTION_PAGES: SectionPageData[] = [
     editionSubtitle: "FRONTIER COMPUTING, ARTIFICIAL INTELLIGENCE & SILICON",
     topStripLabel: "PAGE 4 · TECH & INNOVATION · THURSDAY, 29 OCTOBER 2026",
     leadStory: {
-      kicker: "🔴 HARDWARE REVOLUTION · CUPERTINO DEBUT",
+      kicker: "HARDWARE REVOLUTION · CUPERTINO DEBUT",
       headline: "APPLE UNVEILS FIRST-EVER TOUCHSCREEN MACBOOK PRO POWERED BY M6 CHIPS",
       subhead: "Tech titan breaks decades of convention with OLED touchscreen display starting at ₹3.49 lakh, alongside ultra-fast M6 Max silicon and revamped iMac lineup.",
       image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=1200&q=80",
@@ -567,7 +567,7 @@ export const SECTION_PAGES: SectionPageData[] = [
     editionSubtitle: "NATIONAL & INTERNATIONAL CHAMPIONSHIPS · STADIUM DISPATCH",
     topStripLabel: "PAGE 5 · SPORTS ARENA · THURSDAY, 29 OCTOBER 2026",
     leadStory: {
-      kicker: "🔴 IN MEMORIAM · INDIAN PARA-ATHLETICS",
+      kicker: "IN MEMORIAM · INDIAN PARA-ATHLETICS",
       headline: "THREE-TIME ASIAN PARA GAMES GOLD MEDALIST NEERAJ YADAV PASSES AWAY AT 42",
       subhead: "Nation mourns the untimely loss of champion javelin and discus thrower who scripted history for India at Asian Para Games; sports fraternity pays emotional homage.",
       image: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=1200&q=80",
@@ -691,7 +691,7 @@ export const SECTION_PAGES: SectionPageData[] = [
     editionSubtitle: "NATIONAL POLITICAL CHRONICLE · ELECTIONS, PARLIAMENT & STATE POLITY",
     topStripLabel: "PAGE 6 · POLITICS & GOVERNANCE · THURSDAY, 29 OCTOBER 2026",
     leadStory: {
-      kicker: "🔴 CONSTITUTIONAL LAW & ELECTORAL INTEGRITY",
+      kicker: "CONSTITUTIONAL LAW & ELECTORAL INTEGRITY",
       headline: "SUPREME COURT REBUKES ELECTION COMMISSION ON VOTER FORMS; 64.5 LAKH MISSING VOTERS SPARKS POLITICAL STORM",
       subhead: "Apex court firmly observes Election Commission cannot modify statutory registration Forms 6, 7, and 8, as Karnataka electoral roll discrepancies and mass voter deletions trigger nationwide political outcry.",
       image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200&q=80",
@@ -815,7 +815,7 @@ export const SECTION_PAGES: SectionPageData[] = [
     editionSubtitle: "CINEMA, CULTURE, BOX OFFICE & CELEBRITY CHRONICLE",
     topStripLabel: "PAGE 7 · ENTERTAINMENT & ARTS · THURSDAY, 29 OCTOBER 2026",
     leadStory: {
-      kicker: "🔴 DIWALI BLOCKBUSTER TEASER · MARVEL CINEMATIC UNIVERSE",
+      kicker: "DIWALI BLOCKBUSTER TEASER · MARVEL CINEMATIC UNIVERSE",
       headline: "AVENGERS: DOOMSDAY REVEALS SPECIAL DIWALI SURPRISE FOR INDIAN MARVEL FANS",
       subhead: "Robert Downey Jr. and Chris Evans unveil exclusive India-first release window and unseen concept footage, igniting advance celebrations across theatres nationwide.",
       image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1200&q=80",

@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Sidebar from "@/components/layout/Sidebar";
@@ -21,27 +22,7 @@ export default async function CategoryPage({
   const trending = [...SAMPLE_ARTICLES].sort((a, b) => b.views - a.views);
 
   if (!cat) {
-    return (
-      <>
-        <Header />
-        <main className="min-h-screen bg-[#F4F4F4] flex items-center justify-center p-6">
-          <div className="text-center max-w-md bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-            <h1 className="text-5xl font-jost font-black text-gray-300 mb-4">404</h1>
-            <p className="font-jost font-bold text-gray-800 text-lg mb-2">यह विभाग नहीं मिला</p>
-            <p className="font-sarala text-gray-500 text-sm mb-6">
-              आपके द्वारा खोजा गया समाचार वर्ग उपलब्ध नहीं है। कृपया होमपेज पर लौटें।
-            </p>
-            <Link
-              href="/"
-              className="inline-block bg-[#E84A0C] text-white px-6 py-2.5 rounded-lg font-jost font-semibold text-sm hover:bg-[#C13A08] transition-colors"
-            >
-              होमपेज पर जाएं
-            </Link>
-          </div>
-        </main>
-        <Footer />
-      </>
-    );
+    notFound();
   }
 
   // Filter 5-6 articles specific to this section

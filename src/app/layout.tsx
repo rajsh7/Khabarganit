@@ -7,14 +7,14 @@ export const metadata: Metadata = {
   keywords: "खबर, समाचार, न्यूज़, हिंदी न्यूज़, भारत, राजनीति, खेल, व्यापार, खबरगणित",
   icons: {
     icon: [
-      { url: "/favicon.ico?v=5", sizes: "any" },
-      { url: "/favicon.png?v=5", type: "image/png" },
-      { url: "/icon.png?v=5", type: "image/png" },
+      { url: "/favicon.png?v=6", type: "image/png" },
+      { url: "/icon.png?v=6", type: "image/png" },
+      { url: "/favicon.ico?v=6", sizes: "any" },
     ],
-    shortcut: "/favicon.ico?v=5",
+    shortcut: "/favicon.ico?v=6",
     apple: [
-      { url: "/apple-touch-icon.png?v=5", sizes: "180x180", type: "image/png" },
-      { url: "/apple-icon.png?v=5", sizes: "180x180", type: "image/png" },
+      { url: "/apple-touch-icon.png?v=6", sizes: "180x180", type: "image/png" },
+      { url: "/apple-icon.png?v=6", sizes: "180x180", type: "image/png" },
     ],
   },
   openGraph: {
@@ -32,10 +32,10 @@ export default function RootLayout({
   return (
     <html lang="hi" dir="ltr">
       <head>
-        <link rel="icon" href="/favicon.ico?v=5" sizes="any" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=5" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png?v=5" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=5" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=6" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png?v=6" />
+        <link rel="icon" href="/favicon.ico?v=6" sizes="any" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=6" />
         {/* Flaticon UIcons CDN for interface icons */}
         <link
           rel="stylesheet"

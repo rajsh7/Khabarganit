@@ -40,7 +40,7 @@ async function getTelegramPhotoUrl(fileId: string): Promise<string | undefined> 
 
 // Parse user message text or photo caption into PublishPayload
 function parseNewsMessage(rawText: string, imageUrl?: string): PublishPayload | null {
-  const lines = rawText.split("\n").map((l) => l.trim()).filter(Boolean);
+  const lines = rawText.split("\n").map((l: string) => l.trim()).filter(Boolean);
   if (lines.length === 0) return null;
 
   let headline = "";
@@ -153,6 +153,10 @@ export async function POST(request: Request) {
         `_(Or simply send the photo with no caption right after!)_\n` +
         `➡️ The bot will automatically attach the photo to that story!\n\n` +
         `━━━━━━━━━━━━━━━━━━━━\n` +
+        `*🗑️ HOW TO DELETE / REMOVE A STORY:*\n` +
+        `Send: \`/delete Your Headline\` or \`/remove Your Headline\`\n` +
+        `_(Or send \`/delete lead\` to reset the main front-page story)_\n\n` +
+        `━━━━━━━━━━━━━━━━━━━━\n` +
         `*⚡ METHOD 2: ALL-IN-ONE QUICK PUBLISH*\n` +
         `Send a photo with short caption:\n` +
         `Line 1: Headline\n` +
@@ -180,6 +184,35 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true });
     }
 
+    // Command: /delete or /remove
+    if (rawText.startsWith("/delete") || rawText.startsWith("/remove")) {
+      const query = rawText.replace(/^\/(delete|remove)\s*/i, "").trim();
+      if (!query) {
+        await sendTelegramMessage(
+          chatId,
+          "⚠️ *Please provide the headline to delete.*\n\nExample:\n`/delete MLC Election Results 2026`\nOr to reset the lead story:\n`/delete lead`"
+        );
+        return NextResponse.json({ ok: true });
+      }
+
+      const delResult = newsPipeline.removeNews(query);
+      if (delResult.success) {
+        await sendTelegramMessage(
+          chatId,
+          `🗑️ *STORY REMOVED SUCCESSFULLY!* 🚀\n\n` +
+            `📰 *Removed:* ${delResult.removedHeadline}\n` +
+            `✅ The broadsheet edition has been restored.\n\n` +
+            `🌐 *View on Website:*\nhttps://www.khabarganit.com`
+        );
+      } else {
+        await sendTelegramMessage(
+          chatId,
+          `⚠️ *Could not find story:* "${query}"\n\nSend /status to view the current live headline.`
+        );
+      }
+      return NextResponse.json({ ok: true, result: delResult });
+    }
+
     // Handle Photo if present
     let imageUrl: string | undefined;
     if (message.photo && Array.isArray(message.photo) && message.photo.length > 0) {
@@ -188,7 +221,6 @@ export async function POST(request: Request) {
     }
 
     // ── FEATURE: SEPARATE PHOTO ATTACHMENT ──
-    // If a photo was sent without full article body, attach it to matching headline (or recent lead story)
     const hasStoryTag = /^(story|content|समाचार):/im.test(rawText);
     const hasMultipleParagraphs = rawText.split("\n\n").length > 2;
 

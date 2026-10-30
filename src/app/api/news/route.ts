@@ -49,3 +49,27 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: err.message || "Failed to publish news" }, { status: 500 });
   }
 }
+
+// DELETE /api/news -> Remove or retract a published story
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    let headline = searchParams.get("headline");
+
+    if (!headline) {
+      try {
+        const body = await request.json();
+        headline = body.headline;
+      } catch {}
+    }
+
+    if (!headline) {
+      return NextResponse.json({ error: "Headline is required to delete news" }, { status: 400 });
+    }
+
+    const result = newsPipeline.removeNews(headline);
+    return NextResponse.json(result);
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message || "Failed to remove news" }, { status: 500 });
+  }
+}

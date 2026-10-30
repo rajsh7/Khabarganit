@@ -451,6 +451,139 @@ class NewsPipelineStore {
       headline: headlineQuery,
     };
   }
+
+  public removeNews(headlineQuery: string): {
+    success: boolean;
+    message: string;
+    removedHeadline: string;
+    section?: string;
+  } {
+    this.loadFromDisk();
+    const clean = headlineQuery.trim().toUpperCase();
+    if (!clean) {
+      return { success: false, message: "Please specify a headline to remove", removedHeadline: "" };
+    }
+
+    const defaultTrending = (liveNewsBaseline?.trending as SectionPageData) || TRENDING_PAGE;
+    const defaultSections = (liveNewsBaseline?.sections as SectionPageData[]) || SECTION_PAGES;
+
+    // 1. Check if it matches Trending Lead Story or if 'lead' was queried
+    if (
+      clean === "LEAD" ||
+      this.trendingPage.leadStory.headline.includes(clean) ||
+      clean.includes(this.trendingPage.leadStory.headline)
+    ) {
+      const removed = this.trendingPage.leadStory.headline;
+      this.trendingPage.leadStory = JSON.parse(JSON.stringify(defaultTrending.leadStory));
+
+      for (let i = 0; i < this.sectionPages.length; i++) {
+        if (
+          clean === "LEAD" ||
+          this.sectionPages[i].leadStory.headline.includes(clean) ||
+          clean.includes(this.sectionPages[i].leadStory.headline)
+        ) {
+          this.sectionPages[i].leadStory = JSON.parse(
+            JSON.stringify(defaultSections[i]?.leadStory || defaultTrending.leadStory)
+          );
+        }
+      }
+
+      this.recentUpdates = this.recentUpdates.filter((u) => !u.headline.toUpperCase().includes(clean));
+      this.saveToLocalDisk();
+      this.saveToCloud().catch(() => {});
+      return {
+        success: true,
+        message: `Removed Lead Story: "${removed}" and restored default edition`,
+        removedHeadline: removed,
+        section: "TRENDING",
+      };
+    }
+
+    // 2. Check Lead Story in each section
+    for (let i = 0; i < this.sectionPages.length; i++) {
+      const sec = this.sectionPages[i];
+      if (sec.leadStory.headline.includes(clean) || clean.includes(sec.leadStory.headline)) {
+        const removed = sec.leadStory.headline;
+        sec.leadStory = JSON.parse(
+          JSON.stringify(defaultSections[i]?.leadStory || defaultTrending.leadStory)
+        );
+        this.recentUpdates = this.recentUpdates.filter((u) => !u.headline.toUpperCase().includes(clean));
+        this.saveToLocalDisk();
+        this.saveToCloud().catch(() => {});
+        return {
+          success: true,
+          message: `Removed ${sec.sectionKey} Lead Story: "${removed}"`,
+          removedHeadline: removed,
+          section: sec.sectionKey,
+        };
+      }
+    }
+
+    // 3. Check Side Stories
+    for (const page of [this.trendingPage, ...this.sectionPages]) {
+      const idx = page.sideStories.findIndex(
+        (s) => s.headline.includes(clean) || clean.includes(s.headline)
+      );
+      if (idx !== -1) {
+        const removed = page.sideStories[idx].headline;
+        const defPage =
+          page.sectionKey === "TRENDING"
+            ? defaultTrending
+            : defaultSections.find((s) => s.sectionKey === page.sectionKey) || defaultTrending;
+        page.sideStories[idx] = JSON.parse(
+          JSON.stringify(defPage.sideStories[idx] || defPage.sideStories[0])
+        );
+        this.recentUpdates = this.recentUpdates.filter((u) => !u.headline.toUpperCase().includes(clean));
+        this.saveToLocalDisk();
+        this.saveToCloud().catch(() => {});
+        return { success: true, message: `Removed Side Story: "${removed}"`, removedHeadline: removed };
+      }
+    }
+
+    // 4. Check Top Stories
+    for (const page of [this.trendingPage, ...this.sectionPages]) {
+      const idx = page.topStories.findIndex(
+        (t) => t.headline.includes(clean) || clean.includes(t.headline)
+      );
+      if (idx !== -1) {
+        const removed = page.topStories[idx].headline;
+        const defPage =
+          page.sectionKey === "TRENDING"
+            ? defaultTrending
+            : defaultSections.find((s) => s.sectionKey === page.sectionKey) || defaultTrending;
+        page.topStories[idx] = JSON.parse(
+          JSON.stringify(defPage.topStories[idx] || defPage.topStories[0])
+        );
+        this.recentUpdates = this.recentUpdates.filter((u) => !u.headline.toUpperCase().includes(clean));
+        this.saveToLocalDisk();
+        this.saveToCloud().catch(() => {});
+        return { success: true, message: `Removed Top Story: "${removed}"`, removedHeadline: removed };
+      }
+    }
+
+    // 5. Check Digest Items
+    for (const page of [this.trendingPage, ...this.sectionPages]) {
+      const idx = page.digestItems.findIndex(
+        (d) =>
+          d.headline.toUpperCase().includes(clean) || clean.includes(d.headline.toUpperCase())
+      );
+      if (idx !== -1) {
+        const removed = page.digestItems[idx].headline;
+        page.digestItems.splice(idx, 1);
+        page.digestItems.forEach((item, num) => (item.number = num + 1));
+        this.recentUpdates = this.recentUpdates.filter((u) => !u.headline.toUpperCase().includes(clean));
+        this.saveToLocalDisk();
+        this.saveToCloud().catch(() => {});
+        return { success: true, message: `Removed Digest Item: "${removed}"`, removedHeadline: removed };
+      }
+    }
+
+    return {
+      success: false,
+      message: `No live news found matching: "${headlineQuery}"`,
+      removedHeadline: headlineQuery,
+    };
+  }
 }
 
 // Global singleton to preserve updates during runtime

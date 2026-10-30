@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Send, CheckCircle2, AlertCircle, ArrowLeft, Globe, Bot, Sparkles, RefreshCw } from "lucide-react";
+import { Send, CheckCircle2, AlertCircle, ArrowLeft, Globe, Bot, Sparkles, RefreshCw, Trash2 } from "lucide-react";
 
 export default function PipelinePage() {
   const [section, setSection] = useState("TRENDING");
@@ -31,6 +31,24 @@ export default function PipelinePage() {
   useEffect(() => {
     fetchStatus();
   }, []);
+
+  const handleDelete = async (hl: string) => {
+    if (!confirm(`Are you sure you want to remove "${hl}" from the broadsheet?`)) return;
+    try {
+      const res = await fetch(`/api/news?headline=${encodeURIComponent(hl)}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        alert(data.message);
+        fetchStatus();
+      } else {
+        alert(data.error || data.message || "Failed to remove story");
+      }
+    } catch (err) {
+      alert("Error removing story");
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -340,7 +358,16 @@ Second paragraph of reporting...`}
                         <span className="font-bold text-[#C13A08]">{up.section}</span>
                         <span>{new Date(up.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       </div>
-                      <div className="font-bold text-stone-900 line-clamp-1">{up.headline}</div>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="font-bold text-stone-900 line-clamp-1">{up.headline}</div>
+                        <button
+                          onClick={() => handleDelete(up.headline)}
+                          className="text-stone-400 hover:text-red-600 transition-colors p-1 shrink-0"
+                          title="Remove from Broadsheet"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
                     </li>
                   ))}
                 </ul>

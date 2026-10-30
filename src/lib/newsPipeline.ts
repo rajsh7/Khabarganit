@@ -3,6 +3,7 @@ import path from "path";
 import os from "os";
 import { TRENDING_PAGE, SECTION_PAGES, SectionPageData, LeadStory, SideStory, TopStory, DigestItem } from "@/data/newspaperData";
 import liveNewsBaseline from "@/data/liveNews.json";
+import { scrubCompetitorNames, isJunkParagraph } from "@/lib/urlScraper";
 
 const CACHE_FILE = path.join(os.tmpdir(), "khabarganit_pipeline_v1.json");
 
@@ -259,13 +260,35 @@ class NewsPipelineStore {
       }
     }
 
-    const paragraphs = payload.paragraphs && payload.paragraphs.length > 0
+    // Scrub competitor news channel names from all input & sanitize
+    const cleanHeadline = scrubCompetitorNames(payload.headline).toUpperCase();
+    const cleanSubhead = payload.subhead ? scrubCompetitorNames(payload.subhead) : undefined;
+    const cleanSummary = payload.summary ? scrubCompetitorNames(payload.summary) : undefined;
+    const cleanKicker = payload.kicker
+      ? scrubCompetitorNames(payload.kicker).toUpperCase()
+      : `KHABARGANIT ${section} REPORT`;
+    const cleanAuthor = payload.author && !payload.author.toLowerCase().includes("aajtak")
+      ? scrubCompetitorNames(payload.author)
+      : "KhabarGanit Senior Desk";
+    const cleanCaption = payload.imageCaption
+      ? scrubCompetitorNames(payload.imageCaption)
+      : `${cleanHeadline} (Photo: KhabarGanit Desk)`;
+
+    const rawParas = payload.paragraphs && payload.paragraphs.length > 0
       ? payload.paragraphs
       : [
-          payload.subhead || payload.summary || "Full breaking coverage delivered by the KhabarGanit National Desk.",
+          cleanSubhead || cleanSummary || "Full breaking coverage delivered by the KhabarGanit National Desk.",
           "Field correspondents and domain specialists confirmed that regulatory oversight and administrative protocols are underway.",
           "Further updates and statistical metrics will be gazetted as verified data becomes accessible.",
         ];
+
+    const paragraphs = rawParas
+      .map((p) => scrubCompetitorNames(p))
+      .filter((p) => !isJunkParagraph(p));
+
+    if (paragraphs.length === 0) {
+      paragraphs.push(cleanSubhead || cleanHeadline);
+    }
 
     // 1. LEAD STORY (Main Hero News)
     if (placement === "LEAD") {
@@ -274,12 +297,12 @@ class NewsPipelineStore {
       const col2 = paragraphs.slice(mid);
 
       const leadData: LeadStory = {
-        kicker: payload.kicker || `${section} BREAKING BULLETIN`,
-        headline: payload.headline.toUpperCase(),
+        kicker: cleanKicker,
+        headline: cleanHeadline,
         subhead: payload.subhead || paragraphs[0] || "Breaking dispatches from the KhabarGanit newsroom.",
         image: payload.image || targetPage.leadStory.image || defaultImg,
-        imageAlt: payload.headline,
-        caption: payload.imageCaption || `${payload.headline} reported on ${new Date().toLocaleDateString('en-GB')}. (Photo: KhabarGanit)`,
+        imageAlt: cleanHeadline,
+        caption: cleanCaption,
         col1: col1.length > 0 ? col1 : targetPage.leadStory.col1,
         col2: col2.length > 0 ? col2 : targetPage.leadStory.col2,
         publishedAt: new Date().toISOString(),
@@ -317,12 +340,12 @@ class NewsPipelineStore {
     // 2. SIDE STORY (Never discard previous stories; prepend or update existing)
     else if (placement === "SIDE") {
       const newSideStory: SideStory = {
-        kicker: payload.kicker || `${section} REPORT`,
-        headline: payload.headline.toUpperCase(),
-        summary: payload.subhead || payload.summary || paragraphs[0],
+        kicker: cleanKicker,
+        headline: cleanHeadline,
+        summary: cleanSubhead || cleanSummary || paragraphs[0],
         image: payload.image || defaultImg,
-        imageCaption: payload.imageCaption,
-        author: payload.author || "KhabarGanit Desk",
+        imageCaption: cleanCaption,
+        author: cleanAuthor,
         location: payload.location || "New Delhi",
         paragraphs: paragraphs,
         publishedAt: new Date().toISOString(),
@@ -351,13 +374,13 @@ class NewsPipelineStore {
     // 3. TOP STORY (Never discard previous stories; prepend or update existing)
     else if (placement === "TOP") {
       const newTopStory: TopStory = {
-        kicker: payload.kicker || `${section} DISPATCH`,
-        headline: payload.headline.toUpperCase(),
-        summary: payload.subhead || payload.summary || paragraphs[0],
-        author: payload.author || "Special Correspondent",
+        kicker: cleanKicker,
+        headline: cleanHeadline,
+        summary: cleanSubhead || cleanSummary || paragraphs[0],
+        author: cleanAuthor,
         location: payload.location || "National Bureau",
         image: payload.image || defaultImg,
-        imageCaption: payload.imageCaption,
+        imageCaption: cleanCaption,
         paragraphs: paragraphs,
         publishedAt: new Date().toISOString(),
         timeAgo: "Just now",
@@ -387,7 +410,7 @@ class NewsPipelineStore {
         number: 1,
         category: payload.kicker || section,
         headline: payload.headline,
-        summary: payload.subhead || payload.summary || paragraphs[0],
+        summary: cleanSubhead || cleanSummary || paragraphs[0],
       };
 
       const updated = [newDigest, ...targetPage.digestItems].map((item, idx) => ({
@@ -424,6 +447,8 @@ class NewsPipelineStore {
   ): { success: boolean; message: string; headline: string; section?: string } {
     this.loadFromDisk();
     const clean = headlineQuery.trim().toUpperCase();
+
+
 
     // 1. Trending lead story
     if (
@@ -525,6 +550,8 @@ class NewsPipelineStore {
   } {
     this.loadFromDisk();
     const clean = headlineQuery.trim().toUpperCase();
+
+
     if (!clean) {
       return { success: false, message: "Please specify a headline to remove", removedHeadline: "" };
     }

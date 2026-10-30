@@ -2,7 +2,8 @@
  * KhabarGanit Autonomous URL News Scraper & Ingestion Engine
  * Extracts headlines, subheads, substantive body paragraphs,
  * high-resolution editorial photos, and embedded video dispatches
- * from PIB, national wire agencies, and global news sources.
+ * while strictly purging JavaScript code, HTML comments, competitor
+ * news channel names, and SEO keyword spam.
  */
 
 export interface ScrapedNews {
@@ -17,9 +18,98 @@ export interface ScrapedNews {
   videoUrl?: string;
   sectionKey: "TRENDING" | "WORLD" | "INDIA" | "BUSINESS" | "TECH" | "SPORTS" | "POLITICS" | "ENTERTAINMENT";
   kicker: string;
-  author?: string;
+  author: string;
   location?: string;
   publishedAt?: string;
+}
+
+// Competitor Channel & Network patterns to purge from all published output
+const COMPETITOR_PATTERNS = [
+  /aaj\s*tak\s*news/gi,
+  /aaj\s*tak/gi,
+  /aajtak/gi,
+  /आज\s*तक\s*न्यूज़/gi,
+  /आज\s*तक/gi,
+  /आजतक/gi,
+  /ndtv(?:\s*india|\s*24x7|\s*profit)?/gi,
+  /एनडीटीवी(?:\s*इंडिया)?/gi,
+  /abp(?:\s*news|\s*live|\s*ganga)?/gi,
+  /एबीपी(?:\s*न्यूज़|\s*लाइव)?/gi,
+  /zee(?:\s*news|\s*hindustan|\s*business)?/gi,
+  /ज़ी\s*न्यूज़|जी\s*न्यूज|ज़ी\s*हिंदुस्तान/gi,
+  /india\s*today/gi,
+  /इंडिया\s*टुडे/gi,
+  /news18(?:\s*hindi|\s*india)?|news\s*18/gi,
+  /न्यूज़\s*18|न्यूज\s*18/gi,
+  /republic(?:\s*bharat|\s*world|\s*tv)?/gi,
+  /रिपब्लिक\s*भारत|रिपब्लिक/gi,
+  /tv9(?:\s*bharatvarsh)?/gi,
+  /टीवी9(?:\s*भारतवर्ष)?/gi,
+  /dainik\s*bhaskar/gi,
+  /दैनिक\s*भास्कर/gi,
+  /amar\s*ujala/gi,
+  /अमर\s*उजाला/gi,
+  /dainik\s*jagran/gi,
+  /दैनिक\s*जागरण/gi,
+  /live\s*hindustan/gi,
+  /लाइव\s*हिंदुस्तान/gi,
+  /navbharat\s*times/gi,
+  /नवभारत\s*टाइम्स/gi,
+  /jansatta/gi,
+  /जनसत्ता/gi,
+  /times\s*of\s*india/gi,
+  /hindustan\s*times/gi,
+  /the\s*hindu/gi,
+  /indian\s*express/gi,
+  /the\s*economic\s*times/gi,
+  /bbc(?:\s*hindi|\s*news)?/gi,
+  /बीबीसी(?:\s*हिंदी|\s*न्यूज)?/gi,
+  /reuters/gi,
+  /ani(?:\s*news)?/gi,
+  /associated\s*press/gi,
+  /bloomberg/gi,
+];
+
+// Scrub competitor channel names, slogans, and branding
+export function scrubCompetitorNames(str: string): string {
+  if (!str) return "";
+  let cleaned = str;
+  for (const pat of COMPETITOR_PATTERNS) {
+    cleaned = cleaned.replace(pat, "");
+  }
+  return cleaned
+    .replace(/\(\s*photo\s*:\s*[^\)]*\)/gi, "(Photo: KhabarGanit)")
+    .replace(/\(\s*फोटो\s*:\s*[^\)]*\)/gi, "(Photo: KhabarGanit)")
+    .replace(/\bphoto\s*:\s*[a-z0-9_-]+/gi, "Photo: KhabarGanit")
+    .replace(/\b(read more on|follow us on|download app|live tv)\b/gi, "")
+    .replace(/\s{2,}/g, " ")
+    .replace(/^[:\s\-|,;]+|[:\s\-|,;]+$/g, "")
+    .trim();
+}
+
+// Check if string is a repetitive SEO tag dump rather than an authentic headline
+export function isSeoTagDump(str: string): boolean {
+  if (!str) return true;
+  const lower = str.toLowerCase();
+  const markers = [
+    "hindi news",
+    "हिंदी न्यूज़",
+    "हिंदी न्यूज़",
+    "hindi samachar",
+    "हिंदी समाचार",
+    "breaking news",
+    "breaking news in hindi",
+    "ताजा ख़बरें",
+    "ताज़ा ख़बरें",
+    "latest news",
+    "latest news in hindi",
+    "watch live tv",
+  ];
+  let hits = 0;
+  for (const m of markers) {
+    if (lower.includes(m)) hits++;
+  }
+  return hits >= 2;
 }
 
 // Comprehensive HTML entity decoder
@@ -54,15 +144,28 @@ export function decodeHtmlEntities(str: string): string {
     .trim();
 }
 
-// Clean HTML tags and scripts into plain text
+// Pre-sanitize entire raw HTML to guarantee zero script, comment, or style leakage
+export function preSanitizeHtml(rawHtml: string): string {
+  if (!rawHtml) return "";
+  return rawHtml
+    // 1. Remove all HTML comments
+    .replace(/<!--[\s\S]*?-->/g, " ")
+    // 2. Remove all script tags and inner contents (multiline)
+    .replace(/<script\b[\s\S]*?<\/script>/gi, " ")
+    // 3. Remove all style tags and inner contents
+    .replace(/<style\b[\s\S]*?<\/style>/gi, " ")
+    // 4. Remove all noscript, svg, canvas, audio tags
+    .replace(/<noscript\b[\s\S]*?<\/noscript>/gi, " ")
+    .replace(/<svg\b[\s\S]*?<\/svg>/gi, " ")
+    .replace(/<canvas\b[\s\S]*?<\/canvas>/gi, " ");
+}
+
+// Clean HTML tags into plain text
 export function cleanHtmlText(html: string): string {
   if (!html) return "";
+  const sanitized = preSanitizeHtml(html);
   return decodeHtmlEntities(
-    html
-      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
-      .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "")
-      .replace(/<noscript\b[^<]*(?:(?!<\/noscript>)<[^<]*)*<\/noscript>/gi, "")
-      .replace(/<svg\b[^<]*(?:(?!<\/svg>)<[^<]*)*<\/svg>/gi, "")
+    sanitized
       .replace(/<[^>]+>/g, " ")
       .replace(/\s+/g, " ")
       .trim()
@@ -114,7 +217,6 @@ export function extractJsonLd(html: string): any {
 
 // Extract Video (YouTube, MP4, og:video)
 export function extractVideo(html: string): string | undefined {
-  // 1. YouTube embeds or links
   const ytMatch = html.match(
     /(?:https?:)?\/\/(?:www\.)?(?:youtube\.com\/(?:embed\/|watch\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i
   );
@@ -122,7 +224,6 @@ export function extractVideo(html: string): string | undefined {
     return `https://www.youtube.com/embed/${ytMatch[1]}`;
   }
 
-  // 2. OpenGraph video
   const ogVideo = extractMeta(html, "og:video") || extractMeta(html, "og:video:url") || extractMeta(html, "og:video:secure_url");
   if (ogVideo) {
     const ytInOg = ogVideo.match(
@@ -134,7 +235,6 @@ export function extractVideo(html: string): string | undefined {
     if (ogVideo.startsWith("http")) return ogVideo;
   }
 
-  // 3. HTML5 <video src="...">
   const videoMatch = html.match(/<video[^>]+src=["']([^"']+)["']/i);
   if (videoMatch && videoMatch[1] && videoMatch[1].startsWith("http")) {
     return videoMatch[1];
@@ -147,12 +247,10 @@ export function extractVideo(html: string): string | undefined {
 export function extractImages(html: string, baseUrl: string, jsonLd: any): { primary?: string; gallery: string[] } {
   const images: string[] = [];
 
-  // Helper to test if image is a valid editorial photo
   const isValidPhoto = (url?: string): boolean => {
     if (!url || typeof url !== "string") return false;
     const lower = url.toLowerCase();
     if (!lower.startsWith("http")) return false;
-    // Filter out icons, tracking pixels, logos, badges, and ads
     const junkPatterns = [
       "pixel",
       "logo",
@@ -169,18 +267,18 @@ export function extractImages(html: string, baseUrl: string, jsonLd: any): { pri
       "gravatar",
       ".svg",
       "1x1",
+      "share",
+      "bell",
     ];
     return !junkPatterns.some((pattern) => lower.includes(pattern));
   };
 
-  // 1. Check og:image & twitter:image
   const ogImg = extractMeta(html, "og:image:secure_url") || extractMeta(html, "og:image");
   if (isValidPhoto(ogImg)) images.push(ogImg!);
 
   const twitterImg = extractMeta(html, "twitter:image");
   if (isValidPhoto(twitterImg) && !images.includes(twitterImg!)) images.push(twitterImg!);
 
-  // 2. Check JSON-LD
   if (jsonLd?.image) {
     const jl = jsonLd.image;
     if (typeof jl === "string" && isValidPhoto(jl)) {
@@ -195,16 +293,16 @@ export function extractImages(html: string, baseUrl: string, jsonLd: any): { pri
     }
   }
 
-  // 3. In-page images (especially PIB release images like /WriteReadData/userfiles/...)
-  const imgMatches = html.matchAll(/<img[^>]+src=["']([^"']+)["'][^>]*>/gi);
+  // In-page images
+  const sanitized = preSanitizeHtml(html);
+  const imgMatches = sanitized.matchAll(/<img[^>]+src=["']([^"']+)["'][^>]*>/gi);
   for (const match of imgMatches) {
-    let src = match[1];
+    const src = match[1];
     if (src) {
       try {
         const absolute = new URL(src, baseUrl).href;
         if (isValidPhoto(absolute) && !images.includes(absolute)) {
-          // If it's a PIB userfile or press release photo, prioritize it!
-          if (absolute.includes("WriteReadData") || absolute.includes("userfiles") || absolute.includes("content")) {
+          if (absolute.includes("WriteReadData") || absolute.includes("userfiles") || absolute.includes("upload")) {
             images.unshift(absolute);
           } else {
             images.push(absolute);
@@ -220,46 +318,64 @@ export function extractImages(html: string, baseUrl: string, jsonLd: any): { pri
   };
 }
 
+// Rigorous Paragraph Filter: Discards JavaScript, Cookie code, Horoscopes, and Ad junk
+export function isJunkParagraph(p: string): boolean {
+  if (!p || p.length < 30) return true;
+  const lower = p.toLowerCase();
+
+  // 1. JavaScript, Cookie, & Syntax patterns
+  const jsPatterns = [
+    "var ", "let ", "const ", "function", "=>", "$(", "document.", "window.",
+    "cookie", "favicon", "setinterval", "settimeout", "ajax", "eval(",
+    "-->", "<!--", "/*", "*/", "__at", "slideup", "removeclass", "toggleclass",
+    "location.href", "encodeuricomponent", "split('", "split(\"", "return false",
+    "{", "}", "();", ");", "];", "};"
+  ];
+
+  if (jsPatterns.some((pattern) => lower.includes(pattern))) {
+    return true;
+  }
+
+  // 2. Horoscope / Rashifal widget spam
+  const rashiList = [
+    "मेष राशि", "वृषभ राशि", "मिथुन राशि", "कर्क राशि", "सिंह राशि", "कन्या राशि",
+    "तुला राशि", "वृश्चिक राशि", "धनु राशि", "मकर राशि", "कुंभ राशि", "मीन राशि"
+  ];
+  if (rashiList.some((r) => p.startsWith(r) || lower.includes(r.toLowerCase()))) {
+    return true;
+  }
+
+  // 3. Generic SEO Tag dumps
+  if (isSeoTagDump(p)) return true;
+
+  // 4. Common web junk
+  const junkStarters = [
+    "also read:", "read also:", "click here to", "subscribe to", "follow us on",
+    "follow our whatsapp", "download our app", "advertisement", "sponsored content",
+    "all rights reserved", "copyright ©", "terms of use", "privacy policy",
+    "cookie policy", "share this story", "listen to this story", "photo credit",
+    "read more on", "watch live", "लाइव टीवी", "डाउनलोड करें"
+  ];
+
+  return junkStarters.some((j) => lower.startsWith(j) || lower.includes(j));
+}
+
 // Clean and extract substantive story paragraphs
 export function extractParagraphs(html: string, jsonLd: any, domain: string): string[] {
   const paragraphs: string[] = [];
-
-  // Helper to validate substantive paragraphs
-  const isJunkParagraph = (p: string): boolean => {
-    if (!p || p.length < 25) return true;
-    const lower = p.toLowerCase();
-    const junkStarters = [
-      "also read:",
-      "read also:",
-      "click here to",
-      "subscribe to",
-      "follow us on",
-      "follow our whatsapp",
-      "download our app",
-      "advertisement",
-      "sponsored content",
-      "all rights reserved",
-      "copyright ©",
-      "terms of use",
-      "privacy policy",
-      "cookie policy",
-      "share this story",
-      "listen to this story",
-    ];
-    return junkStarters.some((j) => lower.startsWith(j) || lower.includes(j));
-  };
+  const cleanHtml = preSanitizeHtml(html);
 
   // 1. PIB Specific Extraction
   if (domain.includes("pib.gov.in")) {
     const pibContainerMatch =
-      html.match(/<div[^>]+id=["']?Release-Details["']?[^>]*>([\s\S]*?)<\/div>/i) ||
-      html.match(/<div[^>]+class=["'][^"']*innner-content[^"']*["'][^>]*>([\s\S]*?)<\/div>/i);
+      cleanHtml.match(/<div[^>]+id=["']?Release-Details["']?[^>]*>([\s\S]*?)<\/div>/i) ||
+      cleanHtml.match(/<div[^>]+class=["'][^"']*innner-content[^"']*["'][^>]*>([\s\S]*?)<\/div>/i);
 
-    const contentHtml = pibContainerMatch ? pibContainerMatch[1] : html;
+    const contentHtml = pibContainerMatch ? pibContainerMatch[1] : cleanHtml;
     const pMatches = contentHtml.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi);
 
     for (const match of pMatches) {
-      const text = cleanHtmlText(match[1]);
+      const text = scrubCompetitorNames(cleanHtmlText(match[1]));
       if (!isJunkParagraph(text)) {
         paragraphs.push(text);
       }
@@ -270,22 +386,25 @@ export function extractParagraphs(html: string, jsonLd: any, domain: string): st
 
   // 2. Check JSON-LD articleBody
   if (jsonLd?.articleBody && typeof jsonLd.articleBody === "string") {
-    const rawBody = cleanHtmlText(jsonLd.articleBody);
-    const chunks = rawBody.split(/(?:\r?\n){1,2}/).map((c) => c.trim()).filter((c) => !isJunkParagraph(c));
+    const rawBody = scrubCompetitorNames(cleanHtmlText(jsonLd.articleBody));
+    const chunks = rawBody
+      .split(/(?:\r?\n){1,2}/)
+      .map((c) => c.trim())
+      .filter((c) => !isJunkParagraph(c));
     if (chunks.length > 0) return chunks;
   }
 
   // 3. Look for semantic <article> or main content blocks
   const articleBlock =
-    html.match(/<article[^>]*>([\s\S]*?)<\/article>/i) ||
-    html.match(/<div[^>]+class=["'][^"']*(?:article-body|story-content|story-body|article__body|entry-content|main-content)[^"']*["'][^>]*>([\s\S]*?)<\/div>/i) ||
-    html.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
+    cleanHtml.match(/<article[^>]*>([\s\S]*?)<\/article>/i) ||
+    cleanHtml.match(/<div[^>]+class=["'][^"']*(?:article-body|story-content|story-body|article__body|entry-content|main-content)[^"']*["'][^>]*>([\s\S]*?)<\/div>/i) ||
+    cleanHtml.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
 
-  const targetHtml = articleBlock ? articleBlock[1] : html;
+  const targetHtml = articleBlock ? articleBlock[1] : cleanHtml;
   const pMatches = targetHtml.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi);
 
   for (const match of pMatches) {
-    const text = cleanHtmlText(match[1]);
+    const text = scrubCompetitorNames(cleanHtmlText(match[1]));
     if (!isJunkParagraph(text)) {
       paragraphs.push(text);
     }
@@ -318,35 +437,37 @@ export function detectCategory(
     POLITICS: [
       "election", "bjp", "congress", "modi", "rahul gandhi", "parliament", "lok sabha",
       "rajya sabha", "cabinet", "supreme court", "governor", "assembly", "minister",
-      "mlc", "political", "vote", "opposition", "voting", "constituency", "samajwadi party"
+      "mlc", "political", "vote", "opposition", "voting", "constituency", "samajwadi party",
+      "चुनाव", "भाजपा", "कांग्रेस", "संसद", "मंत्रिमंडल", "सुप्रीम कोर्ट", "मुख्यमंत्री", "विधानसभा"
     ],
     BUSINESS: [
       "sensex", "nifty", "gdp", "rbi", "economy", "market", "inflation", "finance",
       "tax", "gst", "bank", "stock", "rupee", "earnings", "fiscal", "crore scheme",
-      "semiconductor", "investment", "trade", "export", "import", "shares", "monetary policy"
+      "semiconductor", "investment", "trade", "export", "import", "shares", "monetary policy",
+      "सेंसेक्स", "निफ्टी", "अर्थव्यवस्था", "शेयर बाजार", "आरबीआई", "सोना", "चांदी", "मुद्रास्फीति"
     ],
     TECH: [
       "ai", "isro", "space", "satellite", "smartphone", "apple", "google", "chip",
       "software", "cyber", "technology", "tech", "gadget", "rocket", "algorithm",
-      "digital", "nasa", "semiconductors", "computing"
+      "digital", "nasa", "semiconductors", "computing", "इसरो", "सैटेलाइट", "स्मार्टफोन"
     ],
     SPORTS: [
       "cricket", "bcci", "ipl", "wicket", "tournament", "football", "fifa", "olympics",
       "medal", "badminton", "tennis", "hockey", "match", "score", "stadium", "kohli",
-      "rohit sharma", "century", "championship"
+      "rohit sharma", "century", "championship", "क्रिकेट", "मैच", "विकेट", "आईपीएल", "विश्व कप"
     ],
     WORLD: [
       "global", "united nations", "russia", "ukraine", "china", "israel", "gaza",
       "iran", "white house", "us president", "europe", "bilateral", "foreign minister",
-      "geopolitics", "summit", "nato", "middle east", "diplomacy"
+      "geopolitics", "summit", "nato", "middle east", "diplomacy", "अमेरिका", "रूस", "चीन", "इजरायल"
     ],
     ENTERTAINMENT: [
       "bollywood", "cinema", "film", "movie", "box office", "actor", "actress",
-      "trailer", "song", "director", "theatre", "hollywood", "oscar", "ott"
+      "trailer", "song", "director", "theatre", "hollywood", "oscar", "ott", "बॉलीवुड", "फिल्म", "अभिनेता"
     ],
     INDIA: [
       "delhi", "mumbai", "india", "national", "railway", "highway", "state government",
-      "citizens", "police", "army", "navy", "air force", "defence"
+      "citizens", "police", "army", "navy", "air force", "defence", "भारत", "दिल्ली", "रेलवे", "सेना"
     ],
     TRENDING: [],
   };
@@ -371,25 +492,29 @@ export function detectCategory(
     }
   }
 
-  return maxScore > 0 ? topCategory : "TRENDING";
+  return maxScore > 0 ? topCategory : "INDIA";
 }
 
-// Generate source attribution kicker
-export function extractSourceKicker(domain: string, siteName?: string): string {
-  if (domain.includes("pib.gov.in")) return "PIB NEW DELHI";
-  if (domain.includes("reuters.com")) return "REUTERS DISPATCH";
-  if (domain.includes("bbc.")) return "BBC WORLD SERVICE";
-  if (domain.includes("thehindu.com")) return "THE HINDU BUREAU";
-  if (domain.includes("ndtv.com")) return "NDTV NATIONAL DESK";
-  if (domain.includes("indianexpress.com")) return "THE INDIAN EXPRESS";
-  if (domain.includes("timesofindia")) return "TIMES NEWS NETWORK";
-  if (domain.includes("aninews.in") || domain.includes("ani.in")) return "ANI NEWS WIRE";
-  if (domain.includes("apnews.com")) return "ASSOCIATED PRESS";
-  if (domain.includes("bloomberg.com")) return "BLOOMBERG NEWS";
-
-  if (siteName) return siteName.toUpperCase();
-  const cleanDomain = domain.replace(/^www\./, "").split(".")[0].toUpperCase();
-  return `${cleanDomain} WIRE`;
+// Autonomous KhabarGanit Editorial Kicker Generator (NO competitor names!)
+export function generateEditorialKicker(sectionKey: ScrapedNews["sectionKey"]): string {
+  switch (sectionKey) {
+    case "POLITICS":
+      return "KHABARGANIT POLITICAL MONITOR";
+    case "BUSINESS":
+      return "KHABARGANIT FINANCIAL DESK";
+    case "WORLD":
+      return "KHABARGANIT GLOBAL DISPATCH";
+    case "TECH":
+      return "KHABARGANIT TECH FRONTIER";
+    case "SPORTS":
+      return "KHABARGANIT SPORTS MONITOR";
+    case "ENTERTAINMENT":
+      return "KHABARGANIT CULTURE & CINEMA";
+    case "INDIA":
+      return "KHABARGANIT NATIONAL NEWSROOM";
+    default:
+      return "KHABARGANIT SPECIAL BULLETIN";
+  }
 }
 
 // Extract all URLs from a block of text
@@ -401,7 +526,8 @@ export function findUrlsInText(text: string): string[] {
 }
 
 /**
- * Main Scraper: Fetches and parses any news URL
+ * Main Scraper: Fetches and parses any news URL with total protection against
+ * competitor channels, JavaScript scripts, and SEO spam.
  */
 export async function scrapeNewsUrl(rawUrl: string): Promise<ScrapedNews> {
   let targetUrl = rawUrl.trim();
@@ -415,7 +541,7 @@ export async function scrapeNewsUrl(rawUrl: string): Promise<ScrapedNews> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 12000);
 
-  let html = "";
+  let rawHtml = "";
   try {
     const res = await fetch(targetUrl, {
       signal: controller.signal,
@@ -423,7 +549,7 @@ export async function scrapeNewsUrl(rawUrl: string): Promise<ScrapedNews> {
         "User-Agent":
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
         Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.9,hi;q=0.8",
+        "Accept-Language": "hi,en-US,en;q=0.9",
         "Cache-Control": "no-cache",
       },
     });
@@ -432,103 +558,123 @@ export async function scrapeNewsUrl(rawUrl: string): Promise<ScrapedNews> {
       throw new Error(`HTTP ${res.status} ${res.statusText} from ${domain}`);
     }
 
-    html = await res.text();
+    rawHtml = await res.text();
   } finally {
     clearTimeout(timeoutId);
   }
 
-  // 1. JSON-LD Schema
-  const jsonLd = extractJsonLd(html);
+  // Pre-sanitize entire HTML before doing anything
+  const cleanHtml = preSanitizeHtml(rawHtml);
 
-  // 2. Headline
+  // 1. JSON-LD Schema
+  const jsonLd = extractJsonLd(rawHtml);
+
+  // 2. Headline Extraction & Scrubbing
   let headline =
-    extractMeta(html, "og:title") ||
-    extractMeta(html, "twitter:title") ||
+    extractMeta(rawHtml, "og:title") ||
+    extractMeta(rawHtml, "twitter:title") ||
     jsonLd?.headline ||
     jsonLd?.name;
 
-  if (!headline) {
-    const h1Match = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
-    if (h1Match) headline = cleanHtmlText(h1Match[1]);
+  // If the extracted title is a repetitive SEO tag dump (e.g. from a homepage), discard it!
+  if (!headline || isSeoTagDump(headline)) {
+    const h1Match = cleanHtml.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+    if (h1Match) {
+      const h1Text = cleanHtmlText(h1Match[1]);
+      if (!isSeoTagDump(h1Text)) headline = h1Text;
+    }
   }
 
-  if (!headline) {
-    const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-    if (titleMatch) headline = cleanHtmlText(titleMatch[1]);
+  if (!headline || isSeoTagDump(headline)) {
+    const titleMatch = cleanHtml.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+    if (titleMatch) {
+      const titleText = cleanHtmlText(titleMatch[1]);
+      if (!isSeoTagDump(titleText)) headline = titleText;
+    }
   }
 
+  // Scrub competitor channel names completely from headline
   if (headline) {
-    headline = decodeHtmlEntities(headline)
+    headline = scrubCompetitorNames(decodeHtmlEntities(headline))
       .replace(/\s*::\s*Press Information Bureau\s*$/i, "")
-      .replace(/\s*\|\s*NDTV(?:\.com)?\s*$/i, "")
-      .replace(/\s*-\s*The Hindu\s*$/i, "")
-      .replace(/\s*-\s*Times of India\s*$/i, "")
-      .replace(/\s*\|\s*Reuters\s*$/i, "")
-      .replace(/\s*-\s*BBC News\s*$/i, "")
-      .replace(/\s*\|\s*The Indian Express\s*$/i, "")
-      .replace(/\s*\|\s*ABP Live\s*$/i, "")
       .trim();
-  } else {
-    headline = "Latest News Dispatch from " + domain;
   }
 
-  // 3. Subhead / Description
-  const subhead =
-    extractMeta(html, "og:description") ||
-    extractMeta(html, "twitter:description") ||
-    extractMeta(html, "description") ||
+  // If still empty or just SEO keywords (e.g. user pasted homepage root), extract first valid story headline from the page!
+  if (!headline || isSeoTagDump(headline) || headline.length < 5) {
+    const storyLinkMatch = cleanHtml.match(/<(?:h2|h3)[^>]*>([\s\S]*?)<\/(?:h2|h3)>/i);
+    if (storyLinkMatch) {
+      const candidate = scrubCompetitorNames(cleanHtmlText(storyLinkMatch[1]));
+      if (candidate.length > 15 && !isSeoTagDump(candidate)) {
+        headline = candidate;
+      }
+    }
+  }
+
+  if (!headline || isSeoTagDump(headline)) {
+    headline = "Latest National News Dispatch";
+  }
+
+  // 3. Subhead / Description Scrubbing
+  let subhead =
+    extractMeta(rawHtml, "og:description") ||
+    extractMeta(rawHtml, "twitter:description") ||
+    extractMeta(rawHtml, "description") ||
     jsonLd?.description ||
     undefined;
 
-  // 4. Images
-  const { primary: image, gallery: galleryImages } = extractImages(html, targetUrl, jsonLd);
-
-  // 5. Video
-  const videoUrl = extractVideo(html);
-
-  // 6. Body Paragraphs
-  const paragraphs = extractParagraphs(html, jsonLd, domain);
-
-  // 7. Site Name & Source
-  const siteName = extractMeta(html, "og:site_name");
-  const kicker = extractSourceKicker(domain, siteName);
-
-  // 8. Category
-  const metaSection = extractMeta(html, "article:section");
-  const sectionKey = detectCategory(headline, paragraphs.join(" "), metaSection, urlObj.pathname);
-
-  // 9. Author & Location
-  let author: string | undefined = jsonLd?.author?.name || jsonLd?.author?.[0]?.name;
-  if (!author && domain.includes("pib.gov.in")) {
-    author = "Press Information Bureau";
+  if (subhead) {
+    subhead = scrubCompetitorNames(decodeHtmlEntities(subhead));
+    if (isSeoTagDump(subhead) || isJunkParagraph(subhead)) {
+      subhead = undefined;
+    }
   }
 
+  // 4. Images
+  const { primary: image, gallery: galleryImages } = extractImages(rawHtml, targetUrl, jsonLd);
+
+  // 5. Video
+  const videoUrl = extractVideo(cleanHtml);
+
+  // 6. Body Paragraphs (Guaranteed clean of scripts and competitor branding)
+  const paragraphs = extractParagraphs(rawHtml, jsonLd, domain);
+
+  // 7. Auto Category
+  const metaSection = extractMeta(rawHtml, "article:section");
+  const sectionKey = detectCategory(headline, paragraphs.join(" "), metaSection, urlObj.pathname);
+
+  // 8. Editorial Kicker (KhabarGanit Branding ONLY!)
+  const kicker = generateEditorialKicker(sectionKey);
+
+  // 9. Author & Location (Always KhabarGanit Desk!)
+  const author = "KhabarGanit Special Desk";
   let location: string | undefined = "New Delhi";
-  if (paragraphs.length > 0 && /^[A-Z\s]{3,15},\s*[A-Z][a-z]+/i.test(paragraphs[0])) {
-    const locMatch = paragraphs[0].match(/^([A-Z\s]{3,15}),/i);
+
+  if (paragraphs.length > 0 && /^[A-Z\s\u0900-\u097F]{2,15},/i.test(paragraphs[0])) {
+    const locMatch = paragraphs[0].match(/^([A-Z\s\u0900-\u097F]{2,15}),/i);
     if (locMatch) location = locMatch[1].trim();
   }
 
   return {
     url: targetUrl,
     headline,
-    subhead: subhead ? decodeHtmlEntities(subhead) : undefined,
-    summary: subhead ? decodeHtmlEntities(subhead) : paragraphs[0] || headline,
+    subhead: subhead || (paragraphs[0] ? paragraphs[0].slice(0, 160) + "..." : undefined),
+    summary: subhead || paragraphs[0] || headline,
     paragraphs: paragraphs.length > 0 ? paragraphs : [subhead || headline],
     image,
-    imageCaption: image ? `${headline} (Photo: ${kicker})` : undefined,
+    imageCaption: image ? `${headline} (Photo: KhabarGanit Desk)` : undefined,
     galleryImages,
     videoUrl,
     sectionKey,
     kicker,
-    author: author || `${kicker} Bureau`,
+    author,
     location,
     publishedAt: new Date().toISOString(),
   };
 }
 
 /**
- * Batch Scraper: Scrapes multiple URLs concurrently with rate limiting
+ * Batch Scraper: Scrapes multiple URLs concurrently
  */
 export async function scrapeMultipleNewsUrls(
   urls: string[]

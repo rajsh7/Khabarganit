@@ -3,7 +3,7 @@ import path from "path";
 import os from "os";
 import { TRENDING_PAGE, SECTION_PAGES, SectionPageData, LeadStory, SideStory, TopStory, DigestItem } from "@/data/newspaperData";
 import liveNewsBaseline from "@/data/liveNews.json";
-import { scrubCompetitorNames, isJunkParagraph } from "@/lib/urlScraper";
+import { scrubCompetitorNames, isJunkParagraph, detectCategory, isSeoTagDump } from "@/lib/urlScraper";
 
 const CACHE_FILE = path.join(os.tmpdir(), "khabarganit_pipeline_v1.json");
 
@@ -241,38 +241,28 @@ class NewsPipelineStore {
 
   public publish(payload: PublishPayload): { success: boolean; message: string; page: SectionPageData } {
     this.loadFromDisk();
-    const section = (payload.sectionKey || "TRENDING").toUpperCase() as SectionPageData["sectionKey"];
-    const placement = (payload.placement || "LEAD").toUpperCase() as "LEAD" | "SIDE" | "TOP" | "DIGEST";
 
-    let targetPage = section === "TRENDING" ? this.trendingPage : this.sectionPages.find((p) => p.sectionKey === section);
-
-    if (!targetPage) {
-      targetPage = this.trendingPage;
-    }
-
-    const defaultImg = SECTION_FALLBACK_IMAGES[section] || SECTION_FALLBACK_IMAGES.TRENDING;
-
-    // Check pending images queue if payload.image is missing
-    if (!payload.image) {
-      const pendingImg = this.getPendingImageForHeadline(payload.headline);
-      if (pendingImg) {
-        payload.image = pendingImg;
+    // 1. Sanitize & extract headline (Discard SEO spam dumps)
+    let headlineRaw = payload.headline || "";
+    if (isSeoTagDump(headlineRaw)) {
+      const alt = [payload.subhead, ...(payload.paragraphs || [])]
+        .find((p) => p && !isJunkParagraph(p) && !isSeoTagDump(p));
+      if (alt) {
+        headlineRaw = alt.slice(0, 150);
       }
     }
 
-    // Scrub competitor news channel names from all input & sanitize
-    const cleanHeadline = scrubCompetitorNames(payload.headline).toUpperCase();
+    const cleanHeadline = scrubCompetitorNames(headlineRaw).toUpperCase().trim();
+    if (!cleanHeadline || cleanHeadline.length < 5) {
+      return {
+        success: false,
+        message: "Invalid headline after cleaning competitor tags.",
+        page: this.trendingPage,
+      };
+    }
+
     const cleanSubhead = payload.subhead ? scrubCompetitorNames(payload.subhead) : undefined;
     const cleanSummary = payload.summary ? scrubCompetitorNames(payload.summary) : undefined;
-    const cleanKicker = payload.kicker
-      ? scrubCompetitorNames(payload.kicker).toUpperCase()
-      : `KHABARGANIT ${section} REPORT`;
-    const cleanAuthor = payload.author && !payload.author.toLowerCase().includes("aajtak")
-      ? scrubCompetitorNames(payload.author)
-      : "KhabarGanit Senior Desk";
-    const cleanCaption = payload.imageCaption
-      ? scrubCompetitorNames(payload.imageCaption)
-      : `${cleanHeadline} (Photo: KhabarGanit Desk)`;
 
     const rawParas = payload.paragraphs && payload.paragraphs.length > 0
       ? payload.paragraphs
@@ -290,140 +280,197 @@ class NewsPipelineStore {
       paragraphs.push(cleanSubhead || cleanHeadline);
     }
 
-    // 1. LEAD STORY (Main Hero News)
-    if (placement === "LEAD") {
-      const mid = Math.ceil(paragraphs.length / 2);
-      const col1 = paragraphs.slice(0, mid);
-      const col2 = paragraphs.slice(mid);
+    // 2. Resolve Category:
+    // If payload.sectionKey is specified and not "TRENDING", use it.
+    // Otherwise, auto-detect category from headline and paragraphs!
+    const detectedSec = detectCategory(cleanHeadline, paragraphs.join(" "));
+    const targetSectionKey: SectionPageData["sectionKey"] =
+      payload.sectionKey && payload.sectionKey !== "TRENDING"
+        ? payload.sectionKey
+        : (detectedSec || "INDIA");
 
-      const leadData: LeadStory = {
-        kicker: cleanKicker,
-        headline: cleanHeadline,
-        subhead: payload.subhead || paragraphs[0] || "Breaking dispatches from the KhabarGanit newsroom.",
-        image: payload.image || targetPage.leadStory.image || defaultImg,
-        imageAlt: cleanHeadline,
-        caption: cleanCaption,
-        col1: col1.length > 0 ? col1 : targetPage.leadStory.col1,
-        col2: col2.length > 0 ? col2 : targetPage.leadStory.col2,
-        publishedAt: new Date().toISOString(),
-        timeAgo: "Just now",
-        videoUrl: payload.videoUrl,
-        sourceUrl: payload.sourceUrl,
-      };
+    const placement = (payload.placement || "LEAD").toUpperCase() as "LEAD" | "SIDE" | "TOP" | "DIGEST";
 
-      // Archive former lead story to sideStories so it NEVER vanishes
-      if (targetPage.leadStory && targetPage.leadStory.headline !== leadData.headline) {
-        const formerLead: SideStory = {
-          kicker: targetPage.leadStory.kicker,
-          headline: targetPage.leadStory.headline,
-          summary: targetPage.leadStory.subhead,
-          image: targetPage.leadStory.image || defaultImg,
-          imageCaption: targetPage.leadStory.caption,
-          paragraphs: [...targetPage.leadStory.col1, ...targetPage.leadStory.col2],
-          author: "KhabarGanit Senior Desk",
-          location: "National Bureau",
-          publishedAt: targetPage.leadStory.publishedAt,
-          timeAgo: targetPage.leadStory.timeAgo,
-          videoUrl: targetPage.leadStory.videoUrl,
-          sourceUrl: targetPage.leadStory.sourceUrl,
+    const cleanKicker = payload.kicker
+      ? scrubCompetitorNames(payload.kicker).toUpperCase()
+      : `KHABARGANIT ${targetSectionKey} REPORT`;
+    const cleanAuthor = payload.author && !payload.author.toLowerCase().includes("aajtak")
+      ? scrubCompetitorNames(payload.author)
+      : "KhabarGanit Senior Desk";
+    const cleanCaption = payload.imageCaption
+      ? scrubCompetitorNames(payload.imageCaption)
+      : `${cleanHeadline} (Photo: KhabarGanit Desk)`;
+
+    const defaultImg = SECTION_FALLBACK_IMAGES[targetSectionKey] || SECTION_FALLBACK_IMAGES.TRENDING;
+    const storyImage = payload.image || this.getPendingImageForHeadline(payload.headline) || defaultImg;
+
+    // 3. TARGET PAGES:
+    // ALWAYS update this.trendingPage (Front Page)
+    // AND ALWAYS update the specific section page (e.g. INDIA, WORLD, TECH, BUSINESS, SPORTS, POLITICS, ENTERTAINMENT)
+    const pagesToUpdate: SectionPageData[] = [this.trendingPage];
+    const secPage = this.sectionPages.find((p) => p.sectionKey === targetSectionKey);
+    if (secPage && !pagesToUpdate.includes(secPage)) {
+      pagesToUpdate.push(secPage);
+    }
+
+    // 4. Cascade updates across all target pages
+    for (const page of pagesToUpdate) {
+      // 1. LEAD STORY (Main Hero News)
+      if (placement === "LEAD") {
+        const mid = Math.ceil(paragraphs.length / 2);
+        const col1 = paragraphs.slice(0, mid);
+        const col2 = paragraphs.slice(mid);
+
+        const leadData: LeadStory = {
+          kicker: cleanKicker,
+          headline: cleanHeadline,
+          subhead: cleanSubhead || paragraphs[0] || "Breaking dispatches from the KhabarGanit newsroom.",
+          image: storyImage,
+          imageAlt: cleanHeadline,
+          caption: cleanCaption,
+          col1: col1.length > 0 ? col1 : (page.leadStory?.col1 || ["Reporting underway by KhabarGanit correspondents."]),
+          col2: col2.length > 0 ? col2 : (page.leadStory?.col2 || ["Official statements and data updates will follow."]),
+          publishedAt: new Date().toISOString(),
+          timeAgo: "Just now",
+          videoUrl: payload.videoUrl,
+          sourceUrl: payload.sourceUrl,
         };
-        const alreadyInSide = targetPage.sideStories.some(s => s.headline === formerLead.headline);
-        if (!alreadyInSide) {
-          targetPage.sideStories = [formerLead, ...targetPage.sideStories];
+
+        // CASCADE RULE: When a new lead story arrives, the CURRENT lead story
+        // MUST immediately move to the RIGHT SIDE (sideStories[0]), shifting older side stories down!
+        if (page.leadStory && page.leadStory.headline && page.leadStory.headline !== leadData.headline) {
+          const formerLeadAsSide: SideStory = {
+            kicker: page.leadStory.kicker,
+            headline: page.leadStory.headline,
+            summary: page.leadStory.subhead,
+            image: page.leadStory.image || defaultImg,
+            imageCaption: page.leadStory.caption,
+            paragraphs: [...(page.leadStory.col1 || []), ...(page.leadStory.col2 || [])],
+            author: "KhabarGanit Senior Desk",
+            location: "National Bureau",
+            publishedAt: page.leadStory.publishedAt,
+            timeAgo: page.leadStory.timeAgo,
+            videoUrl: page.leadStory.videoUrl,
+            sourceUrl: page.leadStory.sourceUrl,
+          };
+
+          // Prepend former lead to the right side stories, eliminating duplicate
+          page.sideStories = [
+            formerLeadAsSide,
+            ...page.sideStories.filter((s) => s.headline !== formerLeadAsSide.headline),
+          ];
         }
+
+        page.leadStory = leadData;
+
+        // Auto-update Top 10 Digest
+        const newDigest: DigestItem = {
+          number: 1,
+          category: targetSectionKey,
+          headline: cleanHeadline,
+          summary: cleanSubhead || cleanSummary || paragraphs[0],
+        };
+        page.digestItems = [
+          newDigest,
+          ...page.digestItems.filter((d) => d.headline !== cleanHeadline),
+        ]
+          .slice(0, 10)
+          .map((item, idx) => ({ ...item, number: idx + 1 }));
       }
+      // 2. SIDE STORY (Prepend to right side column & shift down)
+      else if (placement === "SIDE") {
+        const newSideStory: SideStory = {
+          kicker: cleanKicker,
+          headline: cleanHeadline,
+          summary: cleanSubhead || cleanSummary || paragraphs[0],
+          image: storyImage,
+          imageCaption: cleanCaption,
+          author: cleanAuthor,
+          location: payload.location || "New Delhi",
+          paragraphs: paragraphs,
+          publishedAt: new Date().toISOString(),
+          timeAgo: "Just now",
+          videoUrl: payload.videoUrl,
+          sourceUrl: payload.sourceUrl,
+        };
 
-      targetPage.leadStory = leadData;
-      // Front Page Mirror
-      this.trendingPage.leadStory = leadData;
-    }
-    // 2. SIDE STORY (Never discard previous stories; prepend or update existing)
-    else if (placement === "SIDE") {
-      const newSideStory: SideStory = {
-        kicker: cleanKicker,
-        headline: cleanHeadline,
-        summary: cleanSubhead || cleanSummary || paragraphs[0],
-        image: payload.image || defaultImg,
-        imageCaption: cleanCaption,
-        author: cleanAuthor,
-        location: payload.location || "New Delhi",
-        paragraphs: paragraphs,
-        publishedAt: new Date().toISOString(),
-        timeAgo: "Just now",
-        videoUrl: payload.videoUrl,
-        sourceUrl: payload.sourceUrl,
-      };
+        page.sideStories = [
+          newSideStory,
+          ...page.sideStories.filter((s) => s.headline !== newSideStory.headline),
+        ];
 
-      // Update in place if same headline, otherwise prepend without dropping
-      const existIdx = targetPage.sideStories.findIndex(s => s.headline === newSideStory.headline);
-      if (existIdx !== -1) {
-        targetPage.sideStories[existIdx] = newSideStory;
-      } else {
-        targetPage.sideStories = [newSideStory, ...targetPage.sideStories];
+        // Also update digest
+        const newDigest: DigestItem = {
+          number: 1,
+          category: targetSectionKey,
+          headline: cleanHeadline,
+          summary: cleanSubhead || cleanSummary || paragraphs[0],
+        };
+        page.digestItems = [
+          newDigest,
+          ...page.digestItems.filter((d) => d.headline !== cleanHeadline),
+        ]
+          .slice(0, 10)
+          .map((item, idx) => ({ ...item, number: idx + 1 }));
       }
+      // 3. TOP STORY (Prepend to top stories & shift down/right)
+      else if (placement === "TOP") {
+        const newTopStory: TopStory = {
+          kicker: cleanKicker,
+          headline: cleanHeadline,
+          summary: cleanSubhead || cleanSummary || paragraphs[0],
+          author: cleanAuthor,
+          location: payload.location || "National Bureau",
+          image: storyImage,
+          imageCaption: cleanCaption,
+          paragraphs: paragraphs,
+          publishedAt: new Date().toISOString(),
+          timeAgo: "Just now",
+          videoUrl: payload.videoUrl,
+          sourceUrl: payload.sourceUrl,
+        };
 
-      if (targetPage !== this.trendingPage) {
-        const trendIdx = this.trendingPage.sideStories.findIndex(s => s.headline === newSideStory.headline);
-        if (trendIdx !== -1) {
-          this.trendingPage.sideStories[trendIdx] = newSideStory;
-        } else {
-          this.trendingPage.sideStories = [newSideStory, ...this.trendingPage.sideStories];
-        }
+        page.topStories = [
+          newTopStory,
+          ...page.topStories.filter((t) => t.headline !== newTopStory.headline),
+        ];
+
+        // Also update digest
+        const newDigest: DigestItem = {
+          number: 1,
+          category: targetSectionKey,
+          headline: cleanHeadline,
+          summary: cleanSubhead || cleanSummary || paragraphs[0],
+        };
+        page.digestItems = [
+          newDigest,
+          ...page.digestItems.filter((d) => d.headline !== cleanHeadline),
+        ]
+          .slice(0, 10)
+          .map((item, idx) => ({ ...item, number: idx + 1 }));
       }
-    }
-    // 3. TOP STORY (Never discard previous stories; prepend or update existing)
-    else if (placement === "TOP") {
-      const newTopStory: TopStory = {
-        kicker: cleanKicker,
-        headline: cleanHeadline,
-        summary: cleanSubhead || cleanSummary || paragraphs[0],
-        author: cleanAuthor,
-        location: payload.location || "National Bureau",
-        image: payload.image || defaultImg,
-        imageCaption: cleanCaption,
-        paragraphs: paragraphs,
-        publishedAt: new Date().toISOString(),
-        timeAgo: "Just now",
-        videoUrl: payload.videoUrl,
-        sourceUrl: payload.sourceUrl,
-      };
+      // 4. DIGEST ITEM
+      else if (placement === "DIGEST") {
+        const newDigest: DigestItem = {
+          number: 1,
+          category: cleanKicker || targetSectionKey,
+          headline: cleanHeadline,
+          summary: cleanSubhead || cleanSummary || paragraphs[0],
+        };
 
-      const existTopIdx = targetPage.topStories.findIndex(t => t.headline === newTopStory.headline);
-      if (existTopIdx !== -1) {
-        targetPage.topStories[existTopIdx] = newTopStory;
-      } else {
-        targetPage.topStories = [newTopStory, ...targetPage.topStories];
+        page.digestItems = [
+          newDigest,
+          ...page.digestItems.filter((d) => d.headline !== cleanHeadline),
+        ]
+          .slice(0, 10)
+          .map((item, idx) => ({ ...item, number: idx + 1 }));
       }
-
-      if (targetPage !== this.trendingPage) {
-        const trendTopIdx = this.trendingPage.topStories.findIndex(t => t.headline === newTopStory.headline);
-        if (trendTopIdx !== -1) {
-          this.trendingPage.topStories[trendTopIdx] = newTopStory;
-        } else {
-          this.trendingPage.topStories = [newTopStory, ...this.trendingPage.topStories];
-        }
-      }
-    }
-    // 4. DIGEST ITEM
-    else if (placement === "DIGEST") {
-      const newDigest: DigestItem = {
-        number: 1,
-        category: payload.kicker || section,
-        headline: payload.headline,
-        summary: cleanSubhead || cleanSummary || paragraphs[0],
-      };
-
-      const updated = [newDigest, ...targetPage.digestItems].map((item, idx) => ({
-        ...item,
-        number: idx + 1,
-      }));
-      targetPage.digestItems = updated;
     }
 
     this.recentUpdates.unshift({
       timestamp: new Date().toISOString(),
-      headline: payload.headline,
-      section,
+      headline: cleanHeadline,
+      section: targetSectionKey,
     });
 
     if (this.recentUpdates.length > 50) {
@@ -435,8 +482,8 @@ class NewsPipelineStore {
 
     return {
       success: true,
-      message: `Successfully published '${payload.headline}' to ${section} (${placement})`,
-      page: targetPage,
+      message: `Successfully published '${cleanHeadline}' to ${targetSectionKey} & Front Page (${placement})`,
+      page: secPage || this.trendingPage,
     };
   }
 

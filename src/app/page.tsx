@@ -89,47 +89,53 @@ export default function NewspaperPage() {
           setPipelineData((prev) => {
             if (!prev) return serverData;
 
-            // Non-destructive smart merge: retain user-published stories and photos
-            const mergedTrending = { ...serverData.trending };
-
-            const sideMap = new Map();
-            [...(prev.trending?.sideStories || []), ...(serverData.trending?.sideStories || [])].forEach((item) => {
-              if (item && item.headline && !sideMap.has(item.headline)) {
-                sideMap.set(item.headline, item);
-              }
-            });
-            mergedTrending.sideStories = Array.from(sideMap.values());
-
-            const topMap = new Map();
-            [...(prev.trending?.topStories || []), ...(serverData.trending?.topStories || [])].forEach((item) => {
-              if (item && item.headline && !topMap.has(item.headline)) {
-                topMap.set(item.headline, item);
-              }
-            });
-            mergedTrending.topStories = Array.from(topMap.values());
+            // Authoritative server-first merge: newly published stories and cascades take priority
+            const mergedTrending = {
+              ...serverData.trending,
+              sideStories: [
+                ...(serverData.trending?.sideStories || []),
+                ...(prev.trending?.sideStories || []),
+              ].filter(
+                (item, idx, arr) =>
+                  item && item.headline && arr.findIndex((x) => x?.headline === item.headline) === idx
+              ),
+              topStories: [
+                ...(serverData.trending?.topStories || []),
+                ...(prev.trending?.topStories || []),
+              ].filter(
+                (item, idx, arr) =>
+                  item && item.headline && arr.findIndex((x) => x?.headline === item.headline) === idx
+              ),
+              digestItems:
+                serverData.trending?.digestItems && serverData.trending.digestItems.length > 0
+                  ? serverData.trending.digestItems
+                  : prev.trending?.digestItems || [],
+            };
 
             const mergedSections = serverData.sections.map((s: SectionPageData) => {
               const prevSec = prev.sections.find((p) => p.sectionKey === s.sectionKey);
               if (!prevSec) return s;
 
-              const secSideMap = new Map();
-              [...(prevSec.sideStories || []), ...(s.sideStories || [])].forEach((item) => {
-                if (item && item.headline && !secSideMap.has(item.headline)) {
-                  secSideMap.set(item.headline, item);
-                }
-              });
-
-              const secTopMap = new Map();
-              [...(prevSec.topStories || []), ...(s.topStories || [])].forEach((item) => {
-                if (item && item.headline && !secTopMap.has(item.headline)) {
-                  secTopMap.set(item.headline, item);
-                }
-              });
-
               return {
                 ...s,
-                sideStories: Array.from(secSideMap.values()),
-                topStories: Array.from(secTopMap.values()),
+                sideStories: [
+                  ...(s.sideStories || []),
+                  ...(prevSec.sideStories || []),
+                ].filter(
+                  (item, idx, arr) =>
+                    item && item.headline && arr.findIndex((x) => x?.headline === item.headline) === idx
+                ),
+                topStories: [
+                  ...(s.topStories || []),
+                  ...(prevSec.topStories || []),
+                ].filter(
+                  (item, idx, arr) =>
+                    item && item.headline && arr.findIndex((x) => x?.headline === item.headline) === idx
+                ),
+                digestItems:
+                  s.digestItems && s.digestItems.length > 0
+                    ? s.digestItems
+                    : prevSec.digestItems || [],
               };
             });
 
@@ -740,54 +746,114 @@ export default function NewspaperPage() {
               3. TOP 10 DIGEST & INTELLIGENCE MONITOR
              ════════════════════════════════════════════════════════════════ */}
           <section className="mt-10 pt-6 border-t-[2.5px] border-black">
-            <div className="flex items-center justify-between pb-2 mb-6 border-b border-black">
+            <div className="flex items-center justify-between pb-2 mb-4 border-b border-black">
               <div className="flex items-center gap-2">
                 <Bookmark size={15} className="text-[#C13A08]" />
                 <h3 className="font-playfair font-black text-xl sm:text-2xl uppercase tracking-wider text-black">
                   {activePage.digestTitle}
                 </h3>
               </div>
-              
+              <span className="text-[10px] font-sans font-bold uppercase tracking-[0.18em] text-stone-500">
+                10 VERIFIED DISPATCHES
+              </span>
             </div>
 
-            {/* 2-Column High-Density Digest Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-xs font-serif">
-              {activePage.digestItems.map((item) => (
-                <div
-                  key={item.number}
-                  onClick={() =>
-                    openArticle({
-                      title: item.headline,
-                      kicker: item.category,
-                      subhead: item.summary,
-                      paragraphs: [
-                        item.summary,
-                        "According to verified wire releases and official records monitored on Thursday, this development represents a significant turning point in the regional and national agenda.",
-                        "Responsible agencies, judicial benches, and administrative bodies have initiated active follow-ups to maintain regulatory compliance.",
-                        "KhabarGanit continues to track quantitative developments, legal submissions, and ground impacts surrounding this bulletin."
-                      ]
-                    })
-                  }
-                  className="flex items-start gap-3 pb-3 border-b border-stone-200 cursor-pointer group hover:bg-stone-50/80 p-1.5 transition-colors"
-                  title="Click to read full dispatch"
-                >
-                  <span className="font-playfair font-black text-base text-[#C13A08] shrink-0 w-6 group-hover:scale-110 transition-transform">
-                    {String(item.number).padStart(2, "0")}
-                  </span>
-                  <div>
-                    <span className="text-[9px] font-sans font-bold uppercase tracking-widest text-stone-500 block">
-                      {item.category}
-                    </span>
-                    <h5 className="font-playfair font-bold text-[13px] text-black uppercase leading-tight mb-1 group-hover:text-[#C13A08] transition-colors">
-                      {item.headline}
-                      <ArrowUpRight size={12} className="inline-block ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-[#C13A08]" />
-                    </h5>
-                    <p className="text-stone-700 leading-relaxed">
-                      {item.summary}
-                    </p>
+            {/* Paired 2-Column Broadsheet Rows: 
+                - Left (Odd: 01, 03, 05, 07, 09) and Right (Even: 02, 04, 06, 08, 10)
+                - Single continuous horizontal rule per row (no jagged/staggered breaks)
+                - Clean central vertical dividing rule between columns
+                - Bold terracotta numerals aligned crisply with category & headline */}
+            <div className="flex flex-col">
+              {Array.from({ length: Math.ceil((activePage.digestItems || []).length / 2) }).map((_, rIdx) => {
+                const leftItem = activePage.digestItems[rIdx * 2];
+                const rightItem = activePage.digestItems[rIdx * 2 + 1];
+                const isLastRow = rIdx === Math.ceil((activePage.digestItems || []).length / 2) - 1;
+
+                return (
+                  <div
+                    key={rIdx}
+                    className={`grid grid-cols-1 md:grid-cols-2 items-stretch py-3.5 ${
+                      !isLastRow ? "border-b border-stone-200" : ""
+                    }`}
+                  >
+                    {/* Left Column Item (Odd: 01, 03, 05, 07, 09) */}
+                    {leftItem && (
+                      <div
+                        onClick={() =>
+                          openArticle({
+                            title: leftItem.headline,
+                            kicker: leftItem.category,
+                            subhead: leftItem.summary,
+                            paragraphs: [
+                              leftItem.summary,
+                              "According to verified wire releases and official records monitored on Thursday, this development represents a significant turning point in the regional and national agenda.",
+                              "Responsible agencies, judicial benches, and administrative bodies have initiated active follow-ups to maintain regulatory compliance.",
+                              "KhabarGanit continues to track quantitative developments, legal submissions, and ground impacts surrounding this bulletin."
+                            ]
+                          })
+                        }
+                        className="md:pr-8 md:border-r md:border-stone-300 flex items-start gap-3.5 cursor-pointer group hover:bg-stone-50/80 p-2 -m-2 rounded transition-colors"
+                        title="Click to read full dispatch"
+                      >
+                        <div className="font-playfair font-black text-xl sm:text-2xl text-[#C13A08] shrink-0 w-8 text-right leading-none pt-0.5 select-none tracking-tighter group-hover:scale-105 transition-transform">
+                          {String(leftItem.number).padStart(2, "0")}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <span className="text-[10px] font-sans font-bold uppercase tracking-[0.16em] text-stone-500 mb-0.5 block">
+                            {leftItem.category}
+                          </span>
+                          <h5 className="font-playfair font-black text-sm sm:text-[15px] text-black uppercase leading-snug mb-1 group-hover:text-[#C13A08] transition-colors">
+                            {leftItem.headline}
+                            <ArrowUpRight size={13} className="inline-block ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-[#C13A08]" />
+                          </h5>
+                          <p className="font-serif text-xs text-stone-700 leading-relaxed text-justify">
+                            {leftItem.summary}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Right Column Item (Even: 02, 04, 06, 08, 10) */}
+                    {rightItem ? (
+                      <div
+                        onClick={() =>
+                          openArticle({
+                            title: rightItem.headline,
+                            kicker: rightItem.category,
+                            subhead: rightItem.summary,
+                            paragraphs: [
+                              rightItem.summary,
+                              "According to verified wire releases and official records monitored on Thursday, this development represents a significant turning point in the regional and national agenda.",
+                              "Responsible agencies, judicial benches, and administrative bodies have initiated active follow-ups to maintain regulatory compliance.",
+                              "KhabarGanit continues to track quantitative developments, legal submissions, and ground impacts surrounding this bulletin."
+                            ]
+                          })
+                        }
+                        className="md:pl-8 pt-3.5 md:pt-0 border-t md:border-t-0 border-stone-200 md:border-transparent flex items-start gap-3.5 cursor-pointer group hover:bg-stone-50/80 p-2 -m-2 rounded transition-colors"
+                        title="Click to read full dispatch"
+                      >
+                        <div className="font-playfair font-black text-xl sm:text-2xl text-[#C13A08] shrink-0 w-8 text-right leading-none pt-0.5 select-none tracking-tighter group-hover:scale-105 transition-transform">
+                          {String(rightItem.number).padStart(2, "0")}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <span className="text-[10px] font-sans font-bold uppercase tracking-[0.16em] text-stone-500 mb-0.5 block">
+                            {rightItem.category}
+                          </span>
+                          <h5 className="font-playfair font-black text-sm sm:text-[15px] text-black uppercase leading-snug mb-1 group-hover:text-[#C13A08] transition-colors">
+                            {rightItem.headline}
+                            <ArrowUpRight size={13} className="inline-block ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-[#C13A08]" />
+                          </h5>
+                          <p className="font-serif text-xs text-stone-700 leading-relaxed text-justify">
+                            {rightItem.summary}
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="hidden md:block md:pl-8" />
+                    )}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </section>
 

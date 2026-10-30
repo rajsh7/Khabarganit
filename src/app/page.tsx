@@ -7,6 +7,10 @@ import { ChevronLeft, ChevronRight, Bookmark, ArrowUpRight } from "lucide-react"
 import GoogleTranslate from "@/components/GoogleTranslate";
 import ArticleModal, { ArticleModalData } from "@/components/ArticleModal";
 import { TRENDING_PAGE, SECTION_PAGES, SectionPageData } from "@/data/newspaperData";
+import liveNewsBaseline from "@/data/liveNews.json";
+
+const BASELINE_TRENDING = (liveNewsBaseline?.trending || TRENDING_PAGE) as SectionPageData;
+const BASELINE_SECTIONS = (liveNewsBaseline?.sections || SECTION_PAGES) as SectionPageData[];
 
 type CategoryKey = "WORLD" | "INDIA" | "BUSINESS" | "TECH" | "SPORTS" | "POLITICS" | "ENTERTAINMENT";
 
@@ -58,11 +62,24 @@ export default function NewspaperPage() {
 
   // Background fetch to sync any real-time stories published via Telegram Bot or Web Pipeline
   useEffect(() => {
-    fetch("/api/news")
+    try {
+      const cached = localStorage.getItem("kg_live_edition_v1");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed?.trending && parsed?.sections) {
+          setPipelineData(parsed);
+        }
+      }
+    } catch {}
+
+    fetch("/api/news", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
         if (data && data.trending && data.sections) {
           setPipelineData({ trending: data.trending, sections: data.sections });
+          try {
+            localStorage.setItem("kg_live_edition_v1", JSON.stringify(data));
+          } catch {}
         }
       })
       .catch(() => {});
@@ -70,10 +87,10 @@ export default function NewspaperPage() {
 
   // Active broadsheet data: merges static broadsheet fallback with live pipeline updates
   const activePage: SectionPageData = activeCategory
-    ? (pipelineData?.sections || SECTION_PAGES).find((p) => p.sectionKey === activeCategory) ||
+    ? (pipelineData?.sections || BASELINE_SECTIONS).find((p) => p.sectionKey === activeCategory) ||
       pipelineData?.trending ||
-      TRENDING_PAGE
-    : pipelineData?.trending || TRENDING_PAGE;
+      BASELINE_TRENDING
+    : pipelineData?.trending || BASELINE_TRENDING;
 
 
   const currentViewIndex = VIEW_SEQUENCE.indexOf(activeCategory);

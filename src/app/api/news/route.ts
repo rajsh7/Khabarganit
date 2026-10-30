@@ -1,18 +1,29 @@
 import { NextResponse } from "next/server";
 import { newsPipeline, PublishPayload } from "@/lib/newsPipeline";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 // GET /api/news -> Returns all broadsheet sections with real-time updates
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const section = searchParams.get("section");
 
+  await newsPipeline.syncFromCloud().catch(() => {});
+
+  const headers = {
+    "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+    "CDN-Cache-Control": "no-store",
+    "Vercel-CDN-Cache-Control": "no-store",
+  };
+
   if (section) {
     const page = newsPipeline.getSection(section);
-    return NextResponse.json({ page });
+    return NextResponse.json({ page }, { headers });
   }
 
   const all = newsPipeline.getAllPages();
-  return NextResponse.json(all);
+  return NextResponse.json(all, { headers });
 }
 
 // POST /api/news -> Direct publishing API endpoint

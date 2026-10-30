@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import os from "os";
 import { TRENDING_PAGE, SECTION_PAGES, SectionPageData, LeadStory, SideStory, TopStory, DigestItem } from "@/data/newspaperData";
+import liveNewsBaseline from "@/data/liveNews.json";
 
 const CACHE_FILE = path.join(os.tmpdir(), "khabarganit_pipeline_v1.json");
 
@@ -19,12 +20,20 @@ export interface PublishPayload {
   paragraphs?: string[];
 }
 
-// In-memory + /tmp file cache for dynamic news updates
-// Preserves static fallback while allowing instant Telegram/API publishing
+// Multi-tier persistent store:
+// Tier 1: Cloud KV (Vercel KV / Upstash Redis REST API)
+// Tier 2: GitHub Repository auto-commit (if GITHUB_TOKEN set)
+// Tier 3: Local /tmp disk cache
+// Tier 4: Committed static baseline (src/data/liveNews.json)
 class NewsPipelineStore {
-  private trendingPage: SectionPageData = JSON.parse(JSON.stringify(TRENDING_PAGE));
-  private sectionPages: SectionPageData[] = JSON.parse(JSON.stringify(SECTION_PAGES));
-  private recentUpdates: Array<{ timestamp: string; headline: string; section: string }> = [];
+  private trendingPage: SectionPageData =
+    (liveNewsBaseline?.trending as SectionPageData) || JSON.parse(JSON.stringify(TRENDING_PAGE));
+  private sectionPages: SectionPageData[] =
+    (liveNewsBaseline?.sections as SectionPageData[]) || JSON.parse(JSON.stringify(SECTION_PAGES));
+  private recentUpdates: Array<{ timestamp: string; headline: string; section: string }> =
+    (liveNewsBaseline?.updates as any[]) || [];
+
+  private lastCloudSync = 0;
 
   constructor() {
     this.loadFromDisk();
@@ -44,7 +53,117 @@ class NewsPipelineStore {
     }
   }
 
-  private saveToDisk() {
+  private async saveToCloud() {
+    const kvUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+    const kvToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+
+    if (kvUrl && kvToken) {
+      try {
+        const payloadStr = JSON.stringify({
+          trending: this.trendingPage,
+          sections: this.sectionPages,
+          updates: this.recentUpdates,
+        });
+
+        await fetch(`${kvUrl}/set/khabarganit_pipeline_v1`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${kvToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payloadStr),
+        });
+      } catch (err) {
+        console.error("Cloud KV write error:", err);
+      }
+    }
+
+    // Auto-commit to GitHub if GITHUB_TOKEN is set
+    const githubToken = process.env.GITHUB_TOKEN;
+    if (githubToken) {
+      try {
+        const repo = "rajsh7/Khabarganit";
+        const filePath = "src/data/liveNews.json";
+        const getUrl = `https://api.github.com/repos/${repo}/contents/${filePath}`;
+
+        // Get current file sha
+        const getRes = await fetch(getUrl, {
+          headers: {
+            Authorization: `Bearer ${githubToken}`,
+            Accept: "application/vnd.github.v3+json",
+          },
+        });
+
+        let sha: string | undefined;
+        if (getRes.ok) {
+          const fileData = await getRes.json();
+          sha = fileData.sha;
+        }
+
+        const newContent = JSON.stringify(
+          {
+            trending: this.trendingPage,
+            sections: this.sectionPages,
+            updates: this.recentUpdates,
+          },
+          null,
+          2
+        );
+
+        await fetch(getUrl, {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${githubToken}`,
+            Accept: "application/vnd.github.v3+json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: `feat(news): publish '${this.recentUpdates[0]?.headline || "latest"}' via pipeline`,
+            content: Buffer.from(newContent).toString("base64"),
+            sha,
+          }),
+        });
+      } catch (err) {
+        console.error("GitHub commit error:", err);
+      }
+    }
+  }
+
+  public async syncFromCloud() {
+    const kvUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+    const kvToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+
+    // Throttle cloud sync to at most once every 3 seconds per instance
+    const now = Date.now();
+    if (now - this.lastCloudSync < 3000) return;
+    this.lastCloudSync = now;
+
+    if (kvUrl && kvToken) {
+      try {
+        const res = await fetch(`${kvUrl}/get/khabarganit_pipeline_v1`, {
+          headers: {
+            Authorization: `Bearer ${kvToken}`,
+          },
+          cache: "no-store",
+        });
+
+        if (res.ok) {
+          const json = await res.json();
+          if (json && json.result) {
+            const data = typeof json.result === "string" ? JSON.parse(json.result) : json.result;
+            if (data.trending) this.trendingPage = data.trending;
+            if (data.sections) this.sectionPages = data.sections;
+            if (data.updates) this.recentUpdates = data.updates;
+            this.saveToLocalDisk();
+          }
+        }
+      } catch (err) {
+        console.error("Cloud KV read error:", err);
+      }
+    }
+  }
+
+  private saveToLocalDisk() {
     try {
       fs.writeFileSync(
         CACHE_FILE,
@@ -182,7 +301,8 @@ class NewsPipelineStore {
       this.recentUpdates.pop();
     }
 
-    this.saveToDisk();
+    this.saveToLocalDisk();
+    this.saveToCloud().catch(() => {});
 
     return {
       success: true,

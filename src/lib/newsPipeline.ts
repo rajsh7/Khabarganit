@@ -20,6 +20,17 @@ export interface PublishPayload {
   paragraphs?: string[];
 }
 
+const SECTION_FALLBACK_IMAGES: Record<string, string> = {
+  TRENDING: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1000&q=80",
+  WORLD: "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=1000&q=80",
+  INDIA: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1000&q=80",
+  BUSINESS: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1000&q=80",
+  TECH: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1000&q=80",
+  SPORTS: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=1000&q=80",
+  POLITICS: "https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?w=1000&q=80",
+  ENTERTAINMENT: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1000&q=80",
+};
+
 // Multi-tier persistent store:
 // Tier 1: Cloud KV (Vercel KV / Upstash Redis REST API)
 // Tier 2: GitHub Repository auto-commit (if GITHUB_TOKEN set)
@@ -107,7 +118,6 @@ class NewsPipelineStore {
       }
     }
 
-    // Auto-commit to GitHub if GITHUB_TOKEN is set
     const githubToken = process.env.GITHUB_TOKEN;
     if (githubToken) {
       try {
@@ -237,6 +247,9 @@ class NewsPipelineStore {
       targetPage = this.trendingPage;
     }
 
+    const defaultImg = SECTION_FALLBACK_IMAGES[section] || SECTION_FALLBACK_IMAGES.TRENDING;
+
+    // Check pending images queue if payload.image is missing
     if (!payload.image) {
       const pendingImg = this.getPendingImageForHeadline(payload.headline);
       if (pendingImg) {
@@ -262,7 +275,7 @@ class NewsPipelineStore {
         kicker: payload.kicker || `${section} BREAKING BULLETIN`,
         headline: payload.headline.toUpperCase(),
         subhead: payload.subhead || paragraphs[0] || "Breaking dispatches from the KhabarGanit newsroom.",
-        image: payload.image || targetPage.leadStory.image,
+        image: payload.image || targetPage.leadStory.image || defaultImg,
         imageAlt: payload.headline,
         caption: payload.imageCaption || `${payload.headline} reported on ${new Date().toLocaleDateString('en-GB')}. (Photo: KhabarGanit)`,
         col1: col1.length > 0 ? col1 : targetPage.leadStory.col1,
@@ -271,17 +284,37 @@ class NewsPipelineStore {
         timeAgo: "Just now",
       };
 
+      // Archive former lead story to sideStories so it NEVER vanishes
+      if (targetPage.leadStory && targetPage.leadStory.headline !== leadData.headline) {
+        const formerLead: SideStory = {
+          kicker: targetPage.leadStory.kicker,
+          headline: targetPage.leadStory.headline,
+          summary: targetPage.leadStory.subhead,
+          image: targetPage.leadStory.image || defaultImg,
+          imageCaption: targetPage.leadStory.caption,
+          paragraphs: [...targetPage.leadStory.col1, ...targetPage.leadStory.col2],
+          author: "KhabarGanit Senior Desk",
+          location: "National Bureau",
+          publishedAt: targetPage.leadStory.publishedAt,
+          timeAgo: targetPage.leadStory.timeAgo,
+        };
+        const alreadyInSide = targetPage.sideStories.some(s => s.headline === formerLead.headline);
+        if (!alreadyInSide) {
+          targetPage.sideStories = [formerLead, ...targetPage.sideStories];
+        }
+      }
+
       targetPage.leadStory = leadData;
-      // Front Page Mirror: Always mirror LEAD stories to Front Page (TRENDING)
+      // Front Page Mirror
       this.trendingPage.leadStory = leadData;
     }
-    // 2. SIDE STORY (Right-side 33% column)
+    // 2. SIDE STORY (Never discard previous stories; prepend or update existing)
     else if (placement === "SIDE") {
       const newSideStory: SideStory = {
         kicker: payload.kicker || `${section} REPORT`,
         headline: payload.headline.toUpperCase(),
         summary: payload.subhead || payload.summary || paragraphs[0],
-        image: payload.image,
+        image: payload.image || defaultImg,
         imageCaption: payload.imageCaption,
         author: payload.author || "KhabarGanit Desk",
         location: payload.location || "New Delhi",
@@ -290,13 +323,24 @@ class NewsPipelineStore {
         timeAgo: "Just now",
       };
 
-      // Prepend to sideStories (keeps 3)
-      targetPage.sideStories = [newSideStory, targetPage.sideStories[0], targetPage.sideStories[1]] as [SideStory, SideStory, SideStory];
+      // Update in place if same headline, otherwise prepend without dropping
+      const existIdx = targetPage.sideStories.findIndex(s => s.headline === newSideStory.headline);
+      if (existIdx !== -1) {
+        targetPage.sideStories[existIdx] = newSideStory;
+      } else {
+        targetPage.sideStories = [newSideStory, ...targetPage.sideStories];
+      }
+
       if (targetPage !== this.trendingPage) {
-        this.trendingPage.sideStories = [newSideStory, this.trendingPage.sideStories[0], this.trendingPage.sideStories[1]] as [SideStory, SideStory, SideStory];
+        const trendIdx = this.trendingPage.sideStories.findIndex(s => s.headline === newSideStory.headline);
+        if (trendIdx !== -1) {
+          this.trendingPage.sideStories[trendIdx] = newSideStory;
+        } else {
+          this.trendingPage.sideStories = [newSideStory, ...this.trendingPage.sideStories];
+        }
       }
     }
-    // 3. TOP STORY (4-column domain dispatch)
+    // 3. TOP STORY (Never discard previous stories; prepend or update existing)
     else if (placement === "TOP") {
       const newTopStory: TopStory = {
         kicker: payload.kicker || `${section} DISPATCH`,
@@ -304,17 +348,30 @@ class NewsPipelineStore {
         summary: payload.subhead || payload.summary || paragraphs[0],
         author: payload.author || "Special Correspondent",
         location: payload.location || "National Bureau",
-        image: payload.image,
+        image: payload.image || defaultImg,
         imageCaption: payload.imageCaption,
         paragraphs: paragraphs,
         publishedAt: new Date().toISOString(),
         timeAgo: "Just now",
       };
 
-      // Prepend to topStories (keeps 4)
-      targetPage.topStories = [newTopStory, targetPage.topStories[0], targetPage.topStories[1], targetPage.topStories[2]] as [TopStory, TopStory, TopStory, TopStory];
+      const existTopIdx = targetPage.topStories.findIndex(t => t.headline === newTopStory.headline);
+      if (existTopIdx !== -1) {
+        targetPage.topStories[existTopIdx] = newTopStory;
+      } else {
+        targetPage.topStories = [newTopStory, ...targetPage.topStories];
+      }
+
+      if (targetPage !== this.trendingPage) {
+        const trendTopIdx = this.trendingPage.topStories.findIndex(t => t.headline === newTopStory.headline);
+        if (trendTopIdx !== -1) {
+          this.trendingPage.topStories[trendTopIdx] = newTopStory;
+        } else {
+          this.trendingPage.topStories = [newTopStory, ...this.trendingPage.topStories];
+        }
+      }
     }
-    // 4. DIGEST ITEM (Top 10 Monitor)
+    // 4. DIGEST ITEM
     else if (placement === "DIGEST") {
       const newDigest: DigestItem = {
         number: 1,
@@ -323,8 +380,7 @@ class NewsPipelineStore {
         summary: payload.subhead || payload.summary || paragraphs[0],
       };
 
-      // Shift existing numbers down
-      const updated = [newDigest, ...targetPage.digestItems.slice(0, 9)].map((item, idx) => ({
+      const updated = [newDigest, ...targetPage.digestItems].map((item, idx) => ({
         ...item,
         number: idx + 1,
       }));
@@ -337,7 +393,7 @@ class NewsPipelineStore {
       section,
     });
 
-    if (this.recentUpdates.length > 20) {
+    if (this.recentUpdates.length > 50) {
       this.recentUpdates.pop();
     }
 
@@ -359,7 +415,7 @@ class NewsPipelineStore {
     this.loadFromDisk();
     const clean = headlineQuery.trim().toUpperCase();
 
-    // 1. Check if it matches Trending lead story or if no headline provided (attach to latest lead)
+    // 1. Trending lead story
     if (
       !clean ||
       this.trendingPage.leadStory.headline.includes(clean) ||
@@ -368,7 +424,6 @@ class NewsPipelineStore {
       this.trendingPage.leadStory.image = imageUrl;
       if (caption) this.trendingPage.leadStory.caption = caption;
 
-      // Mirror to matching section lead
       for (const sec of this.sectionPages) {
         if (
           !clean ||
@@ -390,7 +445,7 @@ class NewsPipelineStore {
       };
     }
 
-    // 2. Check all sections lead stories
+    // 2. Section lead stories
     for (const sec of this.sectionPages) {
       if (
         sec.leadStory.headline.includes(clean) ||
@@ -409,7 +464,7 @@ class NewsPipelineStore {
       }
     }
 
-    // 3. Check Side Stories
+    // 3. Side Stories
     for (const page of [this.trendingPage, ...this.sectionPages]) {
       for (const side of page.sideStories) {
         if (side.headline.includes(clean) || clean.includes(side.headline)) {
@@ -426,7 +481,7 @@ class NewsPipelineStore {
       }
     }
 
-    // 4. Check Top Stories
+    // 4. Top Stories
     for (const page of [this.trendingPage, ...this.sectionPages]) {
       for (const top of page.topStories) {
         if (top.headline.includes(clean) || clean.includes(top.headline)) {
@@ -443,7 +498,7 @@ class NewsPipelineStore {
       }
     }
 
-    // 5. If no story match found on the site yet, save to pending queue!
+    // 5. Register in pending queue
     this.registerPendingImage(headlineQuery, imageUrl);
     return {
       success: true,
@@ -467,7 +522,6 @@ class NewsPipelineStore {
     const defaultTrending = (liveNewsBaseline?.trending as SectionPageData) || TRENDING_PAGE;
     const defaultSections = (liveNewsBaseline?.sections as SectionPageData[]) || SECTION_PAGES;
 
-    // 1. Check if it matches Trending Lead Story or if 'lead' was queried
     if (
       clean === "LEAD" ||
       this.trendingPage.leadStory.headline.includes(clean) ||
@@ -499,7 +553,6 @@ class NewsPipelineStore {
       };
     }
 
-    // 2. Check Lead Story in each section
     for (let i = 0; i < this.sectionPages.length; i++) {
       const sec = this.sectionPages[i];
       if (sec.leadStory.headline.includes(clean) || clean.includes(sec.leadStory.headline)) {
@@ -519,20 +572,13 @@ class NewsPipelineStore {
       }
     }
 
-    // 3. Check Side Stories
     for (const page of [this.trendingPage, ...this.sectionPages]) {
       const idx = page.sideStories.findIndex(
         (s) => s.headline.includes(clean) || clean.includes(s.headline)
       );
       if (idx !== -1) {
         const removed = page.sideStories[idx].headline;
-        const defPage =
-          page.sectionKey === "TRENDING"
-            ? defaultTrending
-            : defaultSections.find((s) => s.sectionKey === page.sectionKey) || defaultTrending;
-        page.sideStories[idx] = JSON.parse(
-          JSON.stringify(defPage.sideStories[idx] || defPage.sideStories[0])
-        );
+        page.sideStories.splice(idx, 1);
         this.recentUpdates = this.recentUpdates.filter((u) => !u.headline.toUpperCase().includes(clean));
         this.saveToLocalDisk();
         this.saveToCloud().catch(() => {});
@@ -540,20 +586,13 @@ class NewsPipelineStore {
       }
     }
 
-    // 4. Check Top Stories
     for (const page of [this.trendingPage, ...this.sectionPages]) {
       const idx = page.topStories.findIndex(
         (t) => t.headline.includes(clean) || clean.includes(t.headline)
       );
       if (idx !== -1) {
         const removed = page.topStories[idx].headline;
-        const defPage =
-          page.sectionKey === "TRENDING"
-            ? defaultTrending
-            : defaultSections.find((s) => s.sectionKey === page.sectionKey) || defaultTrending;
-        page.topStories[idx] = JSON.parse(
-          JSON.stringify(defPage.topStories[idx] || defPage.topStories[0])
-        );
+        page.topStories.splice(idx, 1);
         this.recentUpdates = this.recentUpdates.filter((u) => !u.headline.toUpperCase().includes(clean));
         this.saveToLocalDisk();
         this.saveToCloud().catch(() => {});
@@ -561,7 +600,6 @@ class NewsPipelineStore {
       }
     }
 
-    // 5. Check Digest Items
     for (const page of [this.trendingPage, ...this.sectionPages]) {
       const idx = page.digestItems.findIndex(
         (d) =>

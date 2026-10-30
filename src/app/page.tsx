@@ -84,12 +84,61 @@ export default function NewspaperPage() {
 
     fetch("/api/news", { cache: "no-store" })
       .then((res) => res.json())
-      .then((data) => {
-        if (data && data.trending && data.sections) {
-          setPipelineData({ trending: data.trending, sections: data.sections });
-          try {
-            localStorage.setItem("kg_live_edition_v1", JSON.stringify(data));
-          } catch {}
+      .then((serverData) => {
+        if (serverData && serverData.trending && serverData.sections) {
+          setPipelineData((prev) => {
+            if (!prev) return serverData;
+
+            // Non-destructive smart merge: retain user-published stories and photos
+            const mergedTrending = { ...serverData.trending };
+
+            const sideMap = new Map();
+            [...(prev.trending?.sideStories || []), ...(serverData.trending?.sideStories || [])].forEach((item) => {
+              if (item && item.headline && !sideMap.has(item.headline)) {
+                sideMap.set(item.headline, item);
+              }
+            });
+            mergedTrending.sideStories = Array.from(sideMap.values());
+
+            const topMap = new Map();
+            [...(prev.trending?.topStories || []), ...(serverData.trending?.topStories || [])].forEach((item) => {
+              if (item && item.headline && !topMap.has(item.headline)) {
+                topMap.set(item.headline, item);
+              }
+            });
+            mergedTrending.topStories = Array.from(topMap.values());
+
+            const mergedSections = serverData.sections.map((s: SectionPageData) => {
+              const prevSec = prev.sections.find((p) => p.sectionKey === s.sectionKey);
+              if (!prevSec) return s;
+
+              const secSideMap = new Map();
+              [...(prevSec.sideStories || []), ...(s.sideStories || [])].forEach((item) => {
+                if (item && item.headline && !secSideMap.has(item.headline)) {
+                  secSideMap.set(item.headline, item);
+                }
+              });
+
+              const secTopMap = new Map();
+              [...(prevSec.topStories || []), ...(s.topStories || [])].forEach((item) => {
+                if (item && item.headline && !secTopMap.has(item.headline)) {
+                  secTopMap.set(item.headline, item);
+                }
+              });
+
+              return {
+                ...s,
+                sideStories: Array.from(secSideMap.values()),
+                topStories: Array.from(secTopMap.values()),
+              };
+            });
+
+            const finalData = { trending: mergedTrending, sections: mergedSections };
+            try {
+              localStorage.setItem("kg_live_edition_v1", JSON.stringify(finalData));
+            } catch {}
+            return finalData;
+          });
         }
       })
       .catch(() => {});
@@ -652,6 +701,17 @@ export default function NewspaperPage() {
                       {story.headline}
                       <ArrowUpRight size={13} className="inline-block ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-[#C13A08]" />
                     </h4>
+                    {story.image && (
+                      <div className="relative w-full aspect-[16/10] overflow-hidden bg-stone-100 border border-stone-200 mb-2.5 shadow-xs">
+                        <Image
+                          src={story.image}
+                          alt={story.headline}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                          className="object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                        />
+                      </div>
+                    )}
                     <p className="text-xs font-serif text-stone-700 leading-relaxed">
                       {story.summary}
                     </p>

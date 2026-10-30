@@ -58,8 +58,8 @@ export interface SectionPageData {
   editionSubtitle: string;
   topStripLabel: string;
   leadStory: LeadStory;
-  sideStories: [SideStory, SideStory, SideStory];
-  topStories: [TopStory, TopStory, TopStory, TopStory];
+  sideStories: SideStory[];
+  topStories: TopStory[];
   digestTitle: string;
   digestItems: DigestItem[];
   editorial: {

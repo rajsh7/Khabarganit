@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Send, CheckCircle2, AlertCircle, ArrowLeft, Globe, Bot, Sparkles, RefreshCw, Trash2 } from "lucide-react";
+import { Send, CheckCircle2, AlertCircle, ArrowLeft, Globe, Bot, Sparkles, RefreshCw, Trash2, LogOut } from "lucide-react";
 
 export default function PipelinePage() {
   const [section, setSection] = useState("TRENDING");
@@ -104,13 +104,24 @@ export default function PipelinePage() {
         
         {/* Navigation & Header */}
         <div className="flex items-center justify-between mb-6 pb-4 border-b border-stone-300">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <Link
               href="/"
               className="flex items-center gap-1.5 text-xs font-serif font-bold uppercase tracking-wider text-stone-700 hover:text-black transition-colors"
             >
               <ArrowLeft size={14} /> Back to Broadsheet
             </Link>
+            <span className="text-stone-300">|</span>
+            <button
+              onClick={async () => {
+                await fetch("/api/admin/auth/logout", { method: "POST" });
+                window.location.href = "/admin/login";
+              }}
+              className="flex items-center gap-1.5 text-xs font-serif font-bold uppercase tracking-wider text-stone-500 hover:text-red-600 transition-colors cursor-pointer"
+              title="Sign Out of Newsroom"
+            >
+              <LogOut size={13} /> Sign Out
+            </button>
           </div>
           <div className="flex items-center gap-2">
             <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />

@@ -13,10 +13,12 @@ import {
   LogOut,
   ChevronRight,
   BarChart3,
+  Send,
 } from "lucide-react";
 
 const navItems = [
   { href: "/admin", label: "डैशबोर्ड", icon: LayoutDashboard },
+  { href: "/admin/pipeline", label: "न्यूज़ पाइपलाइन (Live)", icon: Send },
   { href: "/admin/articles", label: "लेख", icon: FileText },
   { href: "/admin/categories", label: "विभाग", icon: FolderOpen },
   { href: "/admin/users", label: "उपयोगकर्ता", icon: Users },
@@ -28,12 +30,24 @@ const navItems = [
 export default function AdminSidebar() {
   const pathname = usePathname();
 
+  if (pathname === "/admin/login") {
+    return null;
+  }
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/admin/auth/logout", { method: "POST" });
+    } finally {
+      window.location.href = "/admin/login";
+    }
+  };
+
   return (
     <aside className="w-60 bg-[#1C1208] min-h-screen flex flex-col flex-shrink-0">
       {/* Logo */}
       <div className="p-5 border-b border-gray-800">
         <Image src="/logo.png" alt="खबरगणित" width={150} height={42} className="object-contain brightness-0 invert" />
-        <p className="text-xs text-gray-500 font-jost mt-1">Admin CRM</p>
+        <p className="text-xs text-gray-500 font-jost mt-1">Newsroom CRM</p>
       </div>
 
       {/* Nav */}
@@ -58,15 +72,18 @@ export default function AdminSidebar() {
       <div className="p-4 border-t border-gray-800">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-8 h-8 bg-[#E84A0C] rounded-full flex items-center justify-center text-white font-jost font-bold text-sm">
-            A
+            N
           </div>
           <div>
-            <p className="text-white font-jost text-sm font-semibold">Admin</p>
-            <p className="text-gray-500 text-xs">admin@khabarganit.in</p>
+            <p className="text-white font-jost text-sm font-semibold">Newsroom Editor</p>
+            <p className="text-gray-400 text-[11px] truncate max-w-[140px]">newsroom@khabarganit.com</p>
           </div>
         </div>
-        <button className="w-full flex items-center gap-2 text-gray-500 hover:text-red-400 text-xs font-jost transition-colors">
-          <LogOut size={14} /> साइन आउट
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-2 text-gray-400 hover:text-red-400 text-xs font-jost transition-colors cursor-pointer py-1"
+        >
+          <LogOut size={14} /> साइन आउट (Log Out)
         </button>
       </div>
     </aside>

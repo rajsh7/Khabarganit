@@ -11,6 +11,7 @@ export interface ArticleModalData {
   author?: string;
   location?: string;
   date?: string;
+  timeAgo?: string;
   image?: string;
   imageCaption?: string;
   paragraphs: string[];
@@ -120,7 +121,8 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
             )}
             <span className="flex items-center gap-1">
               <Clock size={13} className="text-stone-500" />
-              {article.date || "Thursday, 29 October 2026"} · 3 min read
+              {article.timeAgo ? `${article.timeAgo} · ` : ""}
+              {article.date || "Today's Edition"} · 3 min read
             </span>
           </div>
 

@@ -233,6 +233,8 @@ class NewsPipelineStore {
         caption: payload.imageCaption || `${payload.headline} reported on ${new Date().toLocaleDateString('en-GB')}. (Photo: KhabarGanit)`,
         col1: col1.length > 0 ? col1 : targetPage.leadStory.col1,
         col2: col2.length > 0 ? col2 : targetPage.leadStory.col2,
+        publishedAt: new Date().toISOString(),
+        timeAgo: "Just now",
       };
 
       targetPage.leadStory = leadData;
@@ -250,6 +252,8 @@ class NewsPipelineStore {
         author: payload.author || "KhabarGanit Desk",
         location: payload.location || "New Delhi",
         paragraphs: paragraphs,
+        publishedAt: new Date().toISOString(),
+        timeAgo: "Just now",
       };
 
       // Prepend to sideStories (keeps 3)

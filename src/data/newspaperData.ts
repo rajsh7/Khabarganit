@@ -7,6 +7,8 @@ export interface LeadStory {
   caption: string;
   col1: string[];
   col2: string[];
+  publishedAt?: string;
+  timeAgo?: string;
 }
 
 export interface SideStory {
@@ -18,6 +20,8 @@ export interface SideStory {
   paragraphs?: string[];
   author?: string;
   location?: string;
+  publishedAt?: string;
+  timeAgo?: string;
 }
 
 export interface TopStory {
@@ -29,6 +33,8 @@ export interface TopStory {
   image?: string;
   imageCaption?: string;
   paragraphs?: string[];
+  publishedAt?: string;
+  timeAgo?: string;
 }
 
 export interface DigestItem {

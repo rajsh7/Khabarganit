@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Bookmark, ArrowUpRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Bookmark, ArrowUpRight, Clock } from "lucide-react";
+import { formatTimeAgo, getTodayFormattedDate } from "@/lib/utils";
 
 import GoogleTranslate from "@/components/GoogleTranslate";
 import ArticleModal, { ArticleModalData } from "@/components/ArticleModal";
@@ -39,6 +40,15 @@ const VIEW_SEQUENCE: Array<CategoryKey | null> = [
 export default function NewspaperPage() {
   // activeCategory is null by default: user sees "Trending News all over the world" first
   const [activeCategory, setActiveCategory] = useState<CategoryKey | null>(null);
+  const [currentFormattedDate, setCurrentFormattedDate] = useState<string>("");
+
+  useEffect(() => {
+    setCurrentFormattedDate(getTodayFormattedDate());
+    const interval = setInterval(() => {
+      setCurrentFormattedDate(getTodayFormattedDate());
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
   const [isHindi, setIsHindi] = useState<boolean>(false);
   const [turning, setTurning] = useState(false);
   const [turnDirection, setTurnDirection] = useState<"next" | "prev">("next");
@@ -342,7 +352,7 @@ export default function NewspaperPage() {
             {/* Far Left: Date */}
             <div className="flex items-center justify-center sm:justify-start">
               <span className="font-bold tracking-[0.16em] shrink-0 whitespace-nowrap">
-                THURSDAY, 29 OCTOBER 2026
+                {currentFormattedDate || getTodayFormattedDate()}
               </span>
             </div>
 
@@ -427,12 +437,20 @@ export default function NewspaperPage() {
             
             {/* Left Column: Lead Story (~67%) */}
             <section className="md:col-span-8 md:pr-6 md:border-r md:border-stone-300 flex flex-col">
-              {/* Hook / Kicker - Exactly ONE red pulsing dot */}
-              <div className="flex items-center gap-2 mb-2 select-none">
-                <span className="inline-block w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse shrink-0" />
-                <span className="text-[11px] sm:text-xs font-serif font-bold uppercase tracking-[0.2em] text-[#C13A08]">
-                  {activePage.leadStory.kicker.replace(/^🔴\s*/, "")}
-                </span>
+              {/* Hook / Kicker + Time Ago Badge */}
+              <div className="flex items-center justify-between mb-2 select-none">
+                <div className="flex items-center gap-2">
+                  <span className="inline-block w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse shrink-0" />
+                  <span className="text-[11px] sm:text-xs font-serif font-bold uppercase tracking-[0.2em] text-[#C13A08]">
+                    {activePage.leadStory.kicker.replace(/^🔴\s*/, "")}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 text-[10px] sm:text-[11px] font-sans font-medium text-stone-600 bg-stone-100 px-2 py-0.5 rounded border border-stone-200">
+                  <Clock size={11} className="text-[#C13A08]" />
+                  <span>
+                    {formatTimeAgo(activePage.leadStory.publishedAt || activePage.leadStory.timeAgo, "15m ago")}
+                  </span>
+                </div>
               </div>
 
               {/* Lead Headline - Clickable for Full Article */}
@@ -451,7 +469,8 @@ export default function NewspaperPage() {
                       "The strategic directive has been widely welcomed by domain experts, who emphasized that sustained institutional transparency and execution rigor remain the foundation for achieving national targets."
                     ],
                     author: "KhabarGanit Special Correspondent",
-                    location: "New Delhi Bureau"
+                    location: "New Delhi Bureau",
+                    timeAgo: formatTimeAgo(activePage.leadStory.publishedAt || activePage.leadStory.timeAgo, "15m ago")
                   })
                 }
                 className="font-playfair font-black text-2xl sm:text-3xl md:text-[36px] leading-[1.26] sm:leading-[1.2] tracking-normal sm:tracking-tight text-black uppercase mb-2.5 cursor-pointer hover:text-[#C13A08] transition-colors group"
@@ -540,15 +559,22 @@ export default function NewspaperPage() {
                           "Further administrative notifications and detailed regulatory guidelines are expected to be gazetted by the end of the current fiscal quarter."
                         ],
                         author: story.author || "Senior Policy Correspondent",
-                        location: story.location || "National Bureau"
+                        location: story.location || "National Bureau",
+                        timeAgo: formatTimeAgo(story.publishedAt || story.timeAgo, `${(idx + 1) * 35}m ago`)
                       })
                     }
                     className="pb-5 cursor-pointer group"
                     title="Click to read full article"
                   >
-                    <span className="text-[10px] font-serif font-bold uppercase tracking-[0.16em] text-[#C13A08] block mb-1">
-                      {story.kicker}
-                    </span>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[10px] font-serif font-bold uppercase tracking-[0.16em] text-[#C13A08]">
+                        {story.kicker}
+                      </span>
+                      <span className="text-[10px] font-sans text-stone-500 flex items-center gap-1 shrink-0">
+                        <Clock size={10} className="text-stone-400" />
+                        {formatTimeAgo(story.publishedAt || story.timeAgo, `${(idx + 1) * 35}m ago`)}
+                      </span>
+                    </div>
                     <h3 className="font-playfair font-black text-base sm:text-lg leading-snug tracking-normal sm:tracking-tight text-black uppercase mb-1.5 group-hover:text-[#C13A08] transition-colors">
                       {story.headline}
                       <ArrowUpRight size={14} className="inline-block ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-[#C13A08]" />
@@ -632,7 +658,10 @@ export default function NewspaperPage() {
                   </div>
                   <div className="pt-3 mt-3 border-t border-stone-200 text-[10px] font-serif text-stone-500 uppercase tracking-wider flex items-center justify-between">
                     <span>{story.author}</span>
-                    <span>{story.location}</span>
+                    <span className="flex items-center gap-1 font-sans font-normal text-stone-500 lowercase">
+                      <Clock size={10} className="text-stone-400" />
+                      {formatTimeAgo(story.publishedAt || story.timeAgo, `${idx + 1}h ago`)}
+                    </span>
                   </div>
                 </article>
               ))}

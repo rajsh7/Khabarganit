@@ -34,9 +34,38 @@ class NewsPipelineStore {
     (liveNewsBaseline?.updates as any[]) || [];
 
   private lastCloudSync = 0;
+  private pendingImages: Array<{ headline: string; imageUrl: string; timestamp: number }> = [];
 
   constructor() {
     this.loadFromDisk();
+  }
+
+  public registerPendingImage(headline: string, imageUrl: string) {
+    const clean = headline.trim().toUpperCase();
+    this.pendingImages.unshift({
+      headline: clean,
+      imageUrl,
+      timestamp: Date.now(),
+    });
+    if (this.pendingImages.length > 20) {
+      this.pendingImages.pop();
+    }
+  }
+
+  public getPendingImageForHeadline(headline: string): string | undefined {
+    const clean = headline.trim().toUpperCase();
+    const now = Date.now();
+    const foundIdx = this.pendingImages.findIndex(
+      (p) =>
+        now - p.timestamp < 30 * 60 * 1000 &&
+        (clean.includes(p.headline) || p.headline.includes(clean))
+    );
+    if (foundIdx !== -1) {
+      const img = this.pendingImages[foundIdx].imageUrl;
+      this.pendingImages.splice(foundIdx, 1);
+      return img;
+    }
+    return undefined;
   }
 
   private loadFromDisk() {
@@ -86,7 +115,6 @@ class NewsPipelineStore {
         const filePath = "src/data/liveNews.json";
         const getUrl = `https://api.github.com/repos/${repo}/contents/${filePath}`;
 
-        // Get current file sha
         const getRes = await fetch(getUrl, {
           headers: {
             Authorization: `Bearer ${githubToken}`,
@@ -133,7 +161,6 @@ class NewsPipelineStore {
     const kvUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
     const kvToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
 
-    // Throttle cloud sync to at most once every 3 seconds per instance
     const now = Date.now();
     if (now - this.lastCloudSync < 3000) return;
     this.lastCloudSync = now;
@@ -210,6 +237,13 @@ class NewsPipelineStore {
       targetPage = this.trendingPage;
     }
 
+    if (!payload.image) {
+      const pendingImg = this.getPendingImageForHeadline(payload.headline);
+      if (pendingImg) {
+        payload.image = pendingImg;
+      }
+    }
+
     const paragraphs = payload.paragraphs && payload.paragraphs.length > 0
       ? payload.paragraphs
       : [
@@ -273,6 +307,8 @@ class NewsPipelineStore {
         image: payload.image,
         imageCaption: payload.imageCaption,
         paragraphs: paragraphs,
+        publishedAt: new Date().toISOString(),
+        timeAgo: "Just now",
       };
 
       // Prepend to topStories (keeps 4)
@@ -312,6 +348,107 @@ class NewsPipelineStore {
       success: true,
       message: `Successfully published '${payload.headline}' to ${section} (${placement})`,
       page: targetPage,
+    };
+  }
+
+  public attachImage(
+    headlineQuery: string,
+    imageUrl: string,
+    caption?: string
+  ): { success: boolean; message: string; headline: string; section?: string } {
+    this.loadFromDisk();
+    const clean = headlineQuery.trim().toUpperCase();
+
+    // 1. Check if it matches Trending lead story or if no headline provided (attach to latest lead)
+    if (
+      !clean ||
+      this.trendingPage.leadStory.headline.includes(clean) ||
+      clean.includes(this.trendingPage.leadStory.headline)
+    ) {
+      this.trendingPage.leadStory.image = imageUrl;
+      if (caption) this.trendingPage.leadStory.caption = caption;
+
+      // Mirror to matching section lead
+      for (const sec of this.sectionPages) {
+        if (
+          !clean ||
+          sec.leadStory.headline.includes(clean) ||
+          clean.includes(sec.leadStory.headline)
+        ) {
+          sec.leadStory.image = imageUrl;
+          if (caption) sec.leadStory.caption = caption;
+        }
+      }
+
+      this.saveToLocalDisk();
+      this.saveToCloud().catch(() => {});
+      return {
+        success: true,
+        message: "Attached photo to Front-Page Lead Story",
+        headline: this.trendingPage.leadStory.headline,
+        section: "TRENDING",
+      };
+    }
+
+    // 2. Check all sections lead stories
+    for (const sec of this.sectionPages) {
+      if (
+        sec.leadStory.headline.includes(clean) ||
+        clean.includes(sec.leadStory.headline)
+      ) {
+        sec.leadStory.image = imageUrl;
+        if (caption) sec.leadStory.caption = caption;
+        this.saveToLocalDisk();
+        this.saveToCloud().catch(() => {});
+        return {
+          success: true,
+          message: `Attached photo to ${sec.sectionKey} Lead Story`,
+          headline: sec.leadStory.headline,
+          section: sec.sectionKey,
+        };
+      }
+    }
+
+    // 3. Check Side Stories
+    for (const page of [this.trendingPage, ...this.sectionPages]) {
+      for (const side of page.sideStories) {
+        if (side.headline.includes(clean) || clean.includes(side.headline)) {
+          side.image = imageUrl;
+          if (caption) side.imageCaption = caption;
+          this.saveToLocalDisk();
+          this.saveToCloud().catch(() => {});
+          return {
+            success: true,
+            message: "Attached photo to Side Story",
+            headline: side.headline,
+          };
+        }
+      }
+    }
+
+    // 4. Check Top Stories
+    for (const page of [this.trendingPage, ...this.sectionPages]) {
+      for (const top of page.topStories) {
+        if (top.headline.includes(clean) || clean.includes(top.headline)) {
+          top.image = imageUrl;
+          if (caption) top.imageCaption = caption;
+          this.saveToLocalDisk();
+          this.saveToCloud().catch(() => {});
+          return {
+            success: true,
+            message: "Attached photo to Top Story",
+            headline: top.headline,
+          };
+        }
+      }
+    }
+
+    // 5. If no story match found on the site yet, save to pending queue!
+    this.registerPendingImage(headlineQuery, imageUrl);
+    return {
+      success: true,
+      message: `Photo registered for headline: "${headlineQuery}". Send the news text now and it will be attached automatically!`,
+      headline: headlineQuery,
     };
   }
 }

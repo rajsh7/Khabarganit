@@ -141,17 +141,22 @@ export async function POST(request: Request) {
       const helpMsg = `📰 *KhabarGanit Auto-News Pipeline Bot*\n\n` +
         `Send news directly to your broadsheet newspaper on *KhabarGanit.com* without touching code or opening a laptop!\n\n` +
         `━━━━━━━━━━━━━━━━━━━━\n` +
-        `*📝 FORMAT TO PUBLISH:*\n` +
-        `Send text or send a photo with this format:\n\n` +
-        `*Headline:* Your Breaking Headline\n` +
-        `*Section:* TRENDING _(or INDIA, WORLD, TECH, BUSINESS, SPORTS, POLITICS, ENTERTAINMENT)_\n` +
-        `*Placement:* LEAD _(or SIDE, TOP, DIGEST)_\n` +
-        `*Subhead:* Brief 1-line summary\n` +
-        `*Story:* Full news paragraphs...\n\n` +
+        `*📝 METHOD 1: SEND LONG STORY + PHOTO SEPARATELY (No 1,000-char limit!)*\n\n` +
+        `1️⃣ *Send your full story text first:*\n` +
+        `*Headline:* Your Story Headline\n` +
+        `*Section:* POLITICS _(or INDIA, WORLD, TECH, etc.)_\n` +
+        `*Placement:* LEAD _(or SIDE, TOP)_\n` +
+        `*Subhead:* Brief summary...\n` +
+        `*Story:* Full news paragraphs (as long as you want)...\n\n` +
+        `2️⃣ *Then send your photo:*\n` +
+        `Caption: *Headline:* Your Story Headline\n` +
+        `_(Or simply send the photo with no caption right after!)_\n` +
+        `➡️ The bot will automatically attach the photo to that story!\n\n` +
         `━━━━━━━━━━━━━━━━━━━━\n` +
-        `*⚡ QUICK PUBLISH:* Send any photo with just:\n` +
-        `First line: Headline\n` +
-        `Second line: Story\n\n` +
+        `*⚡ METHOD 2: ALL-IN-ONE QUICK PUBLISH*\n` +
+        `Send a photo with short caption:\n` +
+        `Line 1: Headline\n` +
+        `Line 2: Story...\n\n` +
         `*Your Telegram ID:* \`${fromId}\`\n` +
         `🌐 *Live Site:* https://www.khabarganit.com`;
 
@@ -182,7 +187,41 @@ export async function POST(request: Request) {
       imageUrl = await getTelegramPhotoUrl(largest.file_id);
     }
 
-    // Parse news content
+    // ── FEATURE: SEPARATE PHOTO ATTACHMENT ──
+    // If a photo was sent without full article body, attach it to matching headline (or recent lead story)
+    const hasStoryTag = /^(story|content|समाचार):/im.test(rawText);
+    const hasMultipleParagraphs = rawText.split("\n\n").length > 2;
+
+    if (imageUrl && !hasStoryTag && !hasMultipleParagraphs) {
+      let targetHeadline = "";
+      for (const line of rawText.split("\n").map((l: string) => l.trim()).filter(Boolean)) {
+        if (/^(headline|title|शीर्षक):/i.test(line)) {
+          targetHeadline = line.replace(/^(headline|title|शीर्षक):\s*/i, "").trim();
+          break;
+        } else if (!targetHeadline) {
+          targetHeadline = line;
+        }
+      }
+
+      const attachResult = newsPipeline.attachImage(
+        targetHeadline,
+        imageUrl,
+        targetHeadline ? `${targetHeadline} (Photo: KhabarGanit)` : undefined
+      );
+
+      if (attachResult.success) {
+        const attachConfirmation = `📸 *PHOTO ATTACHED SUCCESSFULLY!* 🚀\n\n` +
+          `📰 *Story:* ${attachResult.headline}\n` +
+          `🖼️ *Placement:* Attached to ${attachResult.section || "Lead"} broadsheet edition\n` +
+          `⏰ *Updated at:* ${new Date().toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata" })} IST\n\n` +
+          `🌐 *View Live on Website:*\nhttps://www.khabarganit.com`;
+
+        await sendTelegramMessage(chatId, attachConfirmation);
+        return NextResponse.json({ ok: true, result: attachResult });
+      }
+    }
+
+    // Parse news content for standard publishing
     const payload = parseNewsMessage(rawText, imageUrl);
 
     if (!payload || !payload.headline) {
@@ -209,7 +248,7 @@ export async function POST(request: Request) {
     const confirmationMsg = `✅ *NEWS PUBLISHED TO KHABARGANIT!* 🚀\n\n` +
       `📰 *Headline:* ${payload.headline}\n` +
       `📁 *Section:* ${payload.sectionKey} (${payload.placement})\n` +
-      `📸 *Photo:* ${imageUrl ? "Attached ✅" : "Broadsheet Visual"}\n` +
+      `📸 *Photo:* ${payload.image ? "Attached ✅" : "Broadsheet Visual"}\n` +
       `⏰ *Published at:* ${new Date().toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata" })} IST\n\n` +
       `🌐 *Front Page & Broadsheet:*\nhttps://www.khabarganit.com\n\n` +
       `📂 *Section View:*\n${liveUrl}`;

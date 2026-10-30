@@ -9,6 +9,8 @@ export interface LeadStory {
   col2: string[];
   publishedAt?: string;
   timeAgo?: string;
+  videoUrl?: string;
+  sourceUrl?: string;
 }
 
 export interface SideStory {
@@ -22,6 +24,8 @@ export interface SideStory {
   location?: string;
   publishedAt?: string;
   timeAgo?: string;
+  videoUrl?: string;
+  sourceUrl?: string;
 }
 
 export interface TopStory {
@@ -35,6 +39,8 @@ export interface TopStory {
   paragraphs?: string[];
   publishedAt?: string;
   timeAgo?: string;
+  videoUrl?: string;
+  sourceUrl?: string;
 }
 
 export interface DigestItem {

@@ -16,6 +16,8 @@ export interface ArticleModalData {
   imageCaption?: string;
   paragraphs: string[];
   category?: string;
+  videoUrl?: string;
+  sourceUrl?: string;
 }
 
 interface ArticleModalProps {
@@ -174,6 +176,24 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
           </div>
         )}
 
+        {/* Embedded Video Dispatch if present */}
+        {article.videoUrl && (
+          <div className="my-5">
+            <div className="relative w-full aspect-[16/9] overflow-hidden bg-black border border-stone-300 shadow-md">
+              <iframe
+                src={article.videoUrl}
+                title={article.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full border-0"
+              />
+            </div>
+            <p className="text-[11px] font-serif text-stone-500 italic pt-1.5 border-b border-stone-200 pb-2">
+              📹 Video Dispatch & Media Coverage
+            </p>
+          </div>
+        )}
+
         {/* Full Article Body Paragraphs */}
         <div className="text-stone-900 text-sm sm:text-base font-serif leading-[1.8] space-y-4 my-6 text-justify">
           {article.paragraphs.map((p, idx) => (
@@ -182,6 +202,22 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
             </p>
           ))}
         </div>
+
+        {/* Source Attribution Link if present */}
+        {article.sourceUrl && (
+          <div className="mt-4 pt-3 border-t border-stone-200 text-xs font-serif text-stone-600 flex items-center gap-1.5 select-text">
+            <ExternalLink size={13} className="text-[#C13A08] shrink-0" />
+            <span>मूल समाचार स्रोत (Source):</span>
+            <a
+              href={article.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#C13A08] hover:underline font-semibold truncate max-w-xs sm:max-w-md inline-block"
+            >
+              {article.sourceUrl}
+            </a>
+          </div>
+        )}
 
         {/* Divider */}
         <div className="w-full h-[1.5px] bg-black my-6" />

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { newsPipeline, PublishPayload } from "@/lib/newsPipeline";
+import { findUrlsInText, scrapeMultipleNewsUrls } from "@/lib/urlScraper";
 
 const TELEGRAM_BOT_TOKEN =
   process.env.TELEGRAM_BOT_TOKEN || "8769156198:AAGU6N8r8NhCqILVqCQacMxmvUoJHlo0Zi0";
@@ -211,6 +212,89 @@ export async function POST(request: Request) {
         );
       }
       return NextResponse.json({ ok: true, result: delResult });
+    }
+
+    // ── FEATURE: INSTANT URL & BATCH LINK INGESTION (PIB, Reuters, BBC, etc.) ──
+    const extractedUrls = findUrlsInText(rawText);
+    const hasExplicitHeadline = /^(headline|title|शीर्षक):/im.test(rawText);
+
+    if (extractedUrls.length > 0 && !hasExplicitHeadline) {
+      let forcedPlacement: "LEAD" | "SIDE" | "TOP" | undefined;
+      if (/^\/lead\b/i.test(rawText)) forcedPlacement = "LEAD";
+      else if (/^\/side\b/i.test(rawText)) forcedPlacement = "SIDE";
+      else if (/^\/top\b/i.test(rawText)) forcedPlacement = "TOP";
+
+      let photoUrl: string | undefined;
+      if (message.photo && Array.isArray(message.photo) && message.photo.length > 0) {
+        const largest = message.photo[message.photo.length - 1];
+        photoUrl = await getTelegramPhotoUrl(largest.file_id);
+      }
+
+      await sendTelegramMessage(
+        chatId,
+        `⏳ *Processing ${extractedUrls.length} news ${extractedUrls.length === 1 ? "link" : "links"}...*\nFetching headlines, full text, photos, and video media.`
+      );
+
+      const scrapeResults = await scrapeMultipleNewsUrls(extractedUrls);
+      const publishedSummaries: string[] = [];
+
+      for (let i = 0; i < scrapeResults.length; i++) {
+        const item = scrapeResults[i];
+        if (!item.success || !item.data) {
+          publishedSummaries.push(`❌ Failed to scrape: \`${item.url}\` (${item.error || "Network error"})`);
+          continue;
+        }
+
+        const scraped = item.data;
+
+        // Determine placement: single drop is LEAD, multiple drops distribute LEAD -> SIDE -> TOP
+        let placement: PublishPayload["placement"] = "TOP";
+        if (forcedPlacement) {
+          placement = forcedPlacement;
+        } else if (extractedUrls.length === 1) {
+          placement = "LEAD";
+        } else if (i === 0) {
+          placement = "LEAD";
+        } else if (i <= 2) {
+          placement = "SIDE";
+        } else {
+          placement = "TOP";
+        }
+
+        const payload: PublishPayload = {
+          headline: scraped.headline,
+          subhead: scraped.subhead,
+          summary: scraped.summary,
+          paragraphs: scraped.paragraphs,
+          image: photoUrl || scraped.image,
+          imageCaption: scraped.imageCaption,
+          videoUrl: scraped.videoUrl,
+          sourceUrl: scraped.url,
+          kicker: scraped.kicker,
+          author: scraped.author,
+          location: scraped.location,
+          placement,
+          sectionKey: scraped.sectionKey,
+        };
+
+        newsPipeline.publish(payload);
+
+        const photoIcon = photoUrl || scraped.image ? "📸" : "📰";
+        const videoIcon = scraped.videoUrl ? " 📹" : "";
+        publishedSummaries.push(
+          `*${i + 1}. [${placement} · ${scraped.sectionKey}]* ${scraped.headline} ${photoIcon}${videoIcon}\n` +
+            `   _Source: ${scraped.kicker} (${scraped.paragraphs.length} paragraphs)_`
+        );
+      }
+
+      const replyMsg =
+        `✅ *${scrapeResults.filter((s) => s.success).length} NEWS STORIES PUBLISHED TO KHABARGANIT!* 🚀\n\n` +
+        publishedSummaries.join("\n\n") +
+        `\n\n⏰ *Published at:* ${new Date().toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata" })} IST\n` +
+        `🌐 *Live Front Page:*\nhttps://www.khabarganit.com`;
+
+      await sendTelegramMessage(chatId, replyMsg);
+      return NextResponse.json({ ok: true, count: scrapeResults.length });
     }
 
     // Handle Photo if present

@@ -519,6 +519,8 @@ export default function NewspaperPage() {
                     ],
                     author: "KhabarGanit Special Correspondent",
                     location: "New Delhi Bureau",
+                    videoUrl: activePage.leadStory.videoUrl,
+                    sourceUrl: activePage.leadStory.sourceUrl,
                     timeAgo: formatTimeAgo(activePage.leadStory.publishedAt || activePage.leadStory.timeAgo, "15m ago")
                   })
                 }
@@ -549,7 +551,9 @@ export default function NewspaperPage() {
                       "High-level administrative authorities confirmed continuous monitoring over the upcoming quarters to guarantee full operational delivery."
                     ],
                     author: "KhabarGanit Special Correspondent",
-                    location: "New Delhi Bureau"
+                    location: "New Delhi Bureau",
+                    videoUrl: activePage.leadStory.videoUrl,
+                    sourceUrl: activePage.leadStory.sourceUrl,
                   })
                 }
                 className="relative w-full aspect-[16/10] overflow-hidden bg-stone-100 border border-stone-300 mb-2 group shadow-sm cursor-pointer"
@@ -609,6 +613,8 @@ export default function NewspaperPage() {
                         ],
                         author: story.author || "Senior Policy Correspondent",
                         location: story.location || "National Bureau",
+                        videoUrl: story.videoUrl,
+                        sourceUrl: story.sourceUrl,
                         timeAgo: formatTimeAgo(story.publishedAt || story.timeAgo, `${(idx + 1) * 35}m ago`)
                       })
                     }
@@ -680,6 +686,8 @@ export default function NewspaperPage() {
                       imageCaption: story.imageCaption,
                       author: story.author,
                       location: story.location,
+                      videoUrl: story.videoUrl,
+                      sourceUrl: story.sourceUrl,
                       paragraphs: story.paragraphs || [
                         story.summary,
                         `Reporting from ${story.location}, local authorities and sector observers highlighted the ground-level impact of the announcement, noting active stakeholder coordination.`,

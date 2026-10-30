@@ -18,6 +18,8 @@ export interface PublishPayload {
   author?: string;
   location?: string;
   paragraphs?: string[];
+  videoUrl?: string;
+  sourceUrl?: string;
 }
 
 const SECTION_FALLBACK_IMAGES: Record<string, string> = {
@@ -282,6 +284,8 @@ class NewsPipelineStore {
         col2: col2.length > 0 ? col2 : targetPage.leadStory.col2,
         publishedAt: new Date().toISOString(),
         timeAgo: "Just now",
+        videoUrl: payload.videoUrl,
+        sourceUrl: payload.sourceUrl,
       };
 
       // Archive former lead story to sideStories so it NEVER vanishes
@@ -297,6 +301,8 @@ class NewsPipelineStore {
           location: "National Bureau",
           publishedAt: targetPage.leadStory.publishedAt,
           timeAgo: targetPage.leadStory.timeAgo,
+          videoUrl: targetPage.leadStory.videoUrl,
+          sourceUrl: targetPage.leadStory.sourceUrl,
         };
         const alreadyInSide = targetPage.sideStories.some(s => s.headline === formerLead.headline);
         if (!alreadyInSide) {
@@ -321,6 +327,8 @@ class NewsPipelineStore {
         paragraphs: paragraphs,
         publishedAt: new Date().toISOString(),
         timeAgo: "Just now",
+        videoUrl: payload.videoUrl,
+        sourceUrl: payload.sourceUrl,
       };
 
       // Update in place if same headline, otherwise prepend without dropping
@@ -353,6 +361,8 @@ class NewsPipelineStore {
         paragraphs: paragraphs,
         publishedAt: new Date().toISOString(),
         timeAgo: "Just now",
+        videoUrl: payload.videoUrl,
+        sourceUrl: payload.sourceUrl,
       };
 
       const existTopIdx = targetPage.topStories.findIndex(t => t.headline === newTopStory.headline);

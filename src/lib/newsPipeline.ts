@@ -52,6 +52,7 @@ class NewsPipelineStore {
 
   constructor() {
     this.loadFromDisk();
+    this.pruneExpiredNews();
   }
 
   public registerPendingImage(headline: string, imageUrl: string) {
@@ -194,7 +195,9 @@ class NewsPipelineStore {
             if (data.trending) this.trendingPage = data.trending;
             if (data.sections) this.sectionPages = data.sections;
             if (data.updates) this.recentUpdates = data.updates;
+            this.pruneExpiredNews();
             this.saveToLocalDisk();
+            this.saveToCloud().catch(() => {});
           }
         }
       } catch (err) {
@@ -236,8 +239,8 @@ class NewsPipelineStore {
     const now = Date.now();
     let prunedCount = 0;
 
-    const defaultTrending = (liveNewsBaseline?.trending as SectionPageData) || TRENDING_PAGE;
-    const defaultSections = (liveNewsBaseline?.sections as SectionPageData[]) || SECTION_PAGES;
+    const defaultTrending = TRENDING_PAGE;
+    const defaultSections = SECTION_PAGES;
 
     const prunePage = (page: SectionPageData, defaultPage?: SectionPageData) => {
       // 1. Lead Story Check
@@ -702,8 +705,8 @@ class NewsPipelineStore {
       return { success: false, message: "Please specify a headline to remove", removedHeadline: "" };
     }
 
-    const defaultTrending = (liveNewsBaseline?.trending as SectionPageData) || TRENDING_PAGE;
-    const defaultSections = (liveNewsBaseline?.sections as SectionPageData[]) || SECTION_PAGES;
+    const defaultTrending = TRENDING_PAGE;
+    const defaultSections = SECTION_PAGES;
 
     if (
       clean === "LEAD" ||

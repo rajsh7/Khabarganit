@@ -10,8 +10,8 @@ import ArticleModal, { ArticleModalData } from "@/components/ArticleModal";
 import { TRENDING_PAGE, SECTION_PAGES, SectionPageData } from "@/data/newspaperData";
 import liveNewsBaseline from "@/data/liveNews.json";
 
-const BASELINE_TRENDING = (liveNewsBaseline?.trending || TRENDING_PAGE) as SectionPageData;
-const BASELINE_SECTIONS = (liveNewsBaseline?.sections || SECTION_PAGES) as SectionPageData[];
+const BASELINE_TRENDING = TRENDING_PAGE;
+const BASELINE_SECTIONS = SECTION_PAGES;
 
 type CategoryKey = "WORLD" | "INDIA" | "BUSINESS" | "TECH" | "SPORTS" | "POLITICS" | "ENTERTAINMENT";
 
@@ -75,7 +75,7 @@ export default function NewspaperPage() {
     const MAX_AGE_MS = 24 * 60 * 60 * 1000; // 1-day retention (24 hours)
     const isFreshStory = (item: any) => {
       if (!item || !item.headline) return false;
-      if (!item.publishedAt) return true;
+      if (!item.publishedAt) return true; // keep evergreen baseline
       return Date.now() - new Date(item.publishedAt).getTime() <= MAX_AGE_MS;
     };
 
@@ -85,9 +85,16 @@ export default function NewspaperPage() {
         const parsed = JSON.parse(cached);
         if (parsed?.trending && parsed?.sections) {
           // Prune any cached stories older than 1 day
+          if (!isFreshStory(parsed.trending.leadStory)) {
+            parsed.trending.leadStory = TRENDING_PAGE.leadStory;
+          }
           parsed.trending.sideStories = (parsed.trending.sideStories || []).filter(isFreshStory);
           parsed.trending.topStories = (parsed.trending.topStories || []).filter(isFreshStory);
           parsed.sections.forEach((sec: any) => {
+            const defSec = SECTION_PAGES.find((s) => s.sectionKey === sec.sectionKey) || TRENDING_PAGE;
+            if (!isFreshStory(sec.leadStory)) {
+              sec.leadStory = defSec.leadStory;
+            }
             sec.sideStories = (sec.sideStories || []).filter(isFreshStory);
             sec.topStories = (sec.topStories || []).filter(isFreshStory);
           });
@@ -105,8 +112,13 @@ export default function NewspaperPage() {
 
             // Authoritative server-first merge: newly published stories and cascades take priority
             // Stories older than 1 day are filtered out automatically
+            const cleanTrendingLead = isFreshStory(serverData.trending?.leadStory)
+              ? serverData.trending.leadStory
+              : TRENDING_PAGE.leadStory;
+
             const mergedTrending = {
               ...serverData.trending,
+              leadStory: cleanTrendingLead,
               sideStories: [
                 ...(serverData.trending?.sideStories || []),
                 ...(prev.trending?.sideStories || []),
@@ -132,11 +144,17 @@ export default function NewspaperPage() {
             };
 
             const mergedSections = serverData.sections.map((s: SectionPageData) => {
+              const defSec = SECTION_PAGES.find((p) => p.sectionKey === s.sectionKey) || TRENDING_PAGE;
               const prevSec = prev.sections.find((p) => p.sectionKey === s.sectionKey);
-              if (!prevSec) return s;
+              const cleanSecLead = isFreshStory(s.leadStory) ? s.leadStory : defSec.leadStory;
+
+              if (!prevSec) {
+                return { ...s, leadStory: cleanSecLead };
+              }
 
               return {
                 ...s,
+                leadStory: cleanSecLead,
                 sideStories: [
                   ...(s.sideStories || []),
                   ...(prevSec.sideStories || []),

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Zap,
@@ -25,7 +25,7 @@ import { SectionPageData } from "@/data/newspaperData";
 type CategoryKey = "TRENDING" | "WORLD" | "INDIA" | "BUSINESS" | "TECH" | "SPORTS" | "POLITICS" | "ENTERTAINMENT";
 type PlacementKey = "LEAD" | "SIDE" | "TOP" | "DIGEST";
 
-export default function AdminPipelinePage() {
+function PipelineContent() {
   const searchParams = useSearchParams();
   const initialSection = (searchParams.get("section")?.toUpperCase() as CategoryKey) || "TRENDING";
 
@@ -838,5 +838,22 @@ export default function AdminPipelinePage() {
       )}
 
     </div>
+  );
+}
+
+export default function AdminPipelinePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[400px] flex items-center justify-center bg-white border border-stone-200 rounded-3xl p-8 text-stone-500 font-sans">
+          <div className="flex items-center gap-2">
+            <RefreshCw size={18} className="animate-spin text-stone-700" />
+            <span>Loading News Pipeline...</span>
+          </div>
+        </div>
+      }
+    >
+      <PipelineContent />
+    </Suspense>
   );
 }

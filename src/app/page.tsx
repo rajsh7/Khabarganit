@@ -72,11 +72,25 @@ export default function NewspaperPage() {
 
   // Background fetch to sync any real-time stories published via Telegram Bot or Web Pipeline
   useEffect(() => {
+    const MAX_AGE_MS = 24 * 60 * 60 * 1000; // 1-day retention (24 hours)
+    const isFreshStory = (item: any) => {
+      if (!item || !item.headline) return false;
+      if (!item.publishedAt) return true;
+      return Date.now() - new Date(item.publishedAt).getTime() <= MAX_AGE_MS;
+    };
+
     try {
       const cached = localStorage.getItem("kg_live_edition_v1");
       if (cached) {
         const parsed = JSON.parse(cached);
         if (parsed?.trending && parsed?.sections) {
+          // Prune any cached stories older than 1 day
+          parsed.trending.sideStories = (parsed.trending.sideStories || []).filter(isFreshStory);
+          parsed.trending.topStories = (parsed.trending.topStories || []).filter(isFreshStory);
+          parsed.sections.forEach((sec: any) => {
+            sec.sideStories = (sec.sideStories || []).filter(isFreshStory);
+            sec.topStories = (sec.topStories || []).filter(isFreshStory);
+          });
           setPipelineData(parsed);
         }
       }
@@ -90,22 +104,27 @@ export default function NewspaperPage() {
             if (!prev) return serverData;
 
             // Authoritative server-first merge: newly published stories and cascades take priority
+            // Stories older than 1 day are filtered out automatically
             const mergedTrending = {
               ...serverData.trending,
               sideStories: [
                 ...(serverData.trending?.sideStories || []),
                 ...(prev.trending?.sideStories || []),
-              ].filter(
-                (item, idx, arr) =>
-                  item && item.headline && arr.findIndex((x) => x?.headline === item.headline) === idx
-              ),
+              ]
+                .filter(isFreshStory)
+                .filter(
+                  (item, idx, arr) =>
+                    arr.findIndex((x) => x?.headline === item.headline) === idx
+                ),
               topStories: [
                 ...(serverData.trending?.topStories || []),
                 ...(prev.trending?.topStories || []),
-              ].filter(
-                (item, idx, arr) =>
-                  item && item.headline && arr.findIndex((x) => x?.headline === item.headline) === idx
-              ),
+              ]
+                .filter(isFreshStory)
+                .filter(
+                  (item, idx, arr) =>
+                    arr.findIndex((x) => x?.headline === item.headline) === idx
+                ),
               digestItems:
                 serverData.trending?.digestItems && serverData.trending.digestItems.length > 0
                   ? serverData.trending.digestItems
@@ -121,17 +140,21 @@ export default function NewspaperPage() {
                 sideStories: [
                   ...(s.sideStories || []),
                   ...(prevSec.sideStories || []),
-                ].filter(
-                  (item, idx, arr) =>
-                    item && item.headline && arr.findIndex((x) => x?.headline === item.headline) === idx
-                ),
+                ]
+                  .filter(isFreshStory)
+                  .filter(
+                    (item, idx, arr) =>
+                      arr.findIndex((x) => x?.headline === item.headline) === idx
+                  ),
                 topStories: [
                   ...(s.topStories || []),
                   ...(prevSec.topStories || []),
-                ].filter(
-                  (item, idx, arr) =>
-                    item && item.headline && arr.findIndex((x) => x?.headline === item.headline) === idx
-                ),
+                ]
+                  .filter(isFreshStory)
+                  .filter(
+                    (item, idx, arr) =>
+                      arr.findIndex((x) => x?.headline === item.headline) === idx
+                  ),
                 digestItems:
                   s.digestItems && s.digestItems.length > 0
                     ? s.digestItems

@@ -219,17 +219,115 @@ class NewsPipelineStore {
     }
   }
 
-  public getAllPages(): { trending: SectionPageData; sections: SectionPageData[]; updates: any[] } {
+  private autoPurgeHours = 24; // 1 day retention by default
+
+  public setAutoPurgeHours(hours: number) {
+    if (hours > 0) this.autoPurgeHours = hours;
+  }
+
+  public getAutoPurgeHours(): number {
+    return this.autoPurgeHours;
+  }
+
+  // Auto-prune news older than 1 day (or configured hours)
+  public pruneExpiredNews(maxAgeHours?: number): { prunedCount: number; remainingUpdates: number } {
+    const hours = maxAgeHours && maxAgeHours > 0 ? maxAgeHours : this.autoPurgeHours;
+    const maxAgeMs = hours * 60 * 60 * 1000;
+    const now = Date.now();
+    let prunedCount = 0;
+
+    const defaultTrending = (liveNewsBaseline?.trending as SectionPageData) || TRENDING_PAGE;
+    const defaultSections = (liveNewsBaseline?.sections as SectionPageData[]) || SECTION_PAGES;
+
+    const prunePage = (page: SectionPageData, defaultPage?: SectionPageData) => {
+      // 1. Lead Story Check
+      if (page.leadStory?.publishedAt) {
+        const leadAge = now - new Date(page.leadStory.publishedAt).getTime();
+        if (leadAge > maxAgeMs) {
+          prunedCount++;
+          if (defaultPage?.leadStory) {
+            page.leadStory = JSON.parse(JSON.stringify(defaultPage.leadStory));
+          }
+        }
+      }
+
+      // 2. Side Stories Check (Right side column)
+      const initialSideCount = page.sideStories?.length || 0;
+      page.sideStories = (page.sideStories || []).filter((story) => {
+        if (!story.publishedAt) return true; // keep baseline defaults
+        const age = now - new Date(story.publishedAt).getTime();
+        return age <= maxAgeMs;
+      });
+      prunedCount += (initialSideCount - page.sideStories.length);
+
+      // Pad with defaults if less than 3
+      if (defaultPage?.sideStories && page.sideStories.length < 3) {
+        for (const defSide of defaultPage.sideStories) {
+          if (page.sideStories.length >= 3) break;
+          if (!page.sideStories.some((s) => s.headline === defSide.headline)) {
+            page.sideStories.push(JSON.parse(JSON.stringify(defSide)));
+          }
+        }
+      }
+
+      // 3. Top Stories Check
+      const initialTopCount = page.topStories?.length || 0;
+      page.topStories = (page.topStories || []).filter((story) => {
+        if (!story.publishedAt) return true;
+        const age = now - new Date(story.publishedAt).getTime();
+        return age <= maxAgeMs;
+      });
+      prunedCount += (initialTopCount - page.topStories.length);
+
+      // Pad with defaults if less than 4
+      if (defaultPage?.topStories && page.topStories.length < 4) {
+        for (const defTop of defaultPage.topStories) {
+          if (page.topStories.length >= 4) break;
+          if (!page.topStories.some((t) => t.headline === defTop.headline)) {
+            page.topStories.push(JSON.parse(JSON.stringify(defTop)));
+          }
+        }
+      }
+    };
+
+    // Prune Front Page & All Section Pages
+    prunePage(this.trendingPage, defaultTrending);
+    this.sectionPages.forEach((sec, idx) => {
+      const defSec = defaultSections.find((d) => d.sectionKey === sec.sectionKey) || defaultSections[idx];
+      prunePage(sec, defSec);
+    });
+
+    // Prune Recent Updates feed
+    const initialUpdatesCount = this.recentUpdates.length;
+    this.recentUpdates = this.recentUpdates.filter((u) => {
+      if (!u.timestamp) return true;
+      const age = now - new Date(u.timestamp).getTime();
+      return age <= maxAgeMs;
+    });
+    prunedCount += (initialUpdatesCount - this.recentUpdates.length);
+
+    if (prunedCount > 0) {
+      this.saveToLocalDisk();
+      this.saveToCloud().catch(() => {});
+    }
+
+    return { prunedCount, remainingUpdates: this.recentUpdates.length };
+  }
+
+  public getAllPages(): { trending: SectionPageData; sections: SectionPageData[]; updates: any[]; autoPurgeHours: number } {
     this.loadFromDisk();
+    this.pruneExpiredNews();
     return {
       trending: this.trendingPage,
       sections: this.sectionPages,
       updates: this.recentUpdates,
+      autoPurgeHours: this.autoPurgeHours,
     };
   }
 
   public getSection(sectionKey: string | null): SectionPageData {
     this.loadFromDisk();
+    this.pruneExpiredNews();
     if (!sectionKey || sectionKey.toUpperCase() === "TRENDING") {
       return this.trendingPage;
     }
@@ -241,6 +339,7 @@ class NewsPipelineStore {
 
   public publish(payload: PublishPayload): { success: boolean; message: string; page: SectionPageData } {
     this.loadFromDisk();
+    this.pruneExpiredNews();
 
     // 1. Sanitize & extract headline (Discard SEO spam dumps)
     let headlineRaw = payload.headline || "";

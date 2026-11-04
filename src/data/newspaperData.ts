@@ -110,30 +110,34 @@ export const TRENDING_PAGE: SectionPageData = {
   },
   sideStories: [
     {
-      kicker: "DIWALI BONANZA · CORPORATE REWARDS",
-      headline: "MITS HEALTHCARE FOUNDER GIFTS BRAND-NEW KIA SONET SUVS TO 4 EMPLOYEES AHEAD OF DIWALI",
-      summary: "Panchkula-based pharma entrepreneur MK Bhatia felicitates dedicated staff members with brand-new compact SUVs in Haryana, continuing his viral tradition of rewarding employee loyalty.",
-      image: "/images/mits-diwali-cars.png",
-      imageCaption: "MITS Healthcare founder and chairman MK Bhatia unveiling brand-new Kia Sonet SUVs alongside felicitated employees in Panchkula ahead of Diwali. (Photo: MITS Healthcare / Instagram)",
-      author: "Staff Reporter",
-      location: "Panchkula, Haryana",
+      kicker: "NATIONAL INFRASTRUCTURE · RAILWAYS",
+      headline: "INDIAN RAILWAYS COMMISSION 50 NEXT-GEN VANDE BHARAT SLEEPER RAKES TO CONNECT METRO CORRIDORS",
+      summary: "Railway Board formalizes commercial rollout of 160 km/h sleeper trains ahead of high-density travel corridors, expanding indigenous rail capacity.",
+      image: "/images/lead-fallback.jpg",
+      imageCaption: "Integrated Coach Factory rolls out aerodynamic Vande Bharat sleeper train rake. (Photo: PIB / Railway Ministry)",
+      author: "Infrastructure Bureau",
+      location: "New Delhi",
       paragraphs: [
-        "PANCHKULA (HARYANA) — In an extraordinary gesture of corporate appreciation and festive celebration, MITS Healthcare founder and chairman MK Bhatia has gifted brand-new Kia Sonet compact SUVs to four of his loyal employees ahead of Diwali in Panchkula, Haryana.",
-        "The celebratory vehicle handover took place outside a car dealership decorated with festive banners and colorful balloons. The keys to the brand-new compact SUVs were presented following a traditional cake-cutting ceremony surrounded by cheering colleagues and proud family members.",
-        "Speaking to reporters, Mr. Bhatia emphasized that the employees are the true driving force behind MITS Healthcare: 'These vehicles are a token of deep appreciation for their relentless hard work, commitment, and loyalty during our most demanding growth phases. A company grows when its team feels genuinely valued and celebrated as family.'",
-        "This is not the first time the Haryana-based pharma entrepreneur has made headlines for lavish employee rewards. In previous years, Bhatia gifted cars and motorbikes to stellar performers, reinforcing an unconventional workplace culture that has consistently gone viral across social media platforms across India.",
-        "Heartfelt videos and photos showing the delighted employees and their emotional family members unveiling their brand-new SUVs quickly went viral, with netizens and business leaders praising the leadership for setting an inspiring benchmark in corporate appreciation and festival generosity."
+        "NEW DELHI — Indian Railways has officially approved the operational deployment of 50 new Vande Bharat sleeper trainsets across critical high-density intercity routes, marking a major milestone in modernization.",
+        "Engineered with indigenous crash-buffering technologies and advanced automated traction, the new rakes are scheduled to enter commercial service connecting New Delhi, Mumbai, Bengaluru, and Kolkata.",
+        "Railway officials confirmed that comprehensive signaling audits and track-upgrade corridors have been expedited to sustain operations at certified speeds of 160 km/h."
       ]
     },
     {
-      kicker: "CYCLONE ARNAB · EASTERN SEABOARD",
-      headline: "CYCLONE ARNAB BATTERS EASTERN COAST; MASSIVE EVACUATIONS IN ODISHA & ANDHRA",
-      summary: "Severe cyclonic storm makes landfall with 110 km/h winds, triggering heavy rainfall and prompting the pre-emptive evacuation of over 1.2 lakh residents across 17 sensitive coastal districts."
+      kicker: "SEMICONDUCTOR MISSION · GUJARAT",
+      headline: "TATA ELECTRONICS DOCKS ₹91,000 CRORE COMMERCIAL FAB EQUIPMENT AT DHOLERA",
+      summary: "India's premier commercial chip fabrication facility commences advanced cleanroom construction with international technological partners.",
+      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
+      author: "Tech & Industrial Desk",
+      location: "Gandhinagar"
     },
     {
-      kicker: "EUROPE RAILWAY DISASTER",
-      headline: "AT LEAST 64 REPORTED KILLED AS TWO HIGH-SPEED TRAINS COLLIDE IN SPAIN",
-      summary: "Emergency rescue operations continue in southern Spain after high-speed passenger trains collide; preliminary investigations point toward automated signaling failure and operational protocol breakdown."
+      kicker: "RENEWABLE ENERGY · 500 GW TARGET",
+      headline: "INDIA ACHIEVES RECORD 200 GW RENEWABLE POWER CAPACITY LED BY SOLAR SURGE",
+      summary: "Ministry of New and Renewable Energy gazettes milestone figures as hybrid solar-wind installations double across western grid corridors.",
+      image: "https://images.unsplash.com/photo-1509391365360-2e959784a276?w=800&q=80",
+      author: "Energy Bureau",
+      location: "New Delhi"
     }
   ],
   topStories: [
@@ -170,15 +174,15 @@ export const TRENDING_PAGE: SectionPageData = {
   digestItems: [
     {
       number: 1,
-      category: "DISASTER RELIEF",
-      headline: "Cyclone Arnab Hits Eastern India; Andhra & Odisha Coast Flooded",
-      summary: "Severe cyclonic storm Arnab made landfall on Andhra coast, causing at least 5 deaths, extensive flooding, and triggering mass evacuations across 17 districts."
+      category: "FOREIGN RESERVES",
+      headline: "India's Forex Reserves Touch All-Time High of $704 Billion",
+      summary: "Reserve Bank of India data confirms unprecedented foreign currency reserves expansion, strengthening macro stability."
     },
     {
       number: 2,
-      category: "EUROPE RAILWAY",
-      headline: "Two High-Speed Trains Collide in Spain; 64 Fatalities Reported",
-      summary: "Devastating collision in southern Spain leads to international inquiries as preliminary technical logs indicate signaling failure and human error."
+      category: "QUANTUM TECH",
+      headline: "Cabinet Allocates ₹10,000 Crore Under National Quantum Mission",
+      summary: "Four thematic hubs established across top scientific institutes to build 100-qubit indigenous quantum computers."
     },
     {
       number: 3,
@@ -189,13 +193,13 @@ export const TRENDING_PAGE: SectionPageData = {
     {
       number: 4,
       category: "PENTAGON REPORT",
-      headline: "U.S. Conflict Spending on Iran Operations Tops $47 Billion",
+      headline: "U.S. Conflict Spending on Maritime Deployments Tops $47 Billion",
       summary: "Declassified Pentagon accounting figures reveal extensive maritime deployments and regional interceptor expenditure over twelve months."
     },
     {
       number: 5,
       category: "UNION CABINET",
-      headline: "Centre Approves 3% Dearness Allowance Hike Ahead of Festive Season",
+      headline: "Centre Approves 3% Dearness Allowance Hike Benefiting 1.15 Crore Staff",
       summary: "Union Cabinet approves 3% DA/DR hike benefiting 1.15 crore central government employees and pensioners, effective retrospective to July 1."
     },
     {
@@ -212,9 +216,9 @@ export const TRENDING_PAGE: SectionPageData = {
     },
     {
       number: 8,
-      category: "CORPORATE REWARDS",
-      headline: "Haryana Pharma Boss Gifts Kia Sonet SUVs to 4 Staff Members Ahead of Diwali",
-      summary: "MITS Healthcare founder MK Bhatia surprises loyal employees with brand-new compact SUVs in Panchkula, continuing his viral festive bonus tradition."
+      category: "HIGHWAYS & TRANSIT",
+      headline: "NHAI Completes 10,000 km Access-Controlled Expressways Milestone",
+      summary: "High-speed freight corridors drastically cut inter-state logistics costs across Delhi-Mumbai and Bengaluru-Chennai routes."
     },
     {
       number: 9,
@@ -232,35 +236,35 @@ export const TRENDING_PAGE: SectionPageData = {
   editorial: {
     kicker: "GLOBAL PERSPECTIVES & DATA ESSAY",
     headline: "THE GLOBAL CROSSROADS: MULTILATERAL DIPLOMACY, CLIMATE FRONTIERS, AND ECONOMIC REALISM",
-    subhead: "As geopolitical flashpoints test multilateral alliances and extreme atmospheric phenomena challenge regional infrastructure, sovereign nations must balance domestic economic security with strategic international cooperation.",
+    subhead: "As geopolitical flashpoints test multilateral alliances and sovereign economies adapt to supply chain shifts, national statecraft must balance domestic industrial expansion with strategic multilateral cooperation.",
     col1: [
-      "The confluence of events commanding global attention on Thursday underscores the precarious equilibrium of contemporary international relations. From the disaster command centers in Odisha managing the fallout of Cyclone Arnab to the railway investigations underway in Spain, modern statecraft is increasingly defined by its capacity to absorb catastrophic shocks while maintaining institutional cohesion.",
-      "In New Delhi, the culmination of ESTIC 2026 provides a contrasting yet complementary template. Prime Minister Modi’s insistence on a three-year 'lab to land' delivery cycle reflects a broader global pivot: scientific research can no longer afford to remain an insular academic pursuit. In an era where technological supremacy in quantum computing, semiconductors, and bio-manufacturing determines geopolitical leverage, speed of execution is the definitive sovereign currency."
+      "The confluence of events commanding global attention underscores the critical importance of domestic execution capability alongside strategic diplomacy. From the industrial rollout of commercial semiconductor fabs in Gujarat to advanced quantum computation hubs in Bengaluru, modern economic security is increasingly anchored in technological autonomy.",
+      "In New Delhi, the culmination of ESTIC 2026 provides a coherent blueprint. Prime Minister Modi’s insistence on a three-year 'lab to land' delivery cycle reflects an urgent national imperative: frontier research must translate directly into industrial competitiveness and tangible societal benefits."
     ],
     col2: [
-      "Simultaneously, the diplomatic overture extending an SCO summit invitation to Pakistan illustrates the pragmatic endurance of multilateral forums even amidst protracted bilateral friction. When regional security, supply-chain corridors, and counter-terrorism protocols are at stake, structured engagement remains the only viable mechanism for conflict mitigation.",
-      "As citizens and policymakers navigate these interconnected tides, the data points to an inescapable conclusion: neither technological isolationism nor defensive complacency offers enduring security. The nations that navigate the coming decade will be those that anchor their domestic economies with disciplined fiscal foresight while engaging the global order with confidence and measured resolve."
+      "Simultaneously, the diplomatic overture extending an SCO summit invitation illustrates the pragmatic endurance of structured engagement even amidst bilateral friction. When regional trade corridors, counter-terrorism frameworks, and economic security are at stake, disciplined multilateral dialog remains essential.",
+      "As citizens and policymakers navigate these interconnected transitions, the data confirms a foundational reality: long-term resilience belongs to nations that combine rigorous fiscal governance with relentless deep-tech execution."
     ],
     author: "Editorial Board",
     bureau: "New Delhi & Global Bureaus",
     sideArticles: [
       {
-        kicker: "CLIMATE RESILIENCE",
-        headline: "WHY EARLY WARNING SHIELDS SAVED LIVES DURING CYCLONE ARNAB",
-        summary: "Doppler radar networks and automated evacuation protocols prevented catastrophic mortality along the Bay of Bengal coastline.",
+        kicker: "DISASTER GOVERNANCE",
+        headline: "HOW EARLY WARNING RADAR SHIELDS ARE SAFEGUARDING COASTAL COMMUNITIES",
+        summary: "Doppler radar networks and automated real-time alerts have transformed climate risk management across peninsular India.",
         byline: "Special Correspondent · Bhubaneswar"
       },
       {
-        kicker: "INFRASTRUCTURE AUDIT",
-        headline: "HIGH-SPEED RAILWAY SAFETY PROTOCOLS UNDER GLOBAL SCRUTINY",
-        summary: "The Andalusia collision prompts transport ministries worldwide to re-examine automated train protection (ATP) redundancies.",
-        byline: "European Transport Desk · Madrid"
+        kicker: "RAILWAY SAFETY",
+        headline: "KAVACH 4.0: ACCELERATING AUTOMATED TRAIN COLLISION AVOIDANCE SHIELDS",
+        summary: "Indian Railways prioritizes accelerated track-side optical sensor deployment across high-density passenger routes.",
+        byline: "National Transport Desk · New Delhi"
       },
       {
         kicker: "FISCAL STATECRAFT",
-        headline: "CALCULATING THE DEFICIT COST OF ESCALATING REGIONAL WARS",
-        summary: "With Pentagon spending exceeding $47 billion, sovereign bond markets begin pricing in long-term structural inflation risks.",
-        byline: "Global Economics Editor · Washington"
+        headline: "CALCULATING THE DEFICIT COST OF ESCALATING REGIONAL DISRUPTIONS",
+        summary: "Global freight indices and supply disruptions prompt central banks to maintain disciplined liquidity buffers.",
+        byline: "Global Economics Editor · Mumbai"
       }
     ]
   }
@@ -343,7 +347,7 @@ export const SECTION_PAGES: SectionPageData[] = [
     ],
     digestTitle: "INDIA TOP 10 NATIONAL DISPATCHES",
     digestItems: [
-      { number: 1, headline: "Cyclone Arnab Landfall", summary: "Severe storm crosses Andhra-Odisha coast; 17 districts hit by torrential rains and train disruptions.", category: "DISASTER BULLETIN" },
+      { number: 1, headline: "ISRO Gaganyaan Pad Abort Test", summary: "Space agency successfully validates crew module emergency escape systems ahead of orbital mission.", category: "SPACE & AEROSPACE" },
       { number: 2, headline: "Cabinet DA & DR Revision", summary: "3% hike approved for 1.15 crore central employees and pensioners ahead of festival season.", category: "GOVERNMENT POLICY" },
       { number: 3, headline: "SCO Conclave Invitation", summary: "India formally transmits diplomatic invitation to Pakistan for New Delhi regional conference.", category: "DIPLOMATIC AFFAIRS" },
       { number: 4, headline: "DVAC Statewide Searches", summary: "Raids conducted on DMK leader K.N. Nehru's residences in ongoing job recruitment investigation.", category: "VIGILANCE & LAW" },
@@ -401,21 +405,21 @@ export const SECTION_PAGES: SectionPageData[] = [
     editionSubtitle: "INTERNATIONAL WIRE & GEOPOLITICS · GLOBAL BUREAU",
     topStripLabel: "THURSDAY, 29 OCTOBER 2026",
     leadStory: {
-      kicker: "DISASTER & INVESTIGATION · EUROPEAN RAILWAYS",
-      headline: "AT LEAST 39 KILLED AFTER HIGH-SPEED PASSENGER TRAINS COLLIDE IN SPAIN",
-      subhead: "Catastrophic collision on Madrid-Barcelona trunk corridor triggers national mourning; preliminary investigations cite automated signalling override and human error during line maintenance.",
-      image: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1200&q=80",
-      imageAlt: "European high-speed passenger rail tracks and emergency investigative scene",
-      caption: "Emergency rescue crews and transport safety investigators inspect the wreckage of the high-speed rail collision on the Madrid-Barcelona line on Thursday. (Photo: European Pressphoto Agency / Reuters)",
+      kicker: "GLOBAL TECH DIPLOMACY · SOVEREIGN COMPUTE",
+      headline: "UNITED NATIONS RATIFIES HISTORIC MULTILATERAL CONVENTION ON ETHICAL AI & SOVEREIGN COMPUTE",
+      subhead: "142 member nations sign binding framework on responsible artificial intelligence deployment, transparent algorithmic auditing, and non-weaponized autonomous systems.",
+      image: "https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=1200&q=80",
+      imageAlt: "United Nations General Assembly plenary hall during global digital accord session",
+      caption: "United Nations delegates vote overwhelmingly in favor of the Global AI Governance Framework in Geneva. (Photo: UN Photo / Reuters)",
       col1: [
-        "MADRID / BARCELONA — In one of Europe's deadliest railway disasters in decades, at least 39 passengers were killed and over 85 critically injured when two AVE high-speed passenger trains collided near Zaragoza on Spain's busiest commercial trunk corridor early Thursday morning.",
-        "Emergency services, civil protection units, and military rescue battalions worked through twisted metal carriages to pull survivors. Hospitals across Catalonia and Aragon declared regional code-red emergencies to treat victims with severe trauma.",
-        "Spain's Minister of Transport announced three days of national mourning, confirming that forensic teams are examining black-box recordings to establish why automated failsafe braking protocols did not trigger automatically."
+        "GENEVA — In a historic milestone for international digital governance, 142 member nations of the United Nations General Assembly convened in Geneva on Thursday to formally ratify the first binding Global Framework on Ethical Artificial Intelligence and Sovereign Compute Protocols.",
+        "The landmark multilateral accord mandates strict algorithmic transparency, independent third-party safety audits for high-compute foundational models, and explicit legal guardrails against algorithmic discrimination in sovereign public administrative systems.",
+        "United Nations Secretary-General praised the consensus as a 'decisive triumph for humanity,' emphasizing that common technical standards must prevent deep-tech disparities from fracturing the global economic order."
       ],
       col2: [
-        "HUMAN ERROR & SIGNALLING AUDIT — Preliminary findings indicate that a track maintenance switch was manually overridden during early morning routing adjustments, sending a 280 km/h inbound express directly onto an occupied commuter junction.",
-        "The European Union Railway Agency dispatched independent investigators to determine whether recent software revisions to the European Rail Traffic Management System (ERTMS) Level 2 contributed to the latency.",
-        "European leaders from Paris, Berlin, and London conveyed condolences to Spanish Prime Minister Pedro Sánchez, pledging technical support for track restoration."
+        "COMPUTE EQUITY & CROSS-BORDER BENCHMARKS — A cornerstone of the convention is the establishment of an International Compute Equity Facility, designed to provide developing economies with subsidized access to high-performance computing clusters and open scientific research datasets.",
+        "The agreement also creates a Permanent Technical Oversight Panel composed of leading computer scientists, ethicists, and legal jurists from member states to evaluate emerging autonomous capabilities.",
+        "International markets and major technology consortiums welcomed the regulatory clarity, noting that unified global compliance standards eliminate fragmented cross-border liability across North America, Europe, and Asia."
       ]
     },
     sideStories: [
@@ -467,8 +471,8 @@ export const SECTION_PAGES: SectionPageData[] = [
     ],
     digestTitle: "WORLD TOP 10 INTERNATIONAL DEVELOPMENTS",
     digestItems: [
-      { number: 1, headline: "Cyclone Arnab Regional Havoc", summary: "Eastern Indian storm triggers emergency alerts and storm surge damage across Bay of Bengal littoral states.", category: "CLIMATE & WEATHER" },
-      { number: 2, headline: "Spain High-Speed Train Crash", summary: "Catastrophic collision on Madrid-Barcelona line leaves dozens dead; ERTMS automated signaling audited.", category: "TRANSPORT DISASTER" },
+      { number: 1, headline: "Global AI Governance Accord", summary: "142 UN member states ratify first binding multilateral pact on sovereign compute and algorithmic auditing.", category: "INTERNATIONAL DIPLOMACY" },
+      { number: 2, headline: "Global Chip Alliance $400B Pact", summary: "Leading semiconductor manufacturing nations coordinate supply chain resilience and advanced packaging protocols.", category: "TECH & SEMICONDUCTORS" },
       { number: 3, headline: "Israel General Election Deadlock", summary: "Neck-and-neck contest between Benjamin Netanyahu and Gadi Eisenkot leaves parliament fractured.", category: "GEOPOLITICS" },
       { number: 4, headline: "US-Iran $47B Conflict Spending", summary: "Pentagon figures reveal astronomical expenditures for Gulf naval patrols and missile defense batteries.", category: "MILITARY EXPENDITURE" },
       { number: 5, headline: "SCO Invitation to Pakistan", summary: "New Delhi formally requests Islamabad's participation in upcoming regional cooperation forum.", category: "SOUTH ASIAN DIPLOMACY" },
@@ -479,19 +483,19 @@ export const SECTION_PAGES: SectionPageData[] = [
       { number: 10, headline: "Karwa Chauth Global Observance", summary: "Indian diaspora in London, New York, and Dubai celebrate traditional fasts with community events.", category: "DIASPORA & CULTURE" }
     ],
     editorial: {
-      kicker: "GLOBAL ESSAY · RAIL SAFETY & SIGNALS",
-      headline: "The Illusion of Total Automation: Lessons from the Spanish Railway Tragedy",
-      subhead: "When high-speed transit systems rely on algorithmic failsafes, human override procedures must never become the weakest link.",
+      kicker: "GLOBAL ESSAY · SOVEREIGN TECH GOVERNANCE",
+      headline: "The Multilateral Frontier: Establishing Trust and Equity in Global AI Architecture",
+      subhead: "As foundational computing power concentrates among sovereign clusters, international rule-of-law is the only safeguard against technological fragmentation.",
       col1: [
-        "The horrifying collision near Zaragoza has shattered the European assumption that digital signalling protocols like ERTMS Level 2 render high-speed passenger rail immune to catastrophic failure. At 300 kilometres per hour, human reaction time is functionally zero.",
-        "While automated train protection systems have saved countless lives over the past three decades, Thursday's disaster proves that maintenance overrides and manual routing handoffs still harbor fatal vulnerabilities that require double-blind cryptographic verification."
+        "The ratification of the UN Global AI Governance Framework in Geneva marks a vital inflection point in contemporary international relations. For the first time, sovereign states have recognized that artificial intelligence and compute infrastructure are systemic global utilities requiring rigorous, coordinated governance.",
+        "In an era where algorithmic systems influence financial markets, logistics chains, and public discourse, unregulated technological concentration poses profound risks to institutional stability. Setting verifiable safety thresholds and transparent audit standards is not an impediment to innovation—it is the prerequisite for enduring trust."
       ],
       col2: [
-        "Across the globe—from Spain to Japan and India's expanding Vande Bharat grid—rail authorities must recognize that safety architecture is only as dependable as its fail-safe isolation under maintenance stress.",
-        "Investing in secondary satellite telemetry and independent collision-avoidance radar is no longer an optional luxury; it is the fundamental moral covenant between public transit operators and the travelling citizen."
+        "Crucially, the establishment of the International Compute Equity Facility addresses the structural divide between compute-rich nations and emerging markets. True multilateralism requires that technological breakthroughs serve shared global prosperity rather than widening historical asymmetries.",
+        "The path forward demands sustained technical vigilance and cross-border cooperation. When sovereign nations anchor digital advancement in shared ethical principles, technology becomes a catalyst for collective security and sustainable human progress."
       ],
       author: "— Global Editorial Bureau",
-      bureau: "Madrid Bureau",
+      bureau: "Geneva Bureau",
       sideArticles: [
         {
           kicker: "MIDDLE EAST AT CROSSROADS",
@@ -597,7 +601,7 @@ export const SECTION_PAGES: SectionPageData[] = [
       { number: 4, headline: "HUL Interim Dividend Payout", summary: "FMCG giant rewards shareholders as rural FMCG consumption shows revival.", category: "CORPORATE DIVIDENDS" },
       { number: 5, headline: "JSW Energy Net Profit Jumps", summary: "Renewable and thermal dispatch surge powers stellar quarterly bottom line.", category: "EARNINGS BEAT" },
       { number: 6, headline: "Hero MotoCorp Festive Rally", summary: "Two-wheeler dispatches cross record festive highs with premium EV sales.", category: "AUTOMOTIVE" },
-      { number: 7, headline: "Cyclone Arnab Logistics Cost", summary: "Eastern coastal freight movement temporarily disrupted across port corridors.", category: "SUPPLY CHAIN" },
+      { number: 7, headline: "Port Container Logistics Record", summary: "Major Indian ports achieve record 18% cargo throughput growth under PM Gati Shakti initiatives.", category: "LOGISTICS & TRADE" },
       { number: 8, headline: "Brent Crude at $114/Barrel", summary: "Geopolitical tensions in Middle East keep energy import bills high.", category: "CRUDE OIL" },
       { number: 9, headline: "Precious Metals Pull Back", summary: "Domestic gold and silver spot prices ease slightly following record runs.", category: "COMMODITIES" },
       { number: 10, headline: "Mumbai Airport Terminal 1 Revamp", summary: "Mega redevelopment blueprint unveiled to expand domestic passenger capacity.", category: "CIVIL AVIATION" }
@@ -967,7 +971,7 @@ export const SECTION_PAGES: SectionPageData[] = [
       { number: 2, headline: "Supreme Court Hearing on Voter Forms", summary: "Apex court rules Election Commission cannot modify statutory registration Forms 6, 7, and 8.", category: "CONSTITUTIONAL LAW" },
       { number: 3, headline: "Karnataka 64.5 Lakh Missing Voters", summary: "Electoral rolls discrepancy triggers major political pushback; majority of missing are young voters.", category: "ELECTORAL ROLLS" },
       { number: 4, headline: "Union Cabinet 3% DA Hike", summary: "Central government approves Dearness Allowance revision for employees and pensioners effective July 1.", category: "CABINET POLICY" },
-      { number: 5, headline: "Cyclone Arnab Political Response", summary: "Heavy rains pound eastern coast, prompting massive evacuation drives across 17 Odisha districts.", category: "DISASTER GOVERNANCE" },
+      { number: 5, headline: "Cabinet Clears ₹10,000 Cr Fund", summary: "Union Cabinet approves dedicated credit expansion window for precision manufacturing and electronics exports.", category: "CABINET GOVERNANCE" },
       { number: 6, headline: "SCO Invitation to Pakistan", summary: "India formally transmits diplomatic invitation to Pakistan for New Delhi regional conference.", category: "SOUTH ASIAN DIPLOMACY" },
       { number: 7, headline: "Hardeep Puri Rajya Sabha Nomination", summary: "Union Minister named as BJP candidate for Madhya Pradesh upper house by-election.", category: "PARLIAMENTARY AFFAIRS" },
       { number: 8, headline: "Courts on Religious Landmarks", summary: "SC hears Bhojshala petitions; Delhi HC hears Race Course mosque matter and reprimands Delhi Police.", category: "JUDICIAL BENCH" },

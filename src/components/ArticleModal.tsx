@@ -164,6 +164,7 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
                 alt={article.title}
                 fill
                 priority
+                unoptimized={true}
                 sizes="(max-width: 768px) 100vw, 768px"
                 className="object-cover"
               />

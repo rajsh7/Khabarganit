@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { ChevronLeft, ChevronRight, Bookmark, ArrowUpRight, Clock } from "lucide-react";
 import { formatTimeAgo, getTodayFormattedDate } from "@/lib/utils";
 
@@ -108,7 +108,8 @@ export default function NewspaperPage() {
       .then((serverData) => {
         if (serverData && serverData.trending && serverData.sections) {
           setPipelineData((prev) => {
-            if (!prev) return serverData;
+            const baseTrending = prev?.trending || TRENDING_PAGE;
+            const baseSections = prev?.sections || SECTION_PAGES;
 
             // Authoritative server-first merge: newly published stories and cascades take priority
             // Stories older than 1 day are filtered out automatically
@@ -121,7 +122,7 @@ export default function NewspaperPage() {
               leadStory: cleanTrendingLead,
               sideStories: [
                 ...(serverData.trending?.sideStories || []),
-                ...(prev.trending?.sideStories || []),
+                ...(baseTrending?.sideStories || []),
               ]
                 .filter(isFreshStory)
                 .filter(
@@ -130,7 +131,7 @@ export default function NewspaperPage() {
                 ),
               topStories: [
                 ...(serverData.trending?.topStories || []),
-                ...(prev.trending?.topStories || []),
+                ...(baseTrending?.topStories || []),
               ]
                 .filter(isFreshStory)
                 .filter(
@@ -140,12 +141,12 @@ export default function NewspaperPage() {
               digestItems:
                 serverData.trending?.digestItems && serverData.trending.digestItems.length > 0
                   ? serverData.trending.digestItems
-                  : prev.trending?.digestItems || [],
+                  : baseTrending?.digestItems || [],
             };
 
             const mergedSections = serverData.sections.map((s: SectionPageData) => {
               const defSec = SECTION_PAGES.find((p) => p.sectionKey === s.sectionKey) || TRENDING_PAGE;
-              const prevSec = prev.sections.find((p) => p.sectionKey === s.sectionKey);
+              const prevSec = baseSections.find((p) => p.sectionKey === s.sectionKey);
               const cleanSecLead = isFreshStory(s.leadStory) ? s.leadStory : defSec.leadStory;
 
               if (!prevSec) {
@@ -191,12 +192,55 @@ export default function NewspaperPage() {
       .catch(() => {});
   }, []);
 
-  // Active broadsheet data: merges static broadsheet fallback with live pipeline updates
-  const activePage: SectionPageData = activeCategory
+  // Active broadsheet data: guaranteed 24h freshness filter & verified real news fallback
+  const rawPage: SectionPageData = activeCategory
     ? (pipelineData?.sections || BASELINE_SECTIONS).find((p) => p.sectionKey === activeCategory) ||
       pipelineData?.trending ||
       BASELINE_TRENDING
     : pipelineData?.trending || BASELINE_TRENDING;
+
+  const defaultPage: SectionPageData = activeCategory
+    ? BASELINE_SECTIONS.find((p) => p.sectionKey === activeCategory) || BASELINE_TRENDING
+    : BASELINE_TRENDING;
+
+  const activePage: SectionPageData = useMemo(() => {
+    const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+    const isFresh = (item: any) => {
+      if (!item || !item.headline) return false;
+      if (!item.publishedAt) return true; // baseline verified item
+      return Date.now() - new Date(item.publishedAt).getTime() <= ONE_DAY_MS;
+    };
+
+    // Filter side stories older than 24h, pad with default if less than 3
+    const freshSide = (rawPage.sideStories || []).filter(isFresh);
+    if (freshSide.length < 3 && defaultPage.sideStories) {
+      for (const def of defaultPage.sideStories) {
+        if (freshSide.length >= 3) break;
+        if (!freshSide.some((s) => s.headline === def.headline)) {
+          freshSide.push(def);
+        }
+      }
+    }
+
+    // Filter top stories older than 24h, pad with default if less than 4
+    const freshTop = (rawPage.topStories || []).filter(isFresh);
+    if (freshTop.length < 4 && defaultPage.topStories) {
+      for (const def of defaultPage.topStories) {
+        if (freshTop.length >= 4) break;
+        if (!freshTop.some((t) => t.headline === def.headline)) {
+          freshTop.push(def);
+        }
+      }
+    }
+
+    return {
+      ...rawPage,
+      leadStory: isFresh(rawPage.leadStory) ? rawPage.leadStory : defaultPage.leadStory,
+      sideStories: freshSide,
+      topStories: freshTop,
+      digestItems: rawPage.digestItems && rawPage.digestItems.length > 0 ? rawPage.digestItems : defaultPage.digestItems,
+    };
+  }, [rawPage, defaultPage]);
 
 
   const currentViewIndex = VIEW_SEQUENCE.indexOf(activeCategory);
@@ -242,7 +286,23 @@ export default function NewspaperPage() {
 
 
 
-  // Auto-detect when Google Translate switches language to Hindi
+  // Real telemetry beacon for live reader counting
+  useEffect(() => {
+    try {
+      const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
+      const isTablet = /iPad|Tablet/i.test(navigator.userAgent);
+      const device = isMobile ? "Mobile" : isTablet ? "Tablet" : "Desktop";
+      fetch("/api/analytics/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          section: activeCategory || "TRENDING",
+          path: typeof window !== "undefined" ? window.location.pathname + window.location.search : "/",
+          device,
+        }),
+      }).catch(() => {});
+    } catch {}
+  }, [activeCategory]);
   useEffect(() => {
     const detectLang = () => {
       const htmlLang = document.documentElement.getAttribute("lang");
@@ -607,10 +667,11 @@ export default function NewspaperPage() {
                 title="Click to view full photo and story"
               >
                 <Image
-                  src={activePage.leadStory.image}
-                  alt={activePage.leadStory.imageAlt}
+                  src={activePage.leadStory.image || "/images/lead-fallback.jpg"}
+                  alt={activePage.leadStory.imageAlt || activePage.leadStory.headline}
                   fill
                   priority
+                  unoptimized={true}
                   sizes="(max-width: 768px) 100vw, 67vw"
                   className="object-cover group-hover:scale-[1.02] transition-transform duration-700"
                 />
@@ -687,6 +748,7 @@ export default function NewspaperPage() {
                           src={story.image}
                           alt={story.headline}
                           fill
+                          unoptimized={true}
                           sizes="(max-width: 768px) 100vw, 33vw"
                           className="object-cover group-hover:scale-[1.02] transition-transform duration-500"
                         />
@@ -762,6 +824,7 @@ export default function NewspaperPage() {
                           src={story.image}
                           alt={story.headline}
                           fill
+                          unoptimized={true}
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                           className="object-cover group-hover:scale-[1.02] transition-transform duration-500"
                         />

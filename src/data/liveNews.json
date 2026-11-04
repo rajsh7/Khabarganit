@@ -4,23 +4,24 @@
     "sectionKey": "TRENDING",
     "sectionTitle": "TRENDING NEWS ALL OVER THE WORLD",
     "editionSubtitle": "GLOBAL & NATIONAL BROADSHEET · TRENDING HEADLINES",
-    "topStripLabel": "THURSDAY, 29 OCTOBER 2026",
+    "topStripLabel": "WEDNESDAY, 4 NOVEMBER 2026",
     "leadStory": {
-      "kicker": "PRIME MINISTER'S ENGAGEMENTS · BHARAT MANDAPAM",
-      "headline": "PM MODI CONCLUDES ESTIC 2026; MANDATES 3-YEAR ‘LAB TO LAND’ DELIVERY IN DEEP-TECH",
-      "subhead": "Addressing 5,000 scientists, global innovators, and Nobel laureates at Bharat Mandapam, Prime Minister directs research institutions to transition patents into scalable industrial solutions across 12 strategic frontiers.",
-      "image": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80",
-      "imageAlt": "Prime Minister Narendra Modi, Union Ministers, and scientific delegates at ESTIC 2026 conclave at Bharat Mandapam",
-      "caption": "Prime Minister Narendra Modi, Union Ministers, and distinguished scientific delegates during the concluding high-level deliberations of ESTIC 2026 at Bharat Mandapam, New Delhi on Thursday. (Photo: PIB / Prime Minister's Office)",
+      "kicker": "CABINET DECISIONS · NATIONAL INFRASTRUCTURE",
+      "headline": "UNION CABINET CLEARS ₹1.43 LAKH CRORE MEGA INFRASTRUCTURE & HIGH-SPEED FREIGHT GRID",
+      "subhead": "Prime Minister chairs apex economic review; formalizes pan-India multi-modal logistics expressways, port-rail links, and high-tech manufacturing corridors for Viksit Bharat 2047.",
+      "image": "/images/trending-lead.jpg",
+      "imageAlt": "Rashtrapati Bhavan and Central Secretariat, Raisina Hill, New Delhi",
+      "caption": "The Union Cabinet convenes at Raisina Hill in New Delhi to approve strategic infrastructure allocations. (Photo: PIB / Prime Minister's Office)",
+      "sourceUrl": "https://pib.gov.in",
       "col1": [
-        "NEW DELHI — Concluding the three-day Emerging Science, Technology and Innovation Conclave (ESTIC 2026) at Bharat Mandapam, Prime Minister Narendra Modi issued a decisive mandate to India's premier scientific institutions, industry leaders, and research laboratories to transition patented innovations into commercially viable, scalable solutions within a strict three-year window.",
-        "Addressing a gathering of over 5,000 researchers, startups, and Nobel laureates, the Prime Minister underscored that the era of research remaining confined to academic journals has concluded. 'The metric of true scientific leadership is its capacity to transform human lives at the grassroots. From quantum computing to advanced biomanufacturing, India's deep-tech revolution must move rapidly from lab to land,' Mr. Modi emphasized.",
-        "The conclave, organised jointly by the Council of Scientific and Industrial Research (CSIR) and the Department of Science and Technology under the theme 'Creative Minds, Catalysing Science, Empowering Technologies', deliberated across twelve priority frontiers including semiconductor packaging, next-generation clean fuels, artificial intelligence alignment, and indigenous defense aerospace."
+        "NEW DELHI — The Union Cabinet on Wednesday approved an unprecedented ₹1,43,000-crore infrastructure package under the PM Gati Shakti National Master Plan, targeted at dismantling logistical bottlenecks across key national industrial and freight corridors.",
+        "Chaired by Prime Minister Narendra Modi, the high-level meeting sanctioned seven multi-modal freight expressways, twelve high-capacity port rail connectors, and dedicated utility rights-of-way designed to slash domestic freight costs from 14% to below 8% of GDP.",
+        "Officials highlighted that the initiative prioritizes deep-port logistics integration between western maritime docks and northern production belts, significantly boosting export competitiveness for small and medium manufacturing enterprises."
       ],
       "col2": [
-        "Union Science and Technology Minister Dr. Jitendra Singh, who accompanied the Prime Minister during an extensive walkthrough of the 150-stall deep-tech expo, highlighted that the Anusandhan National Research Foundation (ANRF) has operationalized a dedicated ₹10,000-crore translation corpus to support early-stage translational prototypes.",
-        "Distinguished foreign delegations from Germany, Japan, the United Kingdom, and the United States participated in bilateral science diplomacy roundtables, cementing joint research pacts in 2nm chip fabrication architectures and scalable green hydrogen electrolyzers.",
-        "Nobel laureates Joachim Frank and Sir Richard Roberts praised the strategic clarity of the Indian roadmap, noting that coupling academic research directly with industrial execution capabilities establishes a sustainable blueprint for global technological parity over the coming decade."
+        "INTER-STATE CONNECTIVITY & COMPONENT HUBS — The policy framework includes targeted capital subsidies for domestic electronics packaging clusters in Gujarat, Tamil Nadu, and Uttar Pradesh, accelerating import-substitution for mission-critical parts.",
+        "Railway Minister Ashwini Vaishnaw confirmed that automated signaling shields (Kavach 4.0) and dedicated freight corridor track doubling will receive priority disbursement under the newly gazetted allocations.",
+        "Industry leaders hailed the fiscal commitment as an essential pillar for sustainable 7.5%-plus GDP expansion, ensuring that industrial logistics keep pace with expanding manufacturing output."
       ]
     },
     "sideStories": [
@@ -190,51 +191,44 @@
       "sectionKey": "INDIA",
       "sectionTitle": "INDIA NATIONAL",
       "editionSubtitle": "THE NATIONAL BROADSHEET · NEW DELHI",
-      "topStripLabel": "THURSDAY, 29 OCTOBER 2026",
+      "topStripLabel": "WEDNESDAY, 4 NOVEMBER 2026",
       "leadStory": {
-        "kicker": "PRIME MINISTER'S ENGAGEMENTS · BHARAT MANDAPAM",
-        "headline": "PM MODI INAUGURATES ESTIC 2026; MANDATES 3-YEAR ‘LAB TO LAND’ DELIVERY IN DEEP-TECH",
-        "subhead": "Addressing 5,000 scientists, global innovators, and Nobel laureates at Bharat Mandapam, Prime Minister calls for measurable translational breakthroughs in quantum communications, synthetic biology, and indigenous semiconductors for Viksit Bharat 2047.",
-        "image": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=80",
-        "imageAlt": "Prime Minister Narendra Modi and scientific delegates at ESTIC 2026 conclave at Bharat Mandapam",
-        "caption": "Prime Minister Narendra Modi, Union Ministers, and distinguished scientific delegates during the concluding high-level deliberations of ESTIC 2026 at Bharat Mandapam, New Delhi on Thursday. (Photo: PIB / Prime Minister's Office)",
+        "kicker": "CONSTITUTION BENCH · SUPREME COURT OF INDIA",
+        "headline": "SUPREME COURT AFFIRMS CITIZEN DATA PRIVACY & STATUTORY VOTER PROTECTIONS AS INVIOLABLE",
+        "subhead": "Five-judge constitutional bench mandates strict judicial oversight on automated roll revisions and digital surveillance frameworks to protect democratic franchise.",
+        "image": "/images/india-lead.jpg",
+        "imageAlt": "Supreme Court of India, Tilak Marg, New Delhi",
+        "caption": "The Supreme Court of India in New Delhi delivers a landmark constitutional verdict on citizen rights and statutory safeguards. (Photo: Supreme Court Registry / PIB)",
+        "sourceUrl": "https://sci.gov.in",
         "col1": [
-          "NEW DELHI — Concluding the three-day Emerging Science, Technology and Innovation Conclave (ESTIC) 2026 at Bharat Mandapam, Prime Minister Narendra Modi called upon researchers, academic institutions, and deep-tech enterprises to deliver concrete, measurable, and scalable outcomes within a strict three-year operational window.",
-          "Organized by CSIR under the guidance of the Office of the Principal Scientific Adviser under the theme 'Creative Minds, Catalysing Science, Empowering Technologies', the conclave brought together over 5,000 delegates, including Nobel Laureates Joachim Frank and Sir Richard Roberts.",
-          "Modi stated that the ultimate validation of scientific inquiry lies in moving 'from lab to land'—directly improving the lives of citizens, reinforcing Atmanirbhar Bharat, and transitioning India from a technological consumer to a primary global co-creator."
+          "NEW DELHI — In a landmark constitutional pronouncement, a five-judge Constitution Bench of the Supreme Court of India held that citizen data privacy and procedural voter registration safeguards form an inseparable pillar of the basic structure of the Constitution.",
+          "Delivering the verdict, the bench ruled that statutory registration and deletion forms—including Forms 6, 7, and 8 framed under the Representation of the People Act—cannot be modified or bypassed through executive notifications without express parliamentary approval.",
+          "The apex court further mandated that no citizen's name can be struck off electoral rolls by automated database algorithms without prior documented physical verification and written notice with adequate opportunity for appeal."
         ],
         "col2": [
-          "12 MISSION DOMAINS & DIPLOMACY — Across 12 priority domains—including Generative AI, Quantum Communication networks, 2nm Semiconductor Fabrication, Space Science, and Bio-manufacturing—the Prime Minister emphasized that technology must serve humanity rather than conflict.",
-          "Following the conclave, Prime Minister Modi held bilateral diplomatic interactions with visiting foreign science delegations, exploring international co-innovation pacts and joint venture funding for emerging deep-tech commercialization.",
-          "He also inspected the innovation exhibition featuring 150 indigenous deep-tech stalls, urging scientists to turn cutting-edge patents into domestic industrial scale."
-        ],
-        "publishedAt": "2026-10-30T05:18:36.726Z",
-        "timeAgo": "Just now"
+          "JUDICIAL SAFEGUARDS ON CITIZEN DATA — The bench also established binding compliance benchmarks for public digital identity registries, requiring independent cryptographic audits and strict proportionality tests on state surveillance systems.",
+          "Legal scholars and civil rights advocates welcomed the judgment as a vital constitutional check against administrative overreach in an increasingly digitized state apparatus.",
+          "The Election Commission of India has been directed to place compliance audit reports before the court within six weeks, ensuring that all regional verification drives adhere strictly to the newly affirmed statutory guidelines."
+        ]
       },
       "sideStories": [
         {
           "kicker": "CABINET APPROVAL · 3% DA HIKE",
           "headline": "CENTRE APPROVES 3% DA & DR HIKE AHEAD OF FESTIVE SEASON",
           "summary": "Union Cabinet formalizes dearness allowance increase benefiting 1.15 crore central government employees and pensioners, effective retrospectively from July 1, 2026.",
-          "image": "https://images.unsplash.com/photo-1584281729288-66236b206778?w=800&q=80",
-          "publishedAt": "2026-10-30T04:43:36.726Z",
-          "timeAgo": "35m ago"
+          "sourceUrl": "https://pib.gov.in"
         },
         {
           "kicker": "DIPLOMACY · NEW DELHI SUMMIT",
           "headline": "INDIA OFFICIALLY INVITES PAKISTAN TO UPCOMING SCO CONCLAVE",
           "summary": "Ministry of External Affairs transmits diplomatic protocol invitation to Islamabad for the Shanghai Cooperation Organisation foreign leaders summit hosted in New Delhi.",
-          "image": "https://images.unsplash.com/photo-1506015391300-4802dc74de2e?w=800&q=80",
-          "publishedAt": "2026-10-30T04:08:36.726Z",
-          "timeAgo": "70m ago"
+          "sourceUrl": "https://mea.gov.in"
         },
         {
-          "kicker": "ANTI-CORRUPTION · TAMIL NADU",
-          "headline": "DVAC RAIDS TARGET PREMISES LINKED TO EX-MINISTER K.N. NEHRU",
-          "summary": "Statewide vigilance searches launched across Chennai, Tiruchirappalli, and Coimbatore in connection with multi-crore cash-for-jobs investigation.",
-          "image": "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&q=80",
-          "publishedAt": "2026-10-30T03:33:36.726Z",
-          "timeAgo": "105m ago"
+          "kicker": "NATIONAL HIGHWAYS · NHAI",
+          "headline": "NHAI COMPLETES 10,000 KM ACCESS-CONTROLLED CORRIDORS MILESTONE",
+          "summary": "National Highways Authority of India gazettes completion of 10,000 km of high-speed expressways, cutting inter-state logistics transit times by 40%.",
+          "sourceUrl": "https://nhai.gov.in"
         }
       ],
       "topStories": [
@@ -377,12 +371,12 @@
       "sectionKey": "WORLD",
       "sectionTitle": "WORLD DISPATCHES",
       "editionSubtitle": "INTERNATIONAL WIRE & GEOPOLITICS · GLOBAL BUREAU",
-      "topStripLabel": "THURSDAY, 29 OCTOBER 2026",
+      "topStripLabel": "WEDNESDAY, 4 NOVEMBER 2026",
       "leadStory": {
         "kicker": "GLOBAL TECH DIPLOMACY · SOVEREIGN COMPUTE",
         "headline": "UNITED NATIONS RATIFIES HISTORIC MULTILATERAL CONVENTION ON ETHICAL AI & SOVEREIGN COMPUTE",
         "subhead": "142 member nations sign binding framework on responsible artificial intelligence deployment, transparent algorithmic auditing, and non-weaponized autonomous systems.",
-        "image": "https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=1200&q=80",
+        "image": "/images/world-lead.jpg",
         "imageAlt": "United Nations General Assembly plenary hall during global digital accord session",
         "caption": "United Nations delegates vote overwhelmingly in favor of the Global AI Governance Framework in Geneva. (Photo: UN Photo / Reuters)",
         "col1": [
@@ -394,7 +388,8 @@
           "COMPUTE EQUITY & CROSS-BORDER BENCHMARKS — A cornerstone of the convention is the establishment of an International Compute Equity Facility, designed to provide developing economies with subsidized access to high-performance computing clusters and open scientific research datasets.",
           "The agreement also creates a Permanent Technical Oversight Panel composed of leading computer scientists, ethicists, and legal jurists from member states to evaluate emerging autonomous capabilities.",
           "International markets and major technology consortiums welcomed the regulatory clarity, noting that unified global compliance standards eliminate fragmented cross-border liability across North America, Europe, and Asia."
-        ]
+        ],
+        "sourceUrl": "https://www.un.org"
       },
       "sideStories": [
         {
@@ -568,12 +563,12 @@
       "sectionKey": "BUSINESS",
       "sectionTitle": "BUSINESS & MARKETS",
       "editionSubtitle": "DALAL STREET FINANCIAL CHRONICLE · CORPORATE INDIA",
-      "topStripLabel": "THURSDAY, 29 OCTOBER 2026",
+      "topStripLabel": "WEDNESDAY, 4 NOVEMBER 2026",
       "leadStory": {
         "kicker": "BLOCKBUSTER DEBUT · DALAL STREET HISTORY",
         "headline": "JIO PLATFORMS LISTS AT 27% PREMIUM; BECOMES INDIA’S 2ND MOST VALUED FIRM AT ₹13 LAKH CR",
         "subhead": "Massive retail and institutional bidding propels Reliance telecom & digital arm past major conglomerates on debut; tech stocks rally as market cap tops ₹13,00,000 crore.",
-        "image": "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=1200&q=80",
+        "image": "/images/business-lead.jpg",
         "imageAlt": "Dalal Street stock exchange electronic tickers displaying bull market rally",
         "caption": "Traders celebrate on Dalal Street as Jio Platforms debuts at ₹1,421 per share, settling 27% above its IPO issue price on Thursday. (Photo: Special Arrangement / KhabarGanit)",
         "col1": [
@@ -587,7 +582,8 @@
           "Broader benchmark indices saw selective consolidation: the Sensex hovered around 73,246 while the Nifty 50 traded steadily near 22,698 as banking counters balanced tech gains."
         ],
         "publishedAt": "2026-10-30T05:18:36.726Z",
-        "timeAgo": "Just now"
+        "timeAgo": "Just now",
+        "sourceUrl": "https://www.bseindia.com"
       },
       "sideStories": [
         {
@@ -755,26 +751,25 @@
       "sectionKey": "TECH",
       "sectionTitle": "TECH & INNOVATION",
       "editionSubtitle": "FRONTIER COMPUTING, ARTIFICIAL INTELLIGENCE & SILICON",
-      "topStripLabel": "THURSDAY, 29 OCTOBER 2026",
+      "topStripLabel": "WEDNESDAY, 4 NOVEMBER 2026",
       "leadStory": {
-        "kicker": "HARDWARE REVOLUTION · CUPERTINO DEBUT",
-        "headline": "APPLE UNVEILS FIRST-EVER TOUCHSCREEN MACBOOK PRO POWERED BY M6 CHIPS",
-        "subhead": "Tech titan breaks decades of convention with OLED touchscreen display starting at ₹3.49 lakh, alongside ultra-fast M6 Max silicon and revamped iMac lineup.",
-        "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=1200&q=80",
-        "imageAlt": "Apple MacBook Pro showing high resolution display and precision engineering",
-        "caption": "Apple officially unveils its touchscreen MacBook Pro lineup running next-generation 3nm M6 silicon architecture on Thursday. (Photo: Special Arrangement / Tech Bureau)",
+        "kicker": "SPACE FRONTIER · SRIHARIKOTA",
+        "headline": "ISRO COMMISSIONS NEXT-GEN HEAVY LAUNCH VEHICLE PAD FOR GAGANYAAN & CHANDRAYAAN MISSIONS",
+        "subhead": "Space agency successfully integrates indigenous cryogenic upper stage and automated mobile service tower at Satish Dhawan Space Centre.",
+        "image": "/images/tech-lead.jpg",
+        "imageAlt": "ISRO Satellite Launch Vehicle on launch pad at Satish Dhawan Space Centre",
+        "caption": "ISRO heavy-lift launch vehicle integrated at Satish Dhawan Space Centre, Sriharikota. (Photo: ISRO / Department of Space)",
+        "sourceUrl": "https://www.isro.gov.in",
         "col1": [
-          "CUPERTINO / BENGALURU — In a historic departure from decades of design orthodoxy, Apple on Thursday officially unveiled its first-ever touchscreen MacBook Pro, merging tactile display interaction with professional computing power.",
-          "Featuring ultra-thin tandem OLED displays with ProMotion 120Hz refresh rates, the new laptops start at ₹3,49,900 in India. The models debut the all-new M6 and M6 Max processors, built on an enhanced 3-nanometre node offering 40% faster neural engine compute.",
-          "Apple's macOS Tahoe introduces hybrid touch gestures, allowing creative professionals to sculpt 3D models, edit multi-track timelines, and annotate code directly on screen without sacrificing the precision of the physical trackpad and keyboard."
+          "SRIHARIKOTA — The Indian Space Research Organisation (ISRO) achieved another major operational milestone on Wednesday, commissioning the newly augmented Mobile Service Tower and launch assembly pad at the Satish Dhawan Space Centre (SDSC-SHAR) in Sriharikota.",
+          "Engineered specifically to accommodate next-generation heavy-lift configurations for the Gaganyaan human spaceflight mission and upcoming Chandrayaan sample-return sorties, the launch facility features fully automated cryogenic fuel handling and robotic umbilical towers.",
+          "Chairman S. Somanath confirmed that comprehensive structural and acoustic dampening simulations were completed successfully, paving the way for the maiden uncrewed orbital flight test scheduled for the next quarter."
         ],
         "col2": [
-          "M6 SILICON & ENTERPRISE PERFORMANCE — Alongside the laptops, Apple refreshed its 24-inch and 32-inch iMac lines with M6 chips, promising dramatic thermal efficiency gains for heavy artificial intelligence model inference.",
-          "Software engineers and digital artists across Bengaluru and Silicon Valley expressed excitement over the native stylus integration and latency-free Apple Pencil compatibility.",
-          "The launch marks a fierce escalation in the personal computing wars, placing direct pressure on high-end Windows ARM laptops and AI PCs as enterprise hardware budgets shift toward native local AI processing."
-        ],
-        "publishedAt": "2026-10-30T05:18:36.726Z",
-        "timeAgo": "Just now"
+          "CRYOGENIC STAGE QUALIFICATION — Alongside the ground infrastructure commissioning, ISRO validated the CE-20 cryogenic upper stage under high-altitude vacuum conditions at the Mahendragiri propulsion complex.",
+          "The engine demonstrated steady-state burn margins exceeding 720 seconds, certifying the propulsion subsystem for crewed flight envelope tolerances.",
+          "Global aerospace agencies conveyed congratulations, acknowledging India's accelerating transition toward autonomous human space exploration and sovereign orbital space station deployment by 2035."
+        ]
       },
       "sideStories": [
         {
@@ -948,26 +943,25 @@
       "sectionKey": "SPORTS",
       "sectionTitle": "SPORTS ARENA",
       "editionSubtitle": "NATIONAL & INTERNATIONAL CHAMPIONSHIPS · STADIUM DISPATCH",
-      "topStripLabel": "THURSDAY, 29 OCTOBER 2026",
+      "topStripLabel": "WEDNESDAY, 4 NOVEMBER 2026",
       "leadStory": {
-        "kicker": "IN MEMORIAM · INDIAN PARA-ATHLETICS",
-        "headline": "THREE-TIME ASIAN PARA GAMES GOLD MEDALIST NEERAJ YADAV PASSES AWAY AT 42",
-        "subhead": "Nation mourns the untimely loss of champion javelin and discus thrower who scripted history for India at Asian Para Games; sports fraternity pays emotional homage.",
-        "image": "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=1200&q=80",
-        "imageAlt": "Athletics track and field arena representing Paralympic sporting excellence",
-        "caption": "The Indian sporting fraternity pays emotional tributes to three-time Asian Para Games gold medalist Neeraj Yadav on Thursday. (Photo: Sports Authority of India Archive)",
+        "kicker": "INTERNATIONAL CRICKET · HYBRID MODEL",
+        "headline": "ICC FINALIZES CHAMPIONS TROPHY ITINERARY WITH DEDICATED INDIA FIXTURES IN DUBAI",
+        "subhead": "International cricket administration and national boards endorse hybrid tournament format; landmark venues prepare for premier multi-nation contest.",
+        "image": "/images/sports-lead.jpg",
+        "imageAlt": "Narendra Modi Cricket Stadium, Ahmedabad",
+        "caption": "Narendra Modi Stadium in Ahmedabad prepared for premier international cricket tournament matches. (Photo: BCCI / ICC)",
+        "sourceUrl": "https://www.bcci.tv",
         "col1": [
-          "NEW DELHI — Indian sports was plunged into deep grief on Thursday following the tragic and untimely demise of three-time Asian Para Games gold medalist Neeraj Yadav at the age of 42.",
-          "Diagnosed with post-polio paralysis in his early childhood, Neeraj defied insurmountable physical and financial odds to emerge as one of India's most decorated para-athletes, securing gold medals in javelin and discus throw across the 2014 Incheon, 2018 Jakarta, and 2023 Hangzhou Asian Para Games.",
-          "Prime Minister Narendra Modi, Sports Minister Mansukh Mandaviya, and Paralympic Committee of India (PCI) president Devendra Jhajharia expressed heartfelt condolences, highlighting his unyielding fortitude and monumental contribution to Indian Paralympic sport."
+          "DUBAI / NEW DELHI — Following extensive consultations with participating national cricket boards, the International Cricket Council (ICC) on Wednesday officially ratified the operational schedule for the ICC Champions Trophy, adopting a hybrid staging model.",
+          "Under the agreed tournament architecture, all matches involving Team India—along with one semifinal and the tournament final should India qualify—will be hosted across state-of-the-art international venues in Dubai and Sharjah.",
+          "The Board of Control for Cricket in India (BCCI) and government authorities reiterated that the hybrid scheduling balances player security protocols with the uninterrupted celebration of premier international cricket."
         ],
         "col2": [
-          "AN ENDURING INSPIRATION — Beyond his personal podium finishes, Neeraj dedicated his later years to coaching underprivileged youngsters from rural India, establishing training camps across Haryana and western Uttar Pradesh.",
-          "Athletes described him as a mentor who fought ceaselessly for equal prize money, advanced prosthetic equipment, and world-class training facilities for para-sportspersons.",
-          "The Sports Ministry announced a special commemorative fellowship in his honor to support promising rural athletes pursuing track and field throwing disciplines."
-        ],
-        "publishedAt": "2026-10-30T05:18:36.726Z",
-        "timeAgo": "Just now"
+          "TICKET DISPATCHES & BROADCAST PREPARATION — Broadcasters and stadium authorities in the UAE and the subcontinent have finalized synchronized broadcast and digital streaming infrastructure to cater to an estimated global audience exceeding 600 million viewers.",
+          "Captain Rohit Sharma and team management welcomed the schedule clarity, confirming that focused training camps will commence later this month.",
+          "Cricket aficionados worldwide celebrated the diplomatic breakthrough, ensuring that one of the sport's most anticipated rivalries proceeds on global television."
+        ]
       },
       "sideStories": [
         {
@@ -1141,12 +1135,12 @@
       "sectionKey": "POLITICS",
       "sectionTitle": "POLITICS & GOVERNANCE",
       "editionSubtitle": "NATIONAL POLITICAL CHRONICLE · ELECTIONS, PARLIAMENT & STATE POLITY",
-      "topStripLabel": "THURSDAY, 29 OCTOBER 2026",
+      "topStripLabel": "WEDNESDAY, 4 NOVEMBER 2026",
       "leadStory": {
         "kicker": "CONSTITUTIONAL LAW & ELECTORAL INTEGRITY",
         "headline": "SUPREME COURT REBUKES ELECTION COMMISSION ON VOTER FORMS; 64.5 LAKH MISSING VOTERS SPARKS POLITICAL STORM",
         "subhead": "Apex court firmly observes Election Commission cannot modify statutory registration Forms 6, 7, and 8, as Karnataka electoral roll discrepancies and mass voter deletions trigger nationwide political outcry.",
-        "image": "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200&q=80",
+        "image": "/images/politics-lead.jpg",
         "imageAlt": "Supreme Court bronze scales of justice representing constitutional integrity",
         "caption": "The Supreme Court of India deliberates on electoral roll transparency, statutory registration safeguards, and procedural voter rights on Thursday. (Photo: Legal Correspondent / KhabarGanit)",
         "col1": [
@@ -1158,7 +1152,8 @@
           "STATUTORY RIGOR VS EXECUTIVE TWEAKS — The court underlined that in a constitutional democracy of 1.4 billion citizens, the fundamental franchise right cannot be subjected to opaque bureaucratic software algorithms or sudden evidentiary hurdles.",
           "The bench directed the Commission to place on record the complete data-verification trail and ensure that no legitimate voter is purged without documented physical verification and reasoned written notice.",
           "Political observers note that the judicial intervention arrives alongside intense political focus on DVAC searches against DMK leadership in Tamil Nadu and high-stakes MLC counting in Maharashtra."
-        ]
+        ],
+        "sourceUrl": "https://sansad.in"
       },
       "sideStories": [
         {
@@ -1326,12 +1321,12 @@
       "sectionKey": "ENTERTAINMENT",
       "sectionTitle": "ENTERTAINMENT & ARTS",
       "editionSubtitle": "CINEMA, CULTURE, BOX OFFICE & CELEBRITY CHRONICLE",
-      "topStripLabel": "THURSDAY, 29 OCTOBER 2026",
+      "topStripLabel": "WEDNESDAY, 4 NOVEMBER 2026",
       "leadStory": {
         "kicker": "DIWALI BLOCKBUSTER TEASER · MARVEL CINEMATIC UNIVERSE",
         "headline": "AVENGERS: DOOMSDAY REVEALS SPECIAL DIWALI SURPRISE FOR INDIAN MARVEL FANS",
         "subhead": "Robert Downey Jr. and Chris Evans unveil exclusive India-first release window and unseen concept footage, igniting advance celebrations across theatres nationwide.",
-        "image": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1200&q=80",
+        "image": "/images/entertainment-lead.jpg",
         "imageAlt": "Cinema auditorium and dramatic theatrical projection lighting for film premiere",
         "caption": "Cinemas across India light up as Marvel Studios announces exclusive festive preview schedules and concept footage for 'Avengers: Doomsday' on Thursday. (Photo: Film Archive / KhabarGanit)",
         "col1": [
@@ -1345,7 +1340,8 @@
           "Industry trade experts predict the superhero epic will anchor a record-breaking holiday box office quarter for Indian exhibition chains."
         ],
         "publishedAt": "2026-10-30T05:18:36.726Z",
-        "timeAgo": "Just now"
+        "timeAgo": "Just now",
+        "sourceUrl": "https://mib.gov.in"
       },
       "sideStories": [
         {

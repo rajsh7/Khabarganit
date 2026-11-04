@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { useState, useEffect, useMemo } from "react";
-import { ChevronLeft, ChevronRight, Bookmark, ArrowUpRight, Clock } from "lucide-react";
-import { formatTimeAgo, getTodayFormattedDate } from "@/lib/utils";
+import { ChevronLeft, ChevronRight, Bookmark, ArrowUpRight } from "lucide-react";
+import { getTodayFormattedDate } from "@/lib/utils";
 
 import GoogleTranslate from "@/components/GoogleTranslate";
 import ArticleModal, { ArticleModalData } from "@/components/ArticleModal";
@@ -601,12 +601,18 @@ export default function NewspaperPage() {
                     {activePage.leadStory.kicker.replace(/^🔴\s*/, "")}
                   </span>
                 </div>
-                <div className="flex items-center gap-1 text-[10px] sm:text-[11px] font-sans font-medium text-stone-600 bg-stone-100 px-2 py-0.5 rounded border border-stone-200">
-                  <Clock size={11} className="text-[#C13A08]" />
-                  <span>
-                    {formatTimeAgo(activePage.leadStory.publishedAt || activePage.leadStory.timeAgo, "15m ago")}
-                  </span>
-                </div>
+                {activePage.leadStory.sourceUrl && (
+                  <a
+                    href={activePage.leadStory.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-[10px] font-sans font-semibold text-stone-700 bg-stone-100 hover:bg-black hover:text-white px-2.5 py-0.5 rounded border border-stone-300 transition-colors flex items-center gap-1"
+                    title="View original reference source"
+                  >
+                    <span>Ref Link ↗</span>
+                  </a>
+                )}
               </div>
 
               {/* Lead Headline - Clickable for Full Article */}
@@ -627,8 +633,7 @@ export default function NewspaperPage() {
                     author: "KhabarGanit Special Correspondent",
                     location: "New Delhi Bureau",
                     videoUrl: activePage.leadStory.videoUrl,
-                    sourceUrl: activePage.leadStory.sourceUrl,
-                    timeAgo: formatTimeAgo(activePage.leadStory.publishedAt || activePage.leadStory.timeAgo, "15m ago")
+                    sourceUrl: activePage.leadStory.sourceUrl
                   })
                 }
                 className="font-playfair font-black text-2xl sm:text-3xl md:text-[36px] leading-[1.26] sm:leading-[1.2] tracking-normal sm:tracking-tight text-black uppercase mb-2.5 cursor-pointer hover:text-[#C13A08] transition-colors group"
@@ -722,8 +727,7 @@ export default function NewspaperPage() {
                         author: story.author || "Senior Policy Correspondent",
                         location: story.location || "National Bureau",
                         videoUrl: story.videoUrl,
-                        sourceUrl: story.sourceUrl,
-                        timeAgo: formatTimeAgo(story.publishedAt || story.timeAgo, `${(idx + 1) * 35}m ago`)
+                        sourceUrl: story.sourceUrl
                       })
                     }
                     className="pb-5 cursor-pointer group"
@@ -733,10 +737,17 @@ export default function NewspaperPage() {
                       <span className="text-[10px] font-serif font-bold uppercase tracking-[0.16em] text-[#C13A08]">
                         {story.kicker}
                       </span>
-                      <span className="text-[10px] font-sans text-stone-500 flex items-center gap-1 shrink-0">
-                        <Clock size={10} className="text-stone-400" />
-                        {formatTimeAgo(story.publishedAt || story.timeAgo, `${(idx + 1) * 35}m ago`)}
-                      </span>
+                      {story.sourceUrl && (
+                        <a
+                          href={story.sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-[9px] font-sans font-semibold text-stone-500 hover:text-[#C13A08] transition-colors"
+                        >
+                          Ref ↗
+                        </a>
+                      )}
                     </div>
                     <h3 className="font-playfair font-black text-base sm:text-lg leading-snug tracking-normal sm:tracking-tight text-black uppercase mb-1.5 group-hover:text-[#C13A08] transition-colors">
                       {story.headline}
@@ -836,10 +847,19 @@ export default function NewspaperPage() {
                   </div>
                   <div className="pt-3 mt-3 border-t border-stone-200 text-[10px] font-serif text-stone-500 uppercase tracking-wider flex items-center justify-between">
                     <span>{story.author}</span>
-                    <span className="flex items-center gap-1 font-sans font-normal text-stone-500 lowercase">
-                      <Clock size={10} className="text-stone-400" />
-                      {formatTimeAgo(story.publishedAt || story.timeAgo, `${idx + 1}h ago`)}
-                    </span>
+                    {story.sourceUrl ? (
+                      <a
+                        href={story.sourceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="font-sans font-semibold text-[#C13A08] hover:underline normal-case text-[10px]"
+                      >
+                        Ref Source ↗
+                      </a>
+                    ) : (
+                      <span className="font-sans font-normal text-stone-400 text-[10px]">Verified</span>
+                    )}
                   </div>
                 </article>
               ))}

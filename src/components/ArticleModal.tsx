@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { X as CloseIcon, Share2, Copy, Check, Clock, MapPin, User, ExternalLink } from "lucide-react";
+import { X as CloseIcon, Share2, Copy, Check, MapPin, User, ExternalLink } from "lucide-react";
 
 export interface ArticleModalData {
   title: string;
@@ -121,10 +121,8 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
                 {article.location}
               </span>
             )}
-            <span className="flex items-center gap-1">
-              <Clock size={13} className="text-stone-500" />
-              {article.timeAgo ? `${article.timeAgo} · ` : ""}
-              {article.date || "Today's Edition"} · 3 min read
+            <span className="flex items-center gap-1 font-sans text-stone-600 font-medium">
+              {article.date || "Today's Edition"} · Verified Editorial Dispatch
             </span>
           </div>
 
@@ -206,16 +204,18 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
 
         {/* Source Attribution Link if present */}
         {article.sourceUrl && (
-          <div className="mt-4 pt-3 border-t border-stone-200 text-xs font-serif text-stone-600 flex items-center gap-1.5 select-text">
-            <ExternalLink size={13} className="text-[#C13A08] shrink-0" />
-            <span>मूल समाचार स्रोत (Source):</span>
+          <div className="mt-5 p-4 bg-stone-50 border border-stone-300 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 select-text">
+            <div className="flex items-center gap-2 text-xs font-serif text-stone-700">
+              <ExternalLink size={15} className="text-[#C13A08] shrink-0" />
+              <span className="font-semibold text-stone-900">प्रमाणित संदर्भ स्रोत (Official Reference Link):</span>
+            </div>
             <a
               href={article.sourceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#C13A08] hover:underline font-semibold truncate max-w-xs sm:max-w-md inline-block"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#C13A08] text-white rounded font-sans font-semibold text-xs hover:bg-black transition-colors shrink-0"
             >
-              {article.sourceUrl}
+              <span>View Source Link ↗</span>
             </a>
           </div>
         )}

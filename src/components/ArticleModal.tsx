@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { X as CloseIcon, Share2, Copy, Check, MapPin, User, ExternalLink } from "lucide-react";
+import { X as CloseIcon, Share2, Copy, Check, User } from "lucide-react";
 
 export interface ArticleModalData {
   title: string;
@@ -56,7 +56,7 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
   const handleShareX = () => {
     if (typeof window !== "undefined") {
       const url = encodeURIComponent(window.location.href);
-      const text = encodeURIComponent(`${article.title} | KhabarGanit`);
+      const text = encodeURIComponent(`${article.title} | ख़बरगणित`);
       window.open(`https://x.com/intent/tweet?text=${text}&url=${url}`, "_blank");
     }
   };
@@ -64,7 +64,7 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
   const handleShareWhatsApp = () => {
     if (typeof window !== "undefined") {
       const url = encodeURIComponent(window.location.href);
-      const text = encodeURIComponent(`${article.title} - Read more on KhabarGanit: `);
+      const text = encodeURIComponent(`${article.title} - ख़बरगणित पर पढ़ें: `);
       window.open(`https://api.whatsapp.com/send?text=${text}${url}`, "_blank");
     }
   };
@@ -74,55 +74,49 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
       {/* Click outside to close backdrop */}
       <div className="fixed inset-0" onClick={onClose} />
 
-      {/* Broadsheet Article Card */}
-      <article className="relative bg-white text-black max-w-3xl w-full max-h-[92vh] overflow-y-auto border-2 border-black shadow-[0_20px_60px_rgba(0,0,0,0.35)] p-5 sm:p-9 md:p-11 z-10">
+      {/* Modern Editorial Reading Modal */}
+      <article className="relative bg-white text-black max-w-3xl w-full max-h-[92vh] overflow-y-auto rounded-2xl border border-stone-200 shadow-2xl p-5 sm:p-9 md:p-11 z-10">
         
         {/* Sticky Close Button in Top Corner */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 sm:top-6 sm:right-6 bg-stone-100 hover:bg-black hover:text-white border border-stone-400 p-1.5 rounded-full transition-all duration-200 cursor-pointer shadow-sm group"
-          title="Close article (Esc)"
+          className="absolute top-4 right-4 sm:top-6 sm:right-6 bg-stone-100 hover:bg-black hover:text-white border border-stone-300 p-2 rounded-full transition-all duration-200 cursor-pointer shadow-sm group"
+          title="बंद करें (Esc)"
         >
           <CloseIcon size={18} className="group-hover:rotate-90 transition-transform" />
         </button>
 
         {/* Category & Kicker */}
         <div className="flex items-center gap-2 mb-2 select-none pr-10">
-          <span className="inline-block w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse shrink-0" />
-          <span className="text-[11px] sm:text-xs font-serif font-bold uppercase tracking-[0.2em] text-[#C13A08]">
-            {article.kicker || article.category || "DISPATCH BULLETIN"}
+          <span className="inline-block w-2.5 h-2.5 rounded-full bg-[#C13A08] animate-pulse shrink-0" />
+          <span className="text-[11px] sm:text-xs font-sans font-bold uppercase tracking-wider text-[#C13A08]">
+            {article.kicker || article.category || "समाचार बुलेटिन"}
           </span>
         </div>
 
         {/* Headline */}
-        <h1 className="font-playfair font-black text-2xl sm:text-3xl md:text-4xl text-black leading-[1.24] tracking-normal mb-3">
+        <h1 className="font-sans font-black text-2xl sm:text-3xl md:text-4xl text-black leading-snug tracking-tight mb-3">
           {article.title}
         </h1>
 
         {/* Subhead / Standfirst */}
         {article.subhead && (
-          <p className="font-serif italic text-stone-700 text-sm sm:text-base md:text-lg leading-relaxed border-l-3 border-[#C13A08] pl-3.5 my-3.5 bg-stone-50 py-1.5">
+          <p className="font-serif italic text-stone-700 text-sm sm:text-base md:text-lg leading-relaxed border-l-4 border-[#C13A08] pl-3.5 my-3.5 bg-stone-50 py-2 rounded-r-md">
             {article.subhead}
           </p>
         )}
 
         {/* Metadata Strip */}
-        <div className="flex flex-wrap items-center justify-between text-[11px] font-serif text-stone-600 border-y border-stone-300 py-2.5 my-4 gap-2 select-none">
+        <div className="flex flex-wrap items-center justify-between text-xs font-sans text-stone-600 border-y border-stone-200 py-3 my-4 gap-2 select-none">
           <div className="flex items-center flex-wrap gap-4">
             {article.author && (
-              <span className="flex items-center gap-1 font-semibold text-stone-900">
-                <User size={13} className="text-[#C13A08]" />
+              <span className="flex items-center gap-1.5 font-bold text-stone-900">
+                <User size={14} className="text-[#C13A08]" />
                 {article.author}
               </span>
             )}
-            {article.location && (
-              <span className="flex items-center gap-1 uppercase tracking-wider">
-                <MapPin size={13} className="text-stone-500" />
-                {article.location}
-              </span>
-            )}
-            <span className="flex items-center gap-1 font-sans text-stone-600 font-medium">
-              {article.date || "Today's Edition"} · Verified Editorial Dispatch
+            <span className="flex items-center gap-1 font-medium text-stone-500">
+              ⏱ {article.date || "05 Nov 2026"}
             </span>
           </div>
 
@@ -130,25 +124,25 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
           <div className="flex items-center gap-2">
             <button
               onClick={handleShareX}
-              className="px-2 py-0.5 border border-stone-300 hover:border-black rounded text-[10px] font-sans font-bold flex items-center gap-1 transition-colors"
-              title="Share on X"
+              className="px-2.5 py-1 border border-stone-300 hover:border-black rounded-md text-xs font-sans font-medium flex items-center gap-1 transition-colors"
+              title="X पर शेयर करें"
             >
-              <Share2 size={11} /> Share
+              <Share2 size={12} /> 𝕏
             </button>
             <button
               onClick={handleShareWhatsApp}
-              className="px-2 py-0.5 border border-stone-300 hover:border-emerald-600 text-emerald-700 rounded text-[10px] font-sans font-bold transition-colors"
-              title="Share on WhatsApp"
+              className="px-2.5 py-1 border border-emerald-300 hover:border-emerald-600 bg-emerald-50 text-emerald-800 rounded-md text-xs font-sans font-bold transition-colors"
+              title="WhatsApp पर शेयर करें"
             >
               WhatsApp
             </button>
             <button
               onClick={handleCopy}
-              className="px-2 py-0.5 border border-stone-300 hover:border-black rounded text-[10px] font-sans font-bold flex items-center gap-1 transition-colors"
-              title="Copy article link"
+              className="px-2.5 py-1 border border-stone-300 hover:border-black rounded-md text-xs font-sans font-medium flex items-center gap-1 transition-colors"
+              title="लिंक कॉपी करें"
             >
-              {copied ? <Check size={11} className="text-emerald-600" /> : <Copy size={11} />}
-              {copied ? "Copied" : "Copy Link"}
+              {copied ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
+              <span>{copied ? "कॉपी हुआ" : "कॉपी"}</span>
             </button>
           </div>
         </div>
@@ -156,7 +150,7 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
         {/* Featured Image */}
         {article.image && (
           <div className="my-5">
-            <div className="relative w-full aspect-[16/9] overflow-hidden bg-stone-100 border border-stone-300 shadow-sm">
+            <div className="relative w-full aspect-[16/9] overflow-hidden rounded-xl bg-stone-100 border border-stone-200 shadow-sm">
               <Image
                 src={article.image}
                 alt={article.title}
@@ -168,7 +162,7 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
               />
             </div>
             {article.imageCaption && (
-              <p className="text-[11px] font-serif text-stone-500 italic pt-2 border-b border-stone-200 pb-2">
+              <p className="text-xs font-serif text-stone-500 italic pt-2 border-b border-stone-200 pb-2">
                 {article.imageCaption}
               </p>
             )}
@@ -178,7 +172,7 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
         {/* Embedded Video Dispatch if present */}
         {article.videoUrl && (
           <div className="my-5">
-            <div className="relative w-full aspect-[16/9] overflow-hidden bg-black border border-stone-300 shadow-md">
+            <div className="relative w-full aspect-[16/9] overflow-hidden rounded-xl bg-black border border-stone-300 shadow-md">
               <iframe
                 src={article.videoUrl}
                 title={article.title}
@@ -187,50 +181,29 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
                 className="w-full h-full border-0"
               />
             </div>
-            <p className="text-[11px] font-serif text-stone-500 italic pt-1.5 border-b border-stone-200 pb-2">
-              📹 Video Dispatch & Media Coverage
-            </p>
           </div>
         )}
 
         {/* Full Article Body Paragraphs */}
-        <div className="text-stone-900 text-sm sm:text-base font-serif leading-[1.8] space-y-4 my-6 text-justify">
+        <div className="text-stone-900 text-base sm:text-lg font-serif leading-[1.8] space-y-4 my-6 text-justify">
           {article.paragraphs.map((p, idx) => (
-            <p key={idx} className={idx === 0 ? "first-letter:font-playfair first-letter:text-4xl first-letter:font-black first-letter:float-left first-letter:mr-2.5 first-letter:leading-none first-letter:text-black" : ""}>
+            <p key={idx}>
               {p}
             </p>
           ))}
         </div>
 
-        {/* Source Attribution Link if present */}
-        {article.sourceUrl && (
-          <div className="mt-5 p-4 bg-stone-50 border border-stone-300 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 select-text">
-            <div className="flex items-center gap-2 text-xs font-serif text-stone-700">
-              <ExternalLink size={15} className="text-[#C13A08] shrink-0" />
-              <span className="font-semibold text-stone-900">प्रमाणित संदर्भ स्रोत (Official Reference Link):</span>
-            </div>
-            <a
-              href={article.sourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#C13A08] text-white rounded font-sans font-semibold text-xs hover:bg-black transition-colors shrink-0"
-            >
-              <span>View Source Link ↗</span>
-            </a>
-          </div>
-        )}
-
         {/* Divider */}
-        <div className="w-full h-[1.5px] bg-black my-6" />
+        <div className="w-full h-[1px] bg-stone-200 my-6" />
 
         {/* Follow KhabarGanit on Social Channels */}
-        <div className="bg-stone-50 border border-stone-300 p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 select-none">
+        <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 select-none">
           <div>
-            <span className="font-playfair font-black text-lg text-black block">
-              Follow KhabarGanit Dispatches
+            <span className="font-sans font-bold text-base text-black block">
+              ख़बरगणित को सोशल मीडिया पर फ़ॉलो करें
             </span>
             <p className="text-xs font-serif text-stone-600">
-              Get data-verified journalism, breaking alerts, and quantitative insights.
+              ताज़ा समाचार, तथ्य और आँकड़ों के साथ सटीक विश्लेषण प्राप्त करें।
             </p>
           </div>
 
@@ -239,8 +212,8 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
               href="https://www.youtube.com/@KhabarGanit"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-1.5 bg-white border border-stone-300 rounded-full hover:scale-110 hover:border-red-600 transition-all"
-              title="YouTube: @KhabarGanit"
+              className="p-1.5 bg-white border border-stone-200 rounded-full hover:scale-110 transition-transform shadow-xs"
+              title="YouTube"
             >
               <Image src="/social/youtube.png" alt="YouTube" width={22} height={22} className="object-contain" />
             </a>
@@ -248,8 +221,8 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
               href="https://x.com/khabarGanit"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-1.5 bg-white border border-stone-300 rounded-full hover:scale-110 hover:border-black transition-all"
-              title="X: @khabarGanit"
+              className="p-1.5 bg-white border border-stone-200 rounded-full hover:scale-110 transition-transform shadow-xs"
+              title="X"
             >
               <Image src="/social/x.png" alt="X" width={22} height={22} className="object-contain" />
             </a>
@@ -257,8 +230,8 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
               href="https://www.instagram.com/khabarganit?exln=MXhjMW04dWV5OG0zcg%3D%3D"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-1.5 bg-white border border-stone-300 rounded-full hover:scale-110 hover:border-pink-600 transition-all"
-              title="Instagram: @khabarganit"
+              className="p-1.5 bg-white border border-stone-200 rounded-full hover:scale-110 transition-transform shadow-xs"
+              title="Instagram"
             >
               <Image src="/social/instagram.png" alt="Instagram" width={22} height={22} className="object-contain" />
             </a>
@@ -266,21 +239,21 @@ export default function ArticleModal({ article, onClose }: ArticleModalProps) {
               href="https://khabarganit.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-1.5 bg-white border border-stone-300 rounded-full hover:scale-110 hover:border-blue-600 transition-all"
-              title="Website: khabarganit.com"
+              className="p-1.5 bg-white border border-stone-200 rounded-full hover:scale-110 transition-transform shadow-xs"
+              title="वेबसाइट"
             >
-              <Image src="/social/google.png" alt="Google" width={22} height={22} className="object-contain" />
+              <Image src="/social/google.png" alt="Website" width={22} height={22} className="object-contain" />
             </a>
           </div>
         </div>
 
-        {/* Back to Broadsheet Button */}
+        {/* Back Button */}
         <div className="mt-6 text-center">
           <button
             onClick={onClose}
-            className="bg-black text-white hover:bg-[#C13A08] px-6 py-2.5 font-serif font-bold text-xs uppercase tracking-widest transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-md"
+            className="bg-black text-white hover:bg-[#C13A08] px-6 py-2.5 rounded-lg font-sans font-bold text-xs uppercase tracking-wider transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-md"
           >
-            ← Return to Broadsheet Edition
+            ← मुख्य पृष्ठ पर लौटें
           </button>
         </div>
       </article>

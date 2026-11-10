@@ -4,103 +4,64 @@
   :root {
     --background: #FFFFFF;
     --foreground: #000000;
+    --font-hindi-sans: "Noto Sans Devanagari", "Mukta", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-hindi-serif: "Noto Serif Devanagari", "Tiro Devanagari Hindi", Georgia, serif;
   }
 }
 
-
 /* ═══════════════════════════════════════════════════════════════════
-   COMPLETELY SUPPRESS ALL GOOGLE TRANSLATE UGLY WIDGETS & BANNERS
+   MODERN HINDI EDITORIAL TYPOGRAPHY FROM NAVBAR TILL FOOTER
+   Crisp, clean, highly readable Devanagari layout matching top portals
    ═══════════════════════════════════════════════════════════════════ */
-#google_translate_element,
-.goog-te-banner-frame,
-.goog-te-banner-frame.skiptranslate,
-#goog-gt-tt,
-.goog-te-balloon-frame,
-.skiptranslate,
-.goog-logo-link,
-.goog-te-gadget,
-.goog-te-menu-frame,
-.goog-te-combo {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  width: 0 !important;
-  height: 0 !important;
-  position: absolute !important;
-  left: -9999px !important;
-}
-
-body {
-  top: 0px !important;
-}
 
 body {
   background-color: #FFFFFF !important;
   color: #000000;
-  font-family: var(--font-body), Georgia, "Times New Roman", serif;
+  font-family: var(--font-hindi-sans);
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
 }
-
-/* ═══════════════════════════════════════════════════════════════════
-   DEVANAGARI / HINDI BROADSHEET TYPOGRAPHY OVERRIDES
-   Prevents crowded matras, overlapping vowels and squashed text
-   ═══════════════════════════════════════════════════════════════════ */
 
 :lang(hi),
-[lang="hi"],
-.translated-ltr,
-.translated-rtl {
-  font-family: "Martel", "Noto Serif Devanagari", Georgia, serif !important;
-  text-transform: none !important;
-  letter-spacing: 0.015em !important;
+[lang="hi"] {
+  font-family: var(--font-hindi-sans);
+  text-transform: none;
 }
 
-:lang(hi) h1,
-:lang(hi) h2,
-:lang(hi) h3,
-:lang(hi) h4,
-:lang(hi) h5,
-:lang(hi) h6,
-.translated-ltr h1,
-.translated-ltr h2,
-.translated-ltr h3,
-.translated-ltr h4,
-.translated-ltr h5,
-.translated-ltr h6 {
-  font-family: "Martel", "Noto Serif Devanagari", serif !important;
-  line-height: 1.38 !important;
-  letter-spacing: 0.01em !important;
-  word-spacing: 0.05em !important;
-  text-transform: none !important;
+/* Headings: Crisp, bold, legible Devanagari with optimal line-height */
+h1, h2, h3, h4, h5, h6,
+.font-heading {
+  font-family: var(--font-hindi-sans);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
 }
 
-:lang(hi) p,
-.translated-ltr p,
-:lang(hi) article,
-.translated-ltr article,
-:lang(hi) span,
-.translated-ltr span {
-  line-height: 1.75 !important;
-  letter-spacing: 0.01em !important;
-  word-spacing: 0.03em !important;
+/* Navbar, Buttons, Badges, Search Inputs */
+nav,
+nav button,
+nav a,
+button,
+input,
+select,
+.btn {
+  font-family: var(--font-hindi-sans);
+  text-transform: none;
 }
 
-:lang(hi) nav button,
-.translated-ltr nav button,
-:lang(hi) nav a,
-.translated-ltr nav a {
-  line-height: 1.4 !important;
-  letter-spacing: 0.05em !important;
-  text-transform: none !important;
+/* Body copy & articles */
+p, article {
+  line-height: 1.68;
+  word-spacing: 0.02em;
 }
 
-:lang(hi) .article-reading-content p,
-.translated-ltr .article-reading-content p {
-  line-height: 1.8 !important;
-  letter-spacing: 0.01em !important;
+/* Special editorial serif for quotes and lead labels */
+.font-editorial {
+  font-family: var(--font-hindi-serif);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -201,7 +162,7 @@ body {
   will-change: transform, box-shadow, filter;
 }
 
-/* Moving Light/Spine Shadow Sweep Overlay (turn.js / FlippingBook realistic lighting) */
+/* Moving Light/Spine Shadow Sweep Overlay */
 @keyframes pageCurlSweepForward {
   0% {
     opacity: 0;
@@ -264,36 +225,29 @@ body {
   animation: pageCurlSweepForward 0.72s cubic-bezier(0.38, 0.04, 0.2, 0.98) reverse forwards;
 }
 
-h1, h2, h3, h4, h5, h6, 
-.font-heading, 
-nav, 
-button, 
-.btn {
-  font-family: "Jost", "Sarala", sans-serif;
-}
-
-
 /* ═══════════════════════════════════════════════════════════════════
-   CLEAN GOOGLE TRANSLATE (Hide Google default banner & tooltips)
+   SUPPRESS ANY UNWANTED GOOGLE TRANSLATE ELEMENTS
    ═══════════════════════════════════════════════════════════════════ */
 #google_translate_hidden_element,
-#google_translate_element {
-  position: absolute !important;
-  top: -9999px !important;
-  left: -9999px !important;
-  width: 1px !important;
-  height: 1px !important;
-  overflow: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-
+#google_translate_element,
 .goog-te-banner-frame,
 iframe.goog-te-banner-frame,
-.goog-te-banner-frame.skiptranslate {
+.goog-te-banner-frame.skiptranslate,
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.skiptranslate,
+.goog-logo-link,
+.goog-te-gadget,
+.goog-te-menu-frame,
+.goog-te-combo {
   display: none !important;
   visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
   height: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
 }
 
 body {
